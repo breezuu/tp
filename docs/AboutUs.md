@@ -9,16 +9,15 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 ## Project team
 
-### John Doe
+### Yik Leong
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/yl.png" width="200px">
 
-[[homepage](http://www.comp.nus.edu.sg/~damithch)]
-[[github](https://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[github](http://github.com/bolasika)]
 
-* Role: Project Advisor
-
+* Role: Backend Developer
+* Responsibilities: Development + Testing
+  
 ### Jane Doe
 
 <img src="images/johndoe.png" width="200px">
@@ -55,12 +54,3 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 * Role: Developer
 * Responsibilities: UI + Testing
-
-### Yik Leong
-
-<img src="images/yl.png" width="200px">
-
-[[github](http://github.com/bolasika)]
-
-* Role: Backend Developer
-* Responsibilities: Development + Testing
