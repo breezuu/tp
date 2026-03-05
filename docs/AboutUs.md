@@ -29,24 +29,23 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 * Role: Team Lead
 * Responsibilities: UI
 
-### Johnny Doe
+### Marcus Chan
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/spacemongoose.png" width="200px">
 
-[[github](http://github.com/johndoe)] [[portfolio](team/johndoe.md)]
+[[github](http://github.com/SpaceMongoose)]
 
 * Role: Developer
 * Responsibilities: Data
 
-### Jean Doe
+### Ee Jon
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/eejon.png" width="200px">
 
-[[github](http://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[github](http://github.com/eejon)]
 
 * Role: Developer
-* Responsibilities: Dev Ops + Threading
+* Responsibilities: Dev Ops + Threading + Testing
 
 ### James Doe
 
