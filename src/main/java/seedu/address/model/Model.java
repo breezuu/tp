@@ -85,7 +85,7 @@ public interface Model {
      */
     void updateFilteredPersonList(Predicate<Person> predicate);
 
-    /**P
+    /**
      * Return the correct contact based on the optional
      */
     Person findPersonByName(String name);
