@@ -338,8 +338,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 4.  NAB is intended for single-user use only and does not support multi-user scenarios.
 
 ###### Usability:
-5.  GUI should work well, without resolution-related inconveniences, for standard screen resolutions 1980x1080 and higher, and for screens scaled by 100% to 125%.
-6.  GUI should remain usable for resolutions 1280x720 and higher, and for screens scaled by 150%.
+5.  GUI should work well (i.e. should not cause any resolution-related inconveniences to the user), for standard screen resolutions 1980x1080 and higher, and for screens scaled by 100% to 125%.
+6.  GUI should remain usable (i.e. all functions can be used even if the user experieince is not optimal) for resolutions 1280x720 and higher, and for screens scaled by 150%.
 
 ###### Performance:
 7. NAB should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
@@ -352,7 +352,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ###### Stability:
 10.  All exceptions and errors should be handled gracefully by the application, i.e. there should not be any application crashes.
-Fault Tolerance:
+
+###### Fault Tolerance:
 11.  Should be able to recover at least uncorrupted portions of local storage file or from a backup file should data file be corrupted.
 
 ###### Efficiency:
@@ -363,9 +364,6 @@ Fault Tolerance:
 
 ###### Data Integrity:
 14.  When a contact is deleted, all events linked to that contact should also be removed to prevent orphaned data.
-
-###### Notes:
-15.  Does not require any internet connectivity to function.
 
 *{More to be added}*
 
