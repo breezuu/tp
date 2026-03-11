@@ -3,6 +3,7 @@ package seedu.address.testutil;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import seedu.address.model.person.Address;
@@ -26,8 +27,8 @@ public class PersonBuilder {
 
     private Name name;
     private Phone phone;
-    private Email email;
-    private Address address;
+    private Optional<Email> email;
+    private Optional<Address> address;
     private Set<Tag> tags;
     private List<Event> events;
 
@@ -37,8 +38,8 @@ public class PersonBuilder {
     public PersonBuilder() {
         name = new Name(DEFAULT_NAME);
         phone = new Phone(DEFAULT_PHONE);
-        email = new Email(DEFAULT_EMAIL);
-        address = new Address(DEFAULT_ADDRESS);
+        email = Optional.of(new Email(DEFAULT_EMAIL));
+        address = Optional.of(new Address(DEFAULT_ADDRESS));
         tags = new HashSet<>();
         events = new ArrayList<>();
     }
@@ -75,7 +76,15 @@ public class PersonBuilder {
      * Sets the {@code Address} of the {@code Person} that we are building.
      */
     public PersonBuilder withAddress(String address) {
-        this.address = new Address(address);
+        this.address = Optional.of(new Address(address));
+        return this;
+    }
+
+    /**
+     * Removes the {@code Address} from the {@code Person} that we are building.
+     */
+    public PersonBuilder withoutAddress() {
+        this.address = Optional.empty();
         return this;
     }
 
@@ -91,7 +100,15 @@ public class PersonBuilder {
      * Sets the {@code Email} of the {@code Person} that we are building.
      */
     public PersonBuilder withEmail(String email) {
-        this.email = new Email(email);
+        this.email = Optional.of(new Email(email));
+        return this;
+    }
+
+    /**
+     * Removes the {@code Email} from the {@code Person} that we are building.
+     */
+    public PersonBuilder withoutEmail() {
+        this.email = Optional.empty();
         return this;
     }
 
