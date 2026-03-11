@@ -53,9 +53,9 @@ public class TagContainsKeywordsPredicateTest {
         predicate = new TagContainsKeywordsPredicate(Arrays.asList("OWE_MONEY"));
         assertTrue(predicate.test(new PersonBuilder().withTags("Friends", "OWE_MONEY").build()));
 
-        // Mixed-case keywords (The tag "CS2103 Group" VS the tag "CS2103 group")
-        predicate = new TagContainsKeywordsPredicate(Arrays.asList("colleagues"));
-        assertTrue(predicate.test(new PersonBuilder().withTags("Colleagues").build()));
+        // Mixed-case keywords (The tag "CS2103 group" VS the tag "CS2103 Group")
+        predicate = new TagContainsKeywordsPredicate(Arrays.asList("CS2103 group"));
+        assertTrue(predicate.test(new PersonBuilder().withTags("CS2103 Group").build()));
     }
 
     @Test
