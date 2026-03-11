@@ -11,6 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 
 /**
@@ -147,9 +148,9 @@ public class ModelManager implements Model {
 
     // Assumption: valid inputs
     @Override
-    public Person findPersonByName(String nameToBeFind) {
+    public Person findPersonByName(Name nameToBeFind) {
         for (Person p : this.filteredPersons) {
-            if (p.getName().toString().equals(nameToBeFind)) {
+            if (p.getName().equals(nameToBeFind)) {
                 return p;
             }
         }
