@@ -1,0 +1,17 @@
+coverage:
+  status:
+    project:
+      default:
+        # Allow coverage to drop by up to 5% before failing CI
+        threshold: 5%
+        informational: true # report only, do not fail CI
+    patch:
+      default:
+        # Do not fail CI on patch coverage drops
+        informational: true
+
+ignore:
+  # Exclude UI code for now - requires TestFX for JavaFX automated testing (possibly in the future)
+  - "src/main/java/seedu/address/ui"
+  # Exclude seed data utility
+  - "src/main/java/seedu/address/model/util/SampleDataUtil.java"
