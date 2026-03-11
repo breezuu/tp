@@ -2,39 +2,48 @@ package seedu.address.model.person;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.tag.Tag;
 
+
+
 /**
  * Represents a Person in the address book.
- * Guarantees: details are present and not null, field values are validated, immutable.
+ * Guarantees: name, phone and tags are present and not null, field values are validated, immutable.
  */
 public class Person {
 
     // Identity fields
     private final Name name;
     private final Phone phone;
-    private final Email email;
 
-    // Data fields
-    private final Address address;
+    // Optional Data fields
+    private final Optional<Email> email;
+    private final Optional<Address> address;
     private final Set<Tag> tags = new HashSet<>();
 
+    // Event fields
+    private final List<Event> events;
+
     /**
-     * Every field must be present and not null.
+     * Name and phone are compulsory. Email and address are optional.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
+    public Person(Name name, Phone phone, Optional<Email> email, Optional<Address> address, Set<Tag> tags) {
         requireAllNonNull(name, phone, email, address, tags);
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.tags.addAll(tags);
+        this.events = new ArrayList<>();
     }
 
     public Name getName() {
@@ -45,11 +54,11 @@ public class Person {
         return phone;
     }
 
-    public Email getEmail() {
+    public Optional<Email> getEmail() {
         return email;
     }
 
-    public Address getAddress() {
+    public Optional<Address> getAddress() {
         return address;
     }
 
@@ -62,7 +71,26 @@ public class Person {
     }
 
     /**
+     * Returns an immutable Event List
+     */
+    public List<Event> getEvents() {
+        return this.events;
+    }
+
+    /**
+     * Adds an event to the person's list of events.
+     * @param event
+     * @return true if the event was added successfully, false otherwise.
+     */
+    public boolean addEvent(Event event) {
+        events.add(event);
+        return true;
+    }
+
+
+    /**
      * Returns true if both persons have the same name.
+     * We define a contact/person to be uniquely identified by phone numbers.
      * This defines a weaker notion of equality between two persons.
      */
     public boolean isSamePerson(Person otherPerson) {
@@ -71,7 +99,7 @@ public class Person {
         }
 
         return otherPerson != null
-                && otherPerson.getName().equals(getName());
+                && otherPerson.getPhone().equals(getPhone());
     }
 
     /**
@@ -94,7 +122,8 @@ public class Person {
                 && phone.equals(otherPerson.phone)
                 && email.equals(otherPerson.email)
                 && address.equals(otherPerson.address)
-                && tags.equals(otherPerson.tags);
+                && tags.equals(otherPerson.tags)
+                && events.equals(otherPerson.events);
     }
 
     @Override
@@ -108,9 +137,10 @@ public class Person {
         return new ToStringBuilder(this)
                 .add("name", name)
                 .add("phone", phone)
-                .add("email", email)
-                .add("address", address)
+                .add("email", email.map(Email::toString).orElse(""))
+                .add("address", address.map(Address::toString).orElse(""))
                 .add("tags", tags)
+                .add("events", events)
                 .toString();
     }
 

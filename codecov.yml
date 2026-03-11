@@ -1,0 +1,5 @@
+ignore:
+  # Exclude UI code - requires TestFX for JavaFX automated testing
+  - "src/main/java/seedu/address/ui"
+  # Exclude seed data utility - no testable logic
+  - "src/main/java/seedu/address/model/util/SampleDataUtil.java"

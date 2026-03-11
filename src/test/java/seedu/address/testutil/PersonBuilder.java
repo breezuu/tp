@@ -1,10 +1,14 @@
 package seedu.address.testutil;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.Event;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
@@ -23,9 +27,10 @@ public class PersonBuilder {
 
     private Name name;
     private Phone phone;
-    private Email email;
-    private Address address;
+    private Optional<Email> email;
+    private Optional<Address> address;
     private Set<Tag> tags;
+    private List<Event> events;
 
     /**
      * Creates a {@code PersonBuilder} with the default details.
@@ -33,9 +38,10 @@ public class PersonBuilder {
     public PersonBuilder() {
         name = new Name(DEFAULT_NAME);
         phone = new Phone(DEFAULT_PHONE);
-        email = new Email(DEFAULT_EMAIL);
-        address = new Address(DEFAULT_ADDRESS);
+        email = Optional.of(new Email(DEFAULT_EMAIL));
+        address = Optional.of(new Address(DEFAULT_ADDRESS));
         tags = new HashSet<>();
+        events = new ArrayList<>();
     }
 
     /**
@@ -47,6 +53,7 @@ public class PersonBuilder {
         email = personToCopy.getEmail();
         address = personToCopy.getAddress();
         tags = new HashSet<>(personToCopy.getTags());
+        events = new ArrayList<>(personToCopy.getEvents());
     }
 
     /**
@@ -69,7 +76,15 @@ public class PersonBuilder {
      * Sets the {@code Address} of the {@code Person} that we are building.
      */
     public PersonBuilder withAddress(String address) {
-        this.address = new Address(address);
+        this.address = Optional.of(new Address(address));
+        return this;
+    }
+
+    /**
+     * Removes the {@code Address} from the {@code Person} that we are building.
+     */
+    public PersonBuilder withoutAddress() {
+        this.address = Optional.empty();
         return this;
     }
 
@@ -85,12 +100,39 @@ public class PersonBuilder {
      * Sets the {@code Email} of the {@code Person} that we are building.
      */
     public PersonBuilder withEmail(String email) {
-        this.email = new Email(email);
+        this.email = Optional.of(new Email(email));
         return this;
     }
 
+    /**
+     * Removes the {@code Email} from the {@code Person} that we are building.
+     */
+    public PersonBuilder withoutEmail() {
+        this.email = Optional.empty();
+        return this;
+    }
+
+    /**
+     * Sets the {@code Event} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withEvents(String... events) {
+        for (String s : events) {
+            String[] parts = s.split(",");
+            this.events.add(new Event(parts[0], parts[1], parts[2]));
+        }
+        return this;
+    }
+
+    /**
+     * Return the person after parsing the JSON
+     * @return Person
+     */
     public Person build() {
-        return new Person(name, phone, email, address, tags);
+        Person person = new Person(name, phone, email, address, tags);
+        for (Event event : events) {
+            person.addEvent(event);
+        }
+        return person;
     }
 
 }
