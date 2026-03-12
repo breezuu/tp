@@ -8,17 +8,18 @@ import seedu.address.model.Model;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 
 /**
- * Finds and lists all persons in address book whose name contains any of the argument keywords.
- * Keyword matching is case insensitive.
+ * Finds and lists all persons in address book whose name contains any of the
+ * argument keywords. Keyword matching is case insensitive.
  */
 public class FindCommand extends Command {
 
     public static final String COMMAND_WORD = "find";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Finds all persons whose names contain any of "
-            + "the specified keywords (case-insensitive) and displays them as a list with index numbers.\n"
-            + "Parameters: KEYWORD [MORE_KEYWORDS]...\n"
-            + "Example: " + COMMAND_WORD + " alice bob charlie";
+    public static final String MESSAGE_USAGE = COMMAND_WORD
+            + ": Finds all contacts whose names contain the specified name (case-insensitive).\n"
+            + "Name must consist of alphabetic characters and spaces only.\n"
+            + "Parameters: NAME\n"
+            + "Example: " + COMMAND_WORD + " alice";
 
     private final NameContainsKeywordsPredicate predicate;
 
@@ -30,8 +31,14 @@ public class FindCommand extends Command {
     public CommandResult execute(Model model) {
         requireNonNull(model);
         model.updateFilteredPersonList(predicate);
-        return new CommandResult(
-                String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, model.getFilteredPersonList().size()));
+        int count = model.getFilteredPersonList().size();
+        if (count == 0) {
+            return new CommandResult(Messages.MESSAGE_NO_PERSONS);
+        } else if (count == 1) {
+            return new CommandResult(Messages.MESSAGE_ONE_PERSON_LISTED_OVERVIEW);
+        } else {
+            return new CommandResult(String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, count));
+        }
     }
 
     @Override
@@ -51,8 +58,6 @@ public class FindCommand extends Command {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-                .add("predicate", predicate)
-                .toString();
+        return new ToStringBuilder(this).add("predicate", predicate).toString();
     }
 }

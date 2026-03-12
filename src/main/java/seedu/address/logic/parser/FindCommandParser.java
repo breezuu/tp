@@ -19,8 +19,8 @@ public class FindCommandParser implements Parser<FindCommand> {
      * @throws ParseException if the user input does not conform the expected format
      */
     public FindCommand parse(String args) throws ParseException {
-        String trimmedArgs = args.trim();
-        if (trimmedArgs.isEmpty()) {
+        String trimmedArgs = args.trim().replaceAll("\\s+", " ");
+        if (trimmedArgs.isEmpty() || !trimmedArgs.matches("[a-zA-Z][a-zA-Z ]*")) {
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
         }
