@@ -1,0 +1,70 @@
+package seedu.address.logic.parser;
+
+import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import seedu.address.logic.commands.FilterCommand;
+import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.person.TagContainsKeywordsPredicate;
+import seedu.address.model.tag.Tag;
+
+/**
+ * Parses input arguments and creates a new FilterCommand object
+ */
+public class FilterCommandParser implements Parser<FilterCommand> {
+
+    /**
+     * Parses the given {@code String} of arguments in the context of the FilterCommand
+     * and returns a FilterCommand object for execution.
+     * @throws ParseException if the user input does not conform to the expected format
+     */
+    public FilterCommand parse(String args) throws ParseException {
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_TAG);
+
+        if (argMultimap.getAllValues(PREFIX_TAG).size() > 1) {
+            throw new ParseException("Please provide all tags after a single 't/' prefix, separated by commas.");
+        }
+
+        // Check for the presence of the tag prefix 't/' and throw an exception if unnecessary info is typed
+        if (!arePrefixesPresent(argMultimap, PREFIX_TAG) || !argMultimap.getPreamble().isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
+        }
+
+        if (argMultimap.getValue(PREFIX_TAG).isEmpty()) {
+            throw new ParseException("Error: Missing tag prefix 't/'.\n"
+                    + "Fix: Use the format 'filter t/TAG_NAME'.");
+        }
+
+        String allTags = argMultimap.getValue(PREFIX_TAG).get();
+
+        if (allTags.isBlank()) {
+            throw new ParseException("Error: Tag value cannot be empty.\n"
+                    + "Fix: Provide a valid tag name after 't/' (e.g. filter t/CS2103 Group)");
+        }
+
+        List<String> tagKeywords = Arrays.stream(allTags.split(","))
+                .map(String::trim)
+                .filter(tag -> !tag.isEmpty())
+                .collect(Collectors.toList());
+
+        for (String tag : tagKeywords) {
+            if (!tag.matches(Tag.VALIDATION_REGEX)) {
+                throw new ParseException(Tag.MESSAGE_CONSTRAINTS);
+            }
+        }
+
+        return new FilterCommand(new TagContainsKeywordsPredicate(tagKeywords));
+    }
+
+    private static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
+        return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
+    }
+
+}
+
+
