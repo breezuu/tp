@@ -4,6 +4,8 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -155,6 +157,18 @@ public class ModelManager implements Model {
             }
         }
         return null;
+    }
+
+    // Assumption: valid inputs
+    @Override
+    public List<Person> findPersonsByName(Name nameToBeFind) {
+        List<Person> result = new ArrayList<>();
+        for (Person p : this.addressBook.getPersonList()) {
+            if (p.getName().equalsIgnoreCase(nameToBeFind)) {
+                result.add(p);
+            }
+        }
+        return result;
     }
 
 }

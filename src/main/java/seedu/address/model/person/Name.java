@@ -38,6 +38,12 @@ public class Name {
         return test.matches(VALIDATION_REGEX);
     }
 
+    /**
+     * Returns true if both names are the same, ignoring case.
+     */
+    public boolean equalsIgnoreCase(Name otherName) {
+        return this.fullName.equalsIgnoreCase(otherName.fullName);
+    }
 
     @Override
     public String toString() {

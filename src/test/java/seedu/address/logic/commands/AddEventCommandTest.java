@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
@@ -166,7 +167,13 @@ public class AddEventCommandTest {
             throw new AssertionError("This method should not be called.");
         }
 
+        @Override
         public Person findPersonByName(Name name) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public List<Person> findPersonsByName(Name name) {
             throw new AssertionError("This method should not be called.");
         }
     }

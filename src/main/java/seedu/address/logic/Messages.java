@@ -19,7 +19,11 @@ public class Messages {
     public static final String MESSAGE_PERSONS_LISTED_OVERVIEW = "%1$d matching contacts found!";
     public static final String MESSAGE_NO_PERSONS = "No matching contacts found!";
     public static final String MESSAGE_DUPLICATE_FIELDS =
-            "Multiple values specified for the following single-valued field(s): ";
+                "Multiple values specified for the following single-valued field(s): ";
+    public static final String MESSAGE_MULTIPLE_MATCH =
+                "Multiple matches identified! Please provide more arguments.";
+    public static final String MESSAGE_NO_MATCH =
+            "No matches identified!";
 
     /**
      * Returns an error message indicating the duplicate prefixes.
