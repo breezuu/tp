@@ -61,7 +61,7 @@
             <StackPane fx:id="eventListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
           </VBox>
         </HBox>
-        
+
         <StackPane fx:id="statusbarPlaceholder" VBox.vgrow="NEVER" />
       </VBox>
     </Scene>

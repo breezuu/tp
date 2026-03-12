@@ -282,7 +282,7 @@ _{Explain here how the data archiving feature will be implemented}_
 * prefers desktop apps to other types
 * prefers typing to mouse interactions
 
-**Value proposition**: NAB enables students to quickly organize and find saved contacts across multiple modules 
+**Value proposition**: NAB enables students to quickly organize and find saved contacts across multiple modules
 efficiently, while providing event management, tracking, and reminders.
 
 ### User stories
@@ -339,14 +339,14 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 2a. NAB detects an existing contact number entered.
-  * 2a1. NAB requests for a different contact number. 
-  * 2a2. User enters a new contact number. 
-  * Steps 2a1 - 2a2 are repeated until a unique contact number is entered. 
+  * 2a1. NAB requests for a different contact number.
+  * 2a2. User enters a new contact number.
+  * Steps 2a1 - 2a2 are repeated until a unique contact number is entered.
 <br> *Use case continues from step 3.*<br><br>
 * 2b. NAB detects invalid contact information.
     * 2b1. NAB requests for the correct information.
     * 2b2. User enters the correct contact information.
-    * Steps 2b1 - 2b2 are repeated until all contact information are valid entries. 
+    * Steps 2b1 - 2b2 are repeated until all contact information are valid entries.
 <br> *Use case continues from step 3.*
 </panel>
 
@@ -354,10 +354,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Use case:** `UC2` - Find Contact<br>
 **MSS**
-1. User requests to find a contact. 
-2. User provides a keyword. 
-3. NAB checks whether the entered keyword is valid. 
-4. NAB identifies the specific contact matching the name. 
+1. User requests to find a contact.
+2. User provides a keyword.
+3. NAB checks whether the entered keyword is valid.
+4. NAB identifies the specific contact matching the name.
 5. NAB displays a list of contacts matching the user’s keyword.
    <br> *Use case ends.*
 
@@ -378,9 +378,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Use case:** `UC3` - Delete Contact<br>
 **MSS**
-1. User requests to delete a specific contact by providing their name. 
-2. NAB checks whether the provided name is valid. 
-3. NAB identifies the specific contact matching the name. 
+1. User requests to delete a specific contact by providing their name.
+2. NAB checks whether the provided name is valid.
+3. NAB identifies the specific contact matching the name.
 4. NAB deletes the contact.
    <br> *Use case ends.*
 
@@ -403,8 +403,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Preconditions:** Contact that the event will be tagged to already exists in NAB.<br>
 **Guarantees:** Event is added to the system and is tagged to the specified contact.<br>
 **MSS**
-1. User requests to create a new event for a specific contact. 
-2. User enters the necessary event information and the information of the contact to be tagged to. 
+1. User requests to create a new event for a specific contact.
+2. User enters the necessary event information and the information of the contact to be tagged to.
 3. NAB saves the event into the event list/database.
    <br> *Use case ends.*
 
@@ -422,10 +422,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Use case:** `UC5` - View Event<br>
 **MSS**
-1. User requests to view the event list for a specific contact by providing their name. 
-2. NAB checks whether the provided name is valid. 
-3. NAB identifies the specific contact. 
-4. NAB retrieves the event list associated with the contact. 
+1. User requests to view the event list for a specific contact by providing their name.
+2. NAB checks whether the provided name is valid.
+3. NAB identifies the specific contact.
+4. NAB retrieves the event list associated with the contact.
 5. NAB displays the formatted event list to the user.
    <br> *Use case ends.*
 
@@ -449,10 +449,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Use case:** `UC6` - Filter Contact by Tag<br>
 **MSS**
-1. User requests to find contacts with specific tag(s). 
-2. User enters the necessary tag(s). 
-3. NAB checks whether the provided tag(s) are valid. 
-4. NAB retrieves a list of contacts matching the tag(s). 
+1. User requests to find contacts with specific tag(s).
+2. User enters the necessary tag(s).
+3. NAB checks whether the provided tag(s) are valid.
+4. NAB retrieves a list of contacts matching the tag(s).
 5. NAB displays the list of contacts to the user.
    <br> *Use case ends.*
 
@@ -470,7 +470,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Use case:** `UC7` - Export Contacts<br>
 **MSS**
-1. User requests to export all contacts out of NAB. 
+1. User requests to export all contacts out of NAB.
 2. NAB saves a formatted file containing the list of contacts to a file directory.
    <br> *Use case ends.*
 
@@ -486,7 +486,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Use case:** `UC8` - Import Contacts<br>
 **Preconditions:** Only contact information from a specified file format can be imported<br>
 **MSS**
-1. User requests to import new contacts from an external contact list. 
+1. User requests to import new contacts from an external contact list.
 2. NAB adds the list of new contacts to the existing contact list/database.
    <br> *Use case ends.*
 
@@ -507,7 +507,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Non-Functional Requirements
 
-###### Portability: 
+###### Portability:
 1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
 2.  Should be packaged as a single JAR file not exceeding size of 100MB.
 3.  Should be fully functional offline and must not depend on any remote server.
@@ -552,9 +552,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * **Tag**: A logical label attached to a contact for association-oriented lookups and logical groupings for easier management.
 * **Event**: A contact-linked commitment or arrangement that the user has with one or more contacts (e.g. a project meeting, training session).
 * **Unavailability**: A special type of event in NAB to indicate that a contact is unavailable during a time period, used to avoid scheduling conflicts.
-* **CLI**: Command Line Interface is a text-based user interface that primarily uses commands and typed-inputs for user interaction (with the application), as opposed to GUI. 
-* **GUI**: Graphic User Interface is a graphics-based user interface that primarily uses mouse-clicks for user interaction (with the application), as opposed to CLI. 
-* **Alias**: An alternate name a user can assign to a command that allows easier command execution while maintaining command functionality. 
+* **CLI**: Command Line Interface is a text-based user interface that primarily uses commands and typed-inputs for user interaction (with the application), as opposed to GUI.
+* **GUI**: Graphic User Interface is a graphics-based user interface that primarily uses mouse-clicks for user interaction (with the application), as opposed to CLI.
+* **Alias**: An alternate name a user can assign to a command that allows easier command execution while maintaining command functionality.
 * **CSV**: Comma Separated Values, a plain-text file format used to store tabular data. Specifically, this is to store the application data including contact names, phone numbers, tags, etc.
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 
