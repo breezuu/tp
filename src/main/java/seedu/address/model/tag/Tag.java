@@ -11,7 +11,7 @@ public class Tag {
 
     public static final String MESSAGE_CONSTRAINTS =
             "Tags may only include letters, digits, spaces, hyphens (-) or underscores (_), "
-            + "and must be 20 characters or fewer";
+                    + "and must be 20 characters or fewer";
     public static final String VALIDATION_REGEX = "[a-zA-Z0-9][a-zA-Z0-9 _\\-]{0,19}";
 
     public final String tagName;
