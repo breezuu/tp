@@ -1,7 +1,7 @@
 ---
-  layout: default.md
-  title: "Developer Guide"
-  pageNav: 3
+layout: default.md
+title: "Developer Guide"
+pageNav: 3
 ---
 
 # NAB Developer Guide
@@ -13,8 +13,12 @@
 
 ## **Acknowledgements**
 
+### **Original Source**
 * This project is based on the AddressBook-Level3 project created by the [SE-EDU initiative](https://se-education.org).
 * Libraries used: [JavaFX](https://openjfx.io/), [Jackson](https://github.com/FasterXML/jackson), [JUnit5](https://github.com/junit-team/junit5)
+
+### **AI-Assisted Work**
+* Google Gemini was used to generate the NAB logo for the application and the GUI window.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -242,13 +246,13 @@ The following activity diagram summarizes what happens when a user executes a ne
 **Aspect: How undo & redo executes:**
 
 * **Alternative 1 (current choice):** Saves the entire address book.
-  * Pros: Easy to implement.
-  * Cons: May have performance issues in terms of memory usage.
+    * Pros: Easy to implement.
+    * Cons: May have performance issues in terms of memory usage.
 
 * **Alternative 2:** Individual command knows how to undo/redo by
   itself.
-  * Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
-  * Cons: We must ensure that the implementation of each individual command are correct.
+    * Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
+    * Cons: We must ensure that the implementation of each individual command are correct.
 
 _{more aspects and alternatives to be added}_
 
@@ -334,21 +338,21 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 1. User requests to add a contact.
 2. User enters the necessary contact information.
 3. NAB saves the contact into the contact list/database.
-<br> *Use case ends.*
+   <br> *Use case ends.*
 
 **Extensions**
 
 * 2a. NAB detects an existing contact number entered.
-  * 2a1. NAB requests for a different contact number.
-  * 2a2. User enters a new contact number.
-  * Steps 2a1 - 2a2 are repeated until a unique contact number is entered.
-<br> *Use case continues from step 3.*<br><br>
+    * 2a1. NAB requests for a different contact number.
+    * 2a2. User enters a new contact number.
+    * Steps 2a1 - 2a2 are repeated until a unique contact number is entered.
+      <br> *Use case continues from step 3.*<br><br>
 * 2b. NAB detects invalid contact information.
     * 2b1. NAB requests for the correct information.
     * 2b2. User enters the correct contact information.
     * Steps 2b1 - 2b2 are repeated until all contact information are valid entries.
-<br> *Use case continues from step 3.*
-</panel>
+      <br> *Use case continues from step 3.*
+      </panel>
 
 <panel header="**UC2 - Find Contact**" type="light">
 
@@ -365,14 +369,14 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 3a. NAB detects invalid characters in the provided keyword
     * 3a1. NAB returns an error message
-    <br> *Use case ends.*<br><br>
+      <br> *Use case ends.*<br><br>
 * 4a. NAB detects finds multiple possible contacts matching the keyword provided.
-  * 4a1. User provides more information to enrich the search.
-    <br> *Use case resumes from step 3.*<br><br>
+    * 4a1. User provides more information to enrich the search.
+      <br> *Use case resumes from step 3.*<br><br>
 * 4b. NAB finds no available contacts matching the keyword provided.
     * 4b1. NAB informs the user that no matches were found.
       <br> *Use case ends.*
-</panel>
+      </panel>
 
 <panel header="**UC3 - Delete Contact**" type="light">
 
@@ -395,7 +399,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * 3b. NAB finds no available contacts that match the name provided.
     * 3b1. NAB informs the user that no matches were found.
       <br> *Use case ends.*
-</panel>
+      </panel>
 
 <panel header="**UC4 - Adding an Event for a Contact**" type="light">
 
@@ -412,11 +416,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 2a. NAB finds a duplicate event that has already been registered to the contact.
     * 2a1. NAB rejects the event from being added.
-    <br> *Use case ends.*<br><br>
+      <br> *Use case ends.*<br><br>
 * 2b. NAB is unable to find the specified contact.
     * 2b1. NAB informs the user that the contact does not exist.
-    <br> *Use case ends.*
-</panel>
+      <br> *Use case ends.*
+      </panel>
 
 <panel header="**UC5 - View Event**" type="light">
 
@@ -443,7 +447,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * 4a. NAB finds no events associated with the contact.
     * 4a1. NAB informs the user that there are no events associated with the contact.
       <br> *Use case ends.*
-</panel>
+      </panel>
 
 <panel header="**UC6 - Filter Contact by Tag**" type="light">
 
@@ -464,7 +468,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * 4a. NAB finds no available contacts matching the tag(s) provided.
     * 4a1. NAB informs the user that no matches were found.
       <br> *Use case ends.*
-</panel>
+      </panel>
 
 <panel header="**UC7 - Export Contacts**" type="light">
 
@@ -478,8 +482,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 2a. NAB is unable to save the file to the user’s file directory.
     * 2a1. NAB informs the user of the error.
-    <br> *Use case ends.*
-</panel>
+      <br> *Use case ends.*
+      </panel>
 
 <panel header="**UC8 - Import Contacts**" type="light">
 
@@ -494,14 +498,14 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 1a. NAB is unable to read the file.
     * 1a1. NAB informs the user of the error.
-    <br> *Use case ends.*<br><br>
+      <br> *Use case ends.*<br><br>
 * 1b. NAB finds a contact number that already exists in the database while reading the file.
     * 1b1. NAB informs the user of the error.
     * 1b2. User acknowledges the error.
     * 1b3. NAB skips the contact information with the existing contact number and
       continues reading the rest of the file.
-    <br> *Use case ends.*
-</panel>
+      <br> *Use case ends.*
+      </panel>
 
 *{More to be added}*
 
@@ -575,15 +579,15 @@ testers are expected to do more *exploratory* testing.
 
 1. Initial launch
 
-   1. Download the jar file and copy into an empty folder
+    1. Download the jar file and copy into an empty folder
 
-   1. Double-click the jar file Expected: Shows the GUI with a set of sample contacts. The window size may not be optimum.
+    1. Double-click the jar file Expected: Shows the GUI with a set of sample contacts. The window size may not be optimum.
 
 1. Saving window preferences
 
-   1. Resize the window to an optimum size. Move the window to a different location. Close the window.
+    1. Resize the window to an optimum size. Move the window to a different location. Close the window.
 
-   1. Re-launch the app by double-clicking the jar file.<br>
+    1. Re-launch the app by double-clicking the jar file.<br>
        Expected: The most recent window size and location is retained.
 
 1. _{ more test cases …​ }_
@@ -592,16 +596,16 @@ testers are expected to do more *exploratory* testing.
 
 1. Deleting a person while all persons are being shown
 
-   1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
+    1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
 
-   1. Test case: `delete 1`<br>
-      Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
+    1. Test case: `delete 1`<br>
+       Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
 
-   1. Test case: `delete 0`<br>
-      Expected: No person is deleted. Error details shown in the status message. Status bar remains the same.
+    1. Test case: `delete 0`<br>
+       Expected: No person is deleted. Error details shown in the status message. Status bar remains the same.
 
-   1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
-      Expected: Similar to previous.
+    1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
+       Expected: Similar to previous.
 
 1. _{ more test cases …​ }_
 
@@ -609,7 +613,7 @@ testers are expected to do more *exploratory* testing.
 
 1. Dealing with missing/corrupted data files
 
-   1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
+    1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
 
 1. _{ more test cases …​ }_
 
