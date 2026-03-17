@@ -22,18 +22,19 @@ NAB is a **desktop app for NUS students to manage contacts across multiple modul
 
 1. Copy the file to the folder you want to use as the _home folder_ for your AddressBook.
 
-1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar addressbook.jar` command to run the application.<br>
+1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar addressbook.jar` command to run the application.<br><br>
    A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
    ![Ui](images/Ui.png)
 
-1. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
-   Some example commands you can try:
+1. Type the command in the command box and press Enter to execute it. <br>e.g. typing **`help`** and pressing Enter will open the help window.<br>
+   
+    Some example commands you can try:
 
    * `list` : Lists all contacts.
 
-   * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a contact named `John Doe` to the Address Book.
+   * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a contact named `John Doe` to the address book.
 
-   * `delete 3` : Deletes the 3rd contact shown in the current list.
+   * `delete n/John Doe` : Deletes a contact with name 'John Doe' from the address book.
 
    * `clear` : Deletes all contacts.
 
@@ -55,8 +56,8 @@ NAB is a **desktop app for NUS students to manage contacts across multiple modul
 * Items in square brackets are optional.<br>
   e.g `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.
 
-* Items with `…`​ after them can be used multiple times including zero times.<br>
-  e.g. `[t/TAG]…​` can be used as ` ` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.
+* Items with `...` after them can be used multiple times including zero times.<br>
+  e.g. `[t/TAG]...` can be used as ` ` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.
 
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
@@ -80,7 +81,7 @@ Format: `help`
 
 Adds a person to the address book.
 
-Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
+Format: `add n/NAME p/PHONE_NUMBER [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 <box type="tip" seamless>
 
@@ -101,12 +102,12 @@ Format: `list`
 
 Edits an existing person in the address book.
 
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
+Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
-* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, …​
+* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, ...
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
-* When editing tags, the existing tags of the person will be removed i.e adding of tags is not cumulative.
+* When editing tags, the existing tags of the person will be removed i.e. adding of tags is not cumulative.
 * You can remove all the person’s tags by typing `t/` without
     specifying any tags after it.
 
@@ -116,35 +117,56 @@ Examples:
 
 ### Locating persons by name: `find`
 
-Finds persons whose names contain any of the given keywords.
+Finds persons who match the given contact information.
 
-Format: `find KEYWORD [MORE_KEYWORDS]`
+Format: `find n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
-* The search is case-insensitive. e.g `hans` will match `Hans`
-* The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
-* Only the name is searched.
+<box type="tip" seamless>
+
+**Tip:** If there are multiple contacts with the same `NAME`, utilize the other optional parameters to narrow down the
+search to a specific contact.
+</box>
+
+* The search is case-insensitive. e.g. `hans` will match `Hans`
 * Only full words will be matched e.g. `Han` will not match `Hans`
-* Persons matching at least one keyword will be returned (i.e. `OR` search).
-  e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
+* Order of parameters does not matter.
 
 Examples:
-* `find John` returns `john` and `John Doe`
-* `find alex david` returns `Alex Yeoh`, `David Li`<br>
-  ![result for 'find alex david'](images/findAlexDavidResult.png)
+* `find n/John` returns contacts named `John`
+* `find n/John t/cs2106` returns contacts named `John` with tag `cs2106`
+
+### Filtering persons by context : `filter`
+
+Finds persons with the given tag(s).
+
+Format: `filter t/TAG[, TAG]...`
+
+* The search is case-insensitive. e.g. `friend` will match `Friend` tag.
+* Only full words will be matched e.g. `frie` will not match `friend` tag.
+
+Examples:
+* `filter t/friends` finds all contacts that are tagged `friends`
+* `filter t/cs2103, cs2105, cs2109s` finds all contacts that have any of these tags.
 
 ### Deleting a person : `delete`
 
 Deletes the specified person from the address book.
 
-Format: `delete INDEX`
+Format: `delete n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
-* Deletes the person at the specified `INDEX`.
-* The index refers to the index number shown in the displayed person list.
-* The index **must be a positive integer** 1, 2, 3, …​
+<box type="tip" seamless>
+
+**Tip:** If there are multiple contacts with the same `NAME`, utilize the other optional parameters to narrow down the
+deletion of the correct contact.
+</box>
+
+* The `NAME` is case-insensitive. e.g. `aLeX YeOH` will match `Alex Yeoh`
+* Only full words will be matched e.g. `Alex Yeo` will not match `Alex Yeoh`
+* Order of parameters does not matter.
 
 Examples:
-* `list` followed by `delete 2` deletes the 2nd person in the address book.
-* `find Betsy` followed by `delete 1` deletes the 1st person in the results of the `find` command.
+* `delete n/Alex Yeoh` deletes the contact with a matching name.
+* Suppose there are multiple `Alex Yeoh`, an enriched search would be `delete n/Alex Yeoh t/cs2103 t/cs2105`
 
 ### Clearing all entries : `clear`
 
@@ -197,10 +219,11 @@ _Details coming soon ..._
 
 Action     | Format, Examples
 -----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**Add**    | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
+**Add**    | `add n/NAME p/PHONE_NUMBER [e/EMAIL] a[/ADDRESS] [t/TAG]...` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
 **Clear**  | `clear`
-**Delete** | `delete INDEX`<br> e.g., `delete 3`
-**Edit**   | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
-**Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
+**Delete** | `delete n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `delete n/Alex Yeoh t/cs2103 t/cs2105`
+**Edit**   | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
+**Find**   | `find n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `find n/James Jake p/67676969`
+**Filter** | `filter t/TAG[, TAG]...`<br> e.g., `filter t/friends`
 **List**   | `list`
 **Help**   | `help`
