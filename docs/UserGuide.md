@@ -56,8 +56,8 @@ NAB is a **desktop app for NUS students to manage contacts across multiple modul
 * Items in square brackets are optional.<br>
   e.g `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.
 
-* Items with `…`​ after them can be used multiple times including zero times.<br>
-  e.g. `[t/TAG]…​` can be used as ` ` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.
+* Items with `...` after them can be used multiple times including zero times.<br>
+  e.g. `[t/TAG]...` can be used as ` ` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.
 
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
@@ -81,7 +81,7 @@ Format: `help`
 
 Adds a person to the address book.
 
-Format: `add n/NAME p/PHONE_NUMBER [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
+Format: `add n/NAME p/PHONE_NUMBER [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 <box type="tip" seamless>
 
@@ -102,7 +102,7 @@ Format: `list`
 
 Edits an existing person in the address book.
 
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
+Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 * Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, …​
 * At least one of the optional fields must be provided.
@@ -119,7 +119,7 @@ Examples:
 
 Finds persons who match the given contact information.
 
-Format: `find n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
+Format: `find n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 <box type="tip" seamless>
 
@@ -155,7 +155,7 @@ Examples:
 
 Deletes the specified person from the address book.
 
-Format: `delete n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
+Format: `delete n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 <box type="tip" seamless>
 
@@ -222,11 +222,11 @@ _Details coming soon ..._
 
 Action     | Format, Examples
 -----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**Add**    | `add n/NAME p/PHONE_NUMBER [e/EMAIL] a[/ADDRESS] [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
+**Add**    | `add n/NAME p/PHONE_NUMBER [e/EMAIL] a[/ADDRESS] [t/TAG]...` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
 **Clear**  | `clear`
-**Delete** | `delete n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `delete n/Alex Yeoh t/cs2103 t/cs2105`
-**Edit**   | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
-**Find**   | `find n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `find n/James Jake p/67676969`
-**Filter** | `filter t/TAG[, TAG]…​`<br> e.g., `filter t/friends`
+**Delete** | `delete n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `delete n/Alex Yeoh t/cs2103 t/cs2105`
+**Edit**   | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
+**Find**   | `find n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `find n/James Jake p/67676969`
+**Filter** | `filter t/TAG[, TAG]...`<br> e.g., `filter t/friends`
 **List**   | `list`
 **Help**   | `help`
