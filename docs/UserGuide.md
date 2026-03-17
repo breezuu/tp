@@ -57,7 +57,7 @@ NAB is a **desktop app for NUS students to manage contacts across multiple modul
   e.g `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.
 
 * Items with `...` after them can be used multiple times including zero times.<br>
-  e.g. `[t/TAG]...` can be used as ` ` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.
+  e.g. `[t/TAG]...` can be used as ` ` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.
 
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
@@ -132,8 +132,8 @@ search to a specific contact.
 * Order of parameters does not matter.
 
 Examples:
-* `find n/John` returns contact(s) named `John`
-* `find n/John t/cs2106` returns contact(s) named `John` with tag `cs2106`
+* `find n/John` returns contacts named `John`
+* `find n/John t/cs2106` returns contacts named `John` with tag `cs2106`
 
 ### Filtering persons by context : `filter`
 
