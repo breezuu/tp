@@ -1,63 +1,94 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+
+import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.model.Model;
-import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.Person;
+import seedu.address.model.person.PersonInformation;
+
+
 
 /**
- * Finds and lists all persons in address book whose name contains any of the
- * argument keywords. Keyword matching is case insensitive.
+ * Finds and lists persons in the address book that match the given contact information.
+ * Name is required, while phone, email, address, and tags are optional refinements.
  */
 public class FindCommand extends Command {
 
     public static final String COMMAND_WORD = "find";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Finds all contacts whose names contain the specified name (case-insensitive).\n"
-            + "Name must consist of alphabetic characters and spaces only.\n"
-            + "Parameters: NAME\n"
-            + "Example: " + COMMAND_WORD + " alice";
+            + ": Finds contacts by name, with optional refinements.\n"
+            + "Parameters: "
+            + PREFIX_NAME + "NAME "
+            + "[" + PREFIX_PHONE + "PHONE] "
+            + "[" + PREFIX_EMAIL + "EMAIL] "
+            + "[" + PREFIX_ADDRESS + "ADDRESS] "
+            + "[" + PREFIX_TAG + "TAG]...\n"
+            + "Example: " + COMMAND_WORD + " "
+            + PREFIX_NAME + "Alex Tan "
+            + PREFIX_PHONE + "91234567";
 
-    private final NameContainsKeywordsPredicate predicate;
+    private final PersonInformation targetInfo;
 
-    public FindCommand(NameContainsKeywordsPredicate predicate) {
-        this.predicate = predicate;
+    /**
+     * Creates a {@code FindCommand} using the provided matching criteria.
+     */
+    public FindCommand(PersonInformation targetInfo) {
+        requireNonNull(targetInfo);
+        this.targetInfo = targetInfo;
     }
 
+    /**
+     * Applies the matching criteria and updates the filtered person list.
+     */
     @Override
     public CommandResult execute(Model model) {
         requireNonNull(model);
-        model.updateFilteredPersonList(predicate);
+
+        List<Person> matches = model.findPersons(targetInfo);
+        Set<Person> matchingPersons = Set.copyOf(matches);
+        Predicate<Person> showMatchingPersons = matchingPersons::contains;
+        model.updateFilteredPersonList(showMatchingPersons);
+
         int count = model.getFilteredPersonList().size();
+        if (count == 1) {
+            Person matchedPerson = model.getFilteredPersonList().get(0);
+            model.updateFilteredEventList(event -> matchedPerson.getEvents().contains(event));
+            return new CommandResult(Messages.MESSAGE_ONE_PERSON_LISTED_OVERVIEW);
+        }
+
+        // No events in the panel if there is no confirmed match.
+        model.updateFilteredEventList(event -> false);
+
         if (count == 0) {
             return new CommandResult(Messages.MESSAGE_NO_PERSONS);
-        } else if (count == 1) {
-            return new CommandResult(Messages.MESSAGE_ONE_PERSON_LISTED_OVERVIEW);
-        } else {
-            return new CommandResult(String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, count));
         }
+        return new CommandResult(String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, count));
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
+    public boolean equals(Object obj) {
+        if (obj instanceof FindCommand otherFindCommand) {
+            return targetInfo.equals(otherFindCommand.targetInfo);
         }
-
-        // instanceof handles nulls
-        if (!(other instanceof FindCommand)) {
-            return false;
-        }
-
-        FindCommand otherFindCommand = (FindCommand) other;
-        return predicate.equals(otherFindCommand.predicate);
+        return false;
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).add("predicate", predicate).toString();
+        return new ToStringBuilder(this)
+                .add("targetName", targetInfo.name)
+                .toString();
     }
 }

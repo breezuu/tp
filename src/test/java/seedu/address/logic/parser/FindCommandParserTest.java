@@ -1,43 +1,74 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
-import java.util.Arrays;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.FindCommand;
-import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.Address;
+import seedu.address.model.person.Email;
+import seedu.address.model.person.Name;
+import seedu.address.model.person.PersonInformation;
+import seedu.address.model.person.Phone;
+import seedu.address.model.tag.Tag;
 
 public class FindCommandParserTest {
 
     private FindCommandParser parser = new FindCommandParser();
 
     @Test
-    public void parse_emptyArg_throwsParseException() {
+    public void parse_missingNamePrefix_throwsParseException() {
         assertParseFailure(parser, "     ",
-            String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
     }
 
     @Test
-    public void parse_nonAlphabeticArg_throwsParseException() {
-        assertParseFailure(parser, "alice123",
-            String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
-        assertParseFailure(parser, "alice@email",
-            String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+    public void parse_nonEmptyPreamble_throwsParseException() {
+        assertParseFailure(parser, "Alex " + PREFIX_NAME + "Alex Tan",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
     }
 
     @Test
-    public void parse_validArgs_returnsFindCommand() {
-        // no leading and trailing whitespaces
+    public void parse_invalidOptionalField_throwsParseException() {
+        assertParseFailure(parser, " " + PREFIX_NAME + "Alex Tan " + PREFIX_PHONE + "not-a-phone",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_nameOnly_success() {
         FindCommand expectedFindCommand =
-                new FindCommand(new NameContainsKeywordsPredicate(Arrays.asList("Alice", "Bob")));
-        assertParseSuccess(parser, "Alice Bob", expectedFindCommand);
-
-        // multiple whitespaces between keywords
-        assertParseSuccess(parser, " \n Alice \n \t Bob  \t", expectedFindCommand);
+                new FindCommand(new PersonInformation(new Name("Alex Tan"), null, null, null, null));
+        assertParseSuccess(parser, " " + PREFIX_NAME + "Alex Tan", expectedFindCommand);
     }
 
+    @Test
+    public void parse_allFields_success() {
+        PersonInformation info = new PersonInformation(
+                new Name("Alex Tan"),
+                new Phone("98765432"),
+                new Email("alex@example.com"),
+                new Address("Block 123, NUS Street 1"),
+                Set.of(new Tag("CS2103"), new Tag("Lab"))
+        );
+        FindCommand expectedFindCommand =
+                new FindCommand(info);
+
+        assertParseSuccess(parser,
+                " " + PREFIX_NAME + "Alex Tan"
+                        + " " + PREFIX_PHONE + "98765432"
+                        + " " + PREFIX_EMAIL + "alex@example.com"
+                        + " " + PREFIX_ADDRESS + "Block 123, NUS Street 1"
+                        + " " + PREFIX_TAG + "CS2103"
+                        + " " + PREFIX_TAG + "Lab",
+                expectedFindCommand);
+    }
 }
