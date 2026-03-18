@@ -8,6 +8,8 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSucces
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.DeleteEventCommand;
+import seedu.address.model.person.Address;
+import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.PersonInformation;
 import seedu.address.model.person.Phone;
@@ -78,9 +80,38 @@ public class DeleteEventParserTest {
     }
 
     @Test
+    public void parse_withOptionalAddress_success() {
+        PersonInformation expectedInfo =
+                new PersonInformation(new Name(VALID_NAME), null, null, new Address("Blk 123 Clementi Ave"), null);
+        DeleteEventCommand expectedCommand = new DeleteEventCommand(expectedInfo, VALID_START, VALID_END);
+
+        assertParseSuccess(parser,
+                " n/" + VALID_NAME + " a/Blk 123 Clementi Ave start/" + VALID_START + " end/" + VALID_END,
+                expectedCommand);
+    }
+
+    @Test
+    public void parse_withOptionalEmail_success() {
+        PersonInformation expectedInfo =
+                new PersonInformation(new Name(VALID_NAME), null, new Email("alex@example.com"), null, null);
+        DeleteEventCommand expectedCommand = new DeleteEventCommand(expectedInfo, VALID_START, VALID_END);
+
+        assertParseSuccess(parser,
+                " n/" + VALID_NAME + " e/alex@example.com start/" + VALID_START + " end/" + VALID_END,
+                expectedCommand);
+    }
+
+    @Test
     public void parse_invalidPhone_failure() {
         assertParseFailure(parser,
                 " n/" + VALID_NAME + " p/notaphone start/" + VALID_START + " end/" + VALID_END,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteEventCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_invalidEmail_failure() {
+        assertParseFailure(parser,
+                " n/" + VALID_NAME + " e/not-an-email start/" + VALID_START + " end/" + VALID_END,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteEventCommand.MESSAGE_USAGE));
     }
 }

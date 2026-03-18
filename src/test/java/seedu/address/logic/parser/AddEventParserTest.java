@@ -60,10 +60,26 @@ public class AddEventParserTest {
     }
 
     @Test
+    public void parse_withOptionalEmail_failure() {
+        assertParseFailure(parser,
+                " d/Complete feature list start/" + VALID_START + " end/" + VALID_END
+                        + " to/" + VALID_NAME + " e/amy@example.com",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddEventCommand.MESSAGE_USAGE));
+    }
+
+    @Test
     public void parse_invalidPhone_failure() {
         assertParseFailure(parser,
                 " d/Complete feature list start/" + VALID_START + " end/" + VALID_END
                         + " to/" + VALID_NAME + " p/notaphone",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddEventCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_invalidEmail_failure() {
+        assertParseFailure(parser,
+                " d/Complete feature list start/" + VALID_START + " end/" + VALID_END
+                        + " to/" + VALID_NAME + " e/not-an-email",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddEventCommand.MESSAGE_USAGE));
     }
 
