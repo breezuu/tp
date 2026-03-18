@@ -12,6 +12,8 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BOB;
 
+import java.util.Collections;
+
 import org.junit.jupiter.api.Test;
 
 import seedu.address.testutil.PersonBuilder;
@@ -85,6 +87,17 @@ public class PersonTest {
                 .withEvents("Project meeting,21-02-26 1100,21-02-26 1200")
                 .build();
         assertFalse(ALICE.equals(editedAlice));
+    }
+
+    @Test
+    public void constructor_withUniqueEventList_setsEventsCorrectly() {
+        UniqueEventList events = new UniqueEventList();
+        Event event = new Event("Meeting", "21-02-26 1100", "21-02-26 1500");
+        events.add(event);
+        Person person = new Person(ALICE.getName(), ALICE.getPhone(),
+                ALICE.getEmail(), ALICE.getAddress(), Collections.emptySet(), events);
+        assertEquals(ALICE.getName(), person.getName());
+        assertTrue(person.getEvents().contains(event));
     }
 
     @Test

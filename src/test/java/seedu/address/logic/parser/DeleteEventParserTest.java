@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import seedu.address.logic.commands.DeleteEventCommand;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.PersonInformation;
+import seedu.address.model.person.Phone;
 
 public class DeleteEventParserTest {
 
@@ -63,6 +64,17 @@ public class DeleteEventParserTest {
     public void parse_emptyArgs_failure() {
         assertParseFailure(parser, "  ",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteEventCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_withOptionalPhone_success() {
+        PersonInformation expectedInfo =
+                new PersonInformation(new Name(VALID_NAME), new Phone("91234567"), null, null, null);
+        DeleteEventCommand expectedCommand = new DeleteEventCommand(expectedInfo, VALID_START, VALID_END);
+
+        assertParseSuccess(parser,
+                " n/" + VALID_NAME + " p/91234567 s/" + VALID_START + " e/" + VALID_END,
+                expectedCommand);
     }
 
     @Test

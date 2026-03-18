@@ -9,10 +9,13 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.AddEventCommand;
+import seedu.address.logic.commands.DeleteEventCommand;
 import seedu.address.logic.commands.FindEventCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.model.person.Event;
+import seedu.address.model.person.Name;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.PersonInformation;
 
 public class EventCommandParserTest {
 
@@ -40,6 +43,14 @@ public class EventCommandParserTest {
                 + "to/Amy Bee";
 
         assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
+    @Test
+    public void parse_deleteSubcommand_success() {
+        PersonInformation expectedInfo = new PersonInformation(new Name("Amy Bee"), null, null, null, null);
+        DeleteEventCommand expectedCommand = new DeleteEventCommand(expectedInfo, "21-02-26 1100", "21-02-26 1500");
+
+        assertParseSuccess(parser, "delete n/Amy Bee s/21-02-26 1100 e/21-02-26 1500", expectedCommand);
     }
 
     @Test
