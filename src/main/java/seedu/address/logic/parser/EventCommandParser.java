@@ -4,6 +4,7 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 
 import seedu.address.logic.commands.AddEventCommand;
 import seedu.address.logic.commands.Command;
+import seedu.address.logic.commands.DeleteEventCommand;
 import seedu.address.logic.commands.FindEventCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -28,6 +29,8 @@ public class EventCommandParser implements Parser<Command> {
             return new AddEventParser().parse(args);
         case FindEventCommand.COMMAND_WORD:
             return new FindEventParser().parse(parts.length > 1 ? " " + parts[1] : "");
+        case DeleteEventCommand.COMMAND_WORD:
+            return new DeleteEventParser().parse(parts.length > 1 ? " " + parts[1] : "");
         default:
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE));
         }

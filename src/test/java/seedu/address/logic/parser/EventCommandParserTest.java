@@ -7,6 +7,7 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSucces
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.AddEventCommand;
+import seedu.address.logic.commands.DeleteEventCommand;
 import seedu.address.logic.commands.FindEventCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.model.person.Event;
@@ -25,7 +26,7 @@ public class EventCommandParserTest {
 
     @Test
     public void parse_unknownSubcommand_failure() {
-        assertParseFailure(parser, "delete",
+        assertParseFailure(parser, "xyz",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE));
     }
 
@@ -39,6 +40,14 @@ public class EventCommandParserTest {
                 + "to/Amy Bee";
 
         assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
+    @Test
+    public void parse_deleteSubcommand_success() {
+        PersonInformation expectedInfo = new PersonInformation(new Name("Amy Bee"), null, null, null, null);
+        DeleteEventCommand expectedCommand = new DeleteEventCommand(expectedInfo, "21-02-26 1100", "21-02-26 1500");
+
+        assertParseSuccess(parser, "delete n/Amy Bee s/21-02-26 1100 e/21-02-26 1500", expectedCommand);
     }
 
     @Test

@@ -45,6 +45,20 @@ public class Person {
         this.events = new UniqueEventList();
     }
 
+    /**
+     * Overloaded constructor: Name and phone are compulsory. Email and address are optional.
+     * UniqueEventList is compulsory
+     */
+    public Person(Name name, Phone phone, Optional<Email> email, Optional<Address> address,
+        Set<Tag> tags, UniqueEventList events) {
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+        this.tags.addAll(tags);
+        this.events = events;
+    }
+
     public Name getName() {
         return name;
     }
