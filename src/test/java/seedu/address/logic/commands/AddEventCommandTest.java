@@ -159,58 +159,76 @@ public class AddEventCommandTest {
     // ==================== Model Stubs ====================
 
     private class ModelStub implements Model {
-        @Override public void setUserPrefs(ReadOnlyUserPrefs userPrefs) {
+        @Override
+        public void setUserPrefs(ReadOnlyUserPrefs userPrefs) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public ReadOnlyUserPrefs getUserPrefs() {
+        @Override
+        public ReadOnlyUserPrefs getUserPrefs() {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public GuiSettings getGuiSettings() {
+        @Override
+        public GuiSettings getGuiSettings() {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void setGuiSettings(GuiSettings guiSettings) {
+        @Override
+        public void setGuiSettings(GuiSettings guiSettings) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public Path getAddressBookFilePath() {
+        @Override
+        public Path getAddressBookFilePath() {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void setAddressBookFilePath(Path addressBookFilePath) {
+        @Override
+        public void setAddressBookFilePath(Path addressBookFilePath) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void setAddressBook(ReadOnlyAddressBook newData) {
+        @Override
+        public void setAddressBook(ReadOnlyAddressBook newData) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public ReadOnlyAddressBook getAddressBook() {
+        @Override
+        public ReadOnlyAddressBook getAddressBook() {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public boolean hasPerson(Person person) {
+        @Override
+        public boolean hasPerson(Person person) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void deletePerson(Person target) {
+        @Override
+        public void deletePerson(Person target) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void addPerson(Person person) {
+        @Override
+        public void addPerson(Person person) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void setPerson(Person target, Person editedPerson) {
+        @Override
+        public void setPerson(Person target, Person editedPerson) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public ObservableList<Person> getFilteredPersonList() {
+        @Override
+        public ObservableList<Person> getFilteredPersonList() {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void updateFilteredPersonList(Predicate<Person> predicate) {
+        @Override
+        public void updateFilteredPersonList(Predicate<Person> predicate) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public ObservableList<Event> getFilteredEventList() {
+        @Override
+        public ObservableList<Event> getFilteredEventList() {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void updateFilteredEventList(Predicate<Event> predicate) {
+        @Override
+        public void updateFilteredEventList(Predicate<Event> predicate) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public Person findPersonByName(Name name) {
+        @Override
+        public Person findPersonByName(Name name) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public List<Person> findPersons(PersonInformation info) {
+        @Override
+        public List<Person> findPersons(PersonInformation info) {
             throw new AssertionError("This method should not be called.");
         }
     }
