@@ -7,6 +7,7 @@ import seedu.address.model.Model;
 import seedu.address.model.person.Event;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.exceptions.DuplicateEventException;
 
 /**
  * Adds an {@link Event} to a person identified by the index in the current filtered person list.
@@ -25,6 +26,8 @@ public class AddEventCommand extends Command {
 
     public static final String MESSAGE_CONTACT_NOT_FOUND =
             "Contact with name %1$s cannot be found in the address book.";
+    public static final String MESSAGE_DUPLICATE_EVENT =
+            "This contact already has this event: %1$s";
 
     private final Event toAdd;
     private final Name contact;
@@ -47,7 +50,13 @@ public class AddEventCommand extends Command {
         if (personToEdit == null) {
             throw new CommandException(String.format(MESSAGE_CONTACT_NOT_FOUND, this.contact.fullName));
         }
-        Person editedPerson = createPersonWithEvent(personToEdit, toAdd);
+
+        Person editedPerson;
+        try {
+            editedPerson = createPersonWithEvent(personToEdit, toAdd);
+        } catch (DuplicateEventException e) {
+            throw new CommandException(String.format(MESSAGE_DUPLICATE_EVENT, toAdd));
+        }
 
         model.setPerson(personToEdit, editedPerson);
         return new CommandResult(String.format(MESSAGE_SUCCESS,
@@ -55,7 +64,7 @@ public class AddEventCommand extends Command {
     }
 
 
-    private static Person createPersonWithEvent(Person personToEdit, Event eventToAdd) throws CommandException {
+    private static Person createPersonWithEvent(Person personToEdit, Event eventToAdd) {
         Person editedPerson = new Person(personToEdit.getName(), personToEdit.getPhone(), personToEdit.getEmail(),
                 personToEdit.getAddress(), personToEdit.getTags());
 

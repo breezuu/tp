@@ -116,6 +116,7 @@ public class PersonBuilder {
      * Sets the {@code Event} of the {@code Person} that we are building.
      */
     public PersonBuilder withEvents(String... events) {
+        this.events.clear();
         for (String s : events) {
             String[] parts = s.split(",");
             this.events.add(new Event(parts[0], parts[1], parts[2]));

@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.Event;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
@@ -101,6 +102,89 @@ public class ModelManagerTest {
     @Test
     public void getFilteredPersonList_modifyList_throwsUnsupportedOperationException() {
         assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredPersonList().remove(0));
+    }
+
+    @Test
+    public void getFilteredEventList_modifyList_throwsUnsupportedOperationException() {
+        assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredEventList().remove(0));
+    }
+
+    @Test
+    public void updateFilteredEventList_nullPredicate_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.updateFilteredEventList(null));
+    }
+
+    @Test
+    public void constructor_withPersonsHavingEvents_populatesFilteredEventList() {
+        Person aliceWithEvent = new PersonBuilder()
+                .withName("Alice Pauline")
+                .withPhone("94351253")
+                .withEvents("Project Meeting,2026-03-20 0900,2026-03-20 1000")
+                .build();
+        Person bensonWithEvents = new PersonBuilder()
+                .withName("Benson Meier")
+                .withPhone("98765432")
+                .withEvents("Code Review,2026-03-21 1400,2026-03-21 1500",
+                        "Demo Prep,2026-03-22 1000,2026-03-22 1100")
+                .build();
+
+        AddressBook seededAddressBook = new AddressBookBuilder()
+                .withPerson(aliceWithEvent)
+                .withPerson(bensonWithEvents)
+                .build();
+
+        ModelManager seededModel = new ModelManager(seededAddressBook, new UserPrefs());
+
+        assertEquals(3, seededModel.getFilteredEventList().size());
+    }
+
+    @Test
+    public void addPerson_withEvents_updatesFilteredEventList() {
+        Person personWithEvent = new PersonBuilder()
+                .withName("Event Owner")
+                .withPhone("90001111")
+                .withEvents("Consultation,2026-03-25 1300,2026-03-25 1400")
+                .build();
+
+        modelManager.addPerson(personWithEvent);
+
+        assertEquals(1, modelManager.getFilteredEventList().size());
+    }
+
+    @Test
+    public void setPerson_replacesEvents_refreshesFilteredEventList() {
+        Person original = new PersonBuilder()
+                .withName("Alex Tan")
+                .withPhone("90002222")
+                .withEvents("Old Event,2026-03-23 0900,2026-03-23 1000")
+                .build();
+        modelManager.addPerson(original);
+
+        Person edited = new PersonBuilder(original)
+                .withEvents("New Event,2026-03-24 0900,2026-03-24 1000")
+                .build();
+
+        modelManager.setPerson(original, edited);
+
+        assertEquals(1, modelManager.getFilteredEventList().size());
+        Event expected = new Event("New Event", "2026-03-24 0900", "2026-03-24 1000");
+        assertTrue(modelManager.getFilteredEventList().contains(expected));
+    }
+
+    @Test
+    public void deletePerson_removesPersonEventsFromFilteredEventList() {
+        Person personWithEvent = new PersonBuilder()
+                .withName("Delete Me")
+                .withPhone("90003333")
+                .withEvents("Delete Event,2026-03-26 0900,2026-03-26 1000")
+                .build();
+        modelManager.addPerson(personWithEvent);
+
+        assertEquals(1, modelManager.getFilteredEventList().size());
+
+        modelManager.deletePerson(personWithEvent);
+
+        assertEquals(0, modelManager.getFilteredEventList().size());
     }
 
     @Test

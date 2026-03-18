@@ -2,14 +2,13 @@ package seedu.address.model.person;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.tag.Tag;
 
@@ -31,7 +30,7 @@ public class Person {
     private final Set<Tag> tags = new HashSet<>();
 
     // Event fields
-    private final List<Event> events;
+    private final UniqueEventList events;
 
     /**
      * Name and phone are compulsory. Email and address are optional.
@@ -43,7 +42,7 @@ public class Person {
         this.email = email;
         this.address = address;
         this.tags.addAll(tags);
-        this.events = new ArrayList<>();
+        this.events = new UniqueEventList();
     }
 
     public Name getName() {
@@ -73,8 +72,8 @@ public class Person {
     /**
      * Returns an immutable Event List
      */
-    public List<Event> getEvents() {
-        return this.events;
+    public ObservableList<Event> getEvents() {
+        return this.events.asUnmodifiableObservableList();
     }
 
     /**
