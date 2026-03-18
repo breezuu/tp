@@ -13,9 +13,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.Event;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.exceptions.DuplicateEventException;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -24,6 +26,7 @@ import seedu.address.model.tag.Tag;
 class JsonAdaptedPerson {
 
     public static final String MISSING_FIELD_MESSAGE_FORMAT = "Person's %s field is missing!";
+    public static final String DUPLICATE_EVENT_MESSAGE_FORMAT = "Duplicate event for person %1$s: %2$s";
 
     private final String name;
     private final String phone;
@@ -116,7 +119,13 @@ class JsonAdaptedPerson {
         final Set<Tag> modelTags = new HashSet<>(personTags);
         Person person = new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags);
         for (JsonAdaptedEvent event : events) {
-            person.addEvent(event.toModelType());
+            Event modelEvent = event.toModelType();
+            try {
+                person.addEvent(modelEvent);
+            } catch (DuplicateEventException e) {
+                throw new IllegalValueException(String.format(
+                        DUPLICATE_EVENT_MESSAGE_FORMAT, modelName.fullName, modelEvent), e);
+            }
         }
         return person;
     }
