@@ -85,8 +85,10 @@ Format: `add n/NAME p/PHONE_NUMBER [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 <box type="tip" seamless>
 
-**Tip:** A person can have any number of tags (including 0)
+**Tip:** Can associate 0 or more tags during the add process
 </box>
+
+* Contact cannot be added if the added phone number is already registered in the address book
 
 Examples:
 * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
@@ -174,6 +176,49 @@ Clears all entries from the address book.
 
 Format: `clear`
 
+### Adding an event : `event add`
+
+Create a new event for a specified person.
+
+Format: `event add d/DESCRIPTION start/START_DATE end/END_DATE to/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
+
+* The `NAME` is case-insensitive. e.g. `aLeX YeOH` will match `Alex Yeoh`
+* Only full words will be matched e.g. `Alex Yeo` will not match `Alex Yeoh`
+* Order of parameters does not matter.
+* The date time format for start/ and end/ is YYYY-MM-DD HHmm or DD-MM-YYYY HHmm
+
+Examples:
+* `event add d/Complete Quiz 4 start/12-03-2026 1100 end/12-04-2026 2359 to/Bernice Yu` adds an event to Bernice Yu.
+* Suppose there are multiple `Bernice Yu`, an enriched search would be `event add d/Complete Quiz 4 start/12-03-2026 1100 end/12-04-2026 2359 to/Bernice Yu p/99272758`
+
+### View an event : `event view`
+
+View all events for a specified person
+
+Format: `event view n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
+
+* The `NAME` is case-insensitive. e.g. `aLeX YeOH` will match `Alex Yeoh`
+* Only full words will be matched e.g. `Alex Yeo` will not match `Alex Yeoh`
+
+Examples:
+* `event view n/Bernice Yu` views all events that Bernice Yu has.
+* Suppose there are multiple `Bernice Yu`, an enriched search would be `event view n/Bernice Yu e/berniceyu@example.com`
+
+### Delete an event : `event delete`
+
+Delete an event for a specified person
+
+Format: `event delete n/NAME start/START_TIME end/END_TIME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
+
+* The `NAME` is case-insensitive. e.g. `aLeX YeOH` will match `Alex Yeoh`
+* Only full words will be matched e.g. `Alex Yeo` will not match `Alex Yeoh`
+* Order of parameters does not matter.
+* The date time format for start/ and end/ is YYYY-MM-DD HHmm or DD-MM-YYYY HHmm
+
+Examples:
+* `event delete n/Bernice Yu start/12-03-2026 1100 end/12-04-2026 2359` deletes the event that starts at 12 March 2026 1100 and ends at 12 April 2026 2359 assigned to Bernice Yu.
+* Suppose there are multiple `Bernice Yu`, an enriched search would be `event delete n/Bernice Yu start/12-03-2026 1100 end/12-04-2026 2359 a/Blk 30 Lorong 3 Serangoon Gardens, #07-18`
+
 ### Exiting the program : `exit`
 
 Exits the program.
@@ -219,11 +264,15 @@ _Details coming soon ..._
 
 Action     | Format, Examples
 -----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**Add**    | `add n/NAME p/PHONE_NUMBER [e/EMAIL] a[/ADDRESS] [t/TAG]...` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
+**Add**    | `add n/NAME p/PHONE_NUMBER [e/EMAIL] [a/ADDRESS] [t/TAG]...` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
 **Clear**  | `clear`
 **Delete** | `delete n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `delete n/Alex Yeoh t/cs2103 t/cs2105`
 **Edit**   | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
-**Find**   | `find n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `find n/James Jake p/67676969`
+**Event Add** | `event add d/DESCRIPTION start/START_DATE end/END_DATE to/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `event add d/Complete Quiz 4 start/12-03-2026 1100 end/12-04-2026 2359 to/Bernice Yu`
+**Event Delete** | `event delete n/NAME start/START_TIME end/END_TIME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `event delete n/Bernice Yu start/12-03-2026 1100 end/12-04-2026 2359`
+**Event View** | `event view n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `event view n/Bernice Yu`
+**Exit**   | `exit`
 **Filter** | `filter t/TAG[, TAG]...`<br> e.g., `filter t/friends`
-**List**   | `list`
+**Find**   | `find n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `find n/James Jake p/67676969`
 **Help**   | `help`
+**List**   | `list`
