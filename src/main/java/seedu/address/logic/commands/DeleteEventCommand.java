@@ -24,7 +24,7 @@ public class DeleteEventCommand extends Command {
     public static final String MESSAGE_USAGE = "event " + COMMAND_WORD
             + ": Deletes an event linked to a specific contact, identified by name and event datetime.\n"
             + "Command Format: event delete n/NAME s/START e/END\n"
-            + "Example: event delete n/Delwyn s/21-02-26 1100 e/21-02-26 1500";
+            + "Example: event delete n/Delwyn start/21-02-26 1100 end/21-02-26 1500";
 
     public static final String MESSAGE_SUCCESS = "Event deleted for %1$s: %2$s";
     public static final String MESSAGE_EVENT_NOT_FOUND = "No matching event found!";

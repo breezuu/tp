@@ -22,10 +22,10 @@ public class AddEventCommand extends Command {
 
     public static final String MESSAGE_USAGE = "event " + COMMAND_WORD
             + ": Allows the user to add an event and tag it to a specific contact\n"
-            + "Command Format: event add <l/LABEL> [d/DESCRIPTION] <s/START> <e/END> <to/NAME> "
+            + "Command Format: event add <d/DESCRIPTION> <start/START> <end/END> <to/NAME> "
             + "[p/PHONE] [e/EMAIL] [a/ADDRESS]...\n"
-            + "Example Command: event " + COMMAND_WORD + " l/CS2103 Meeting d/Complete feature list "
-            + "s/21-02-26 1100 e/21-02-26 1500 to/yikleong";
+            + "Example Command: event " + COMMAND_WORD + " d/Complete feature list "
+            + "start/21-02-26 1100 end/21-02-26 1500 to/yikleong";
 
     public static final String MESSAGE_SUCCESS = "Added event for %1$s: %2$s";
 

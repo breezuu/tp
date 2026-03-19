@@ -49,7 +49,7 @@ public class EventCommandParserTest {
         PersonInformation expectedInfo = new PersonInformation(new Name("Amy Bee"), null, null, null, null);
         AddEventCommand expectedCommand = new AddEventCommand(expectedInfo, expectedEvent);
 
-        String userInput = "add l/CS2103 Meeting d/Complete feature list s/21-02-26 1100 e/21-02-26 1500 "
+        String userInput = "add d/Complete feature list start/21-02-26 1100 end/21-02-26 1500 "
                 + "to/Amy Bee";
 
         assertParseSuccess(parser, userInput, expectedCommand);
@@ -60,7 +60,7 @@ public class EventCommandParserTest {
         PersonInformation expectedInfo = new PersonInformation(new Name("Amy Bee"), null, null, null, null);
         DeleteEventCommand expectedCommand = new DeleteEventCommand(expectedInfo, "21-02-26 1100", "21-02-26 1500");
 
-        assertParseSuccess(parser, "delete n/Amy Bee s/21-02-26 1100 e/21-02-26 1500", expectedCommand);
+        assertParseSuccess(parser, "delete n/Amy Bee start/21-02-26 1100 end/21-02-26 1500", expectedCommand);
     }
 
     @Test

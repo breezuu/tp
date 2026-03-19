@@ -48,8 +48,8 @@ public class AddressBookParserTest {
                 new PersonInformation(new Name("Lee eejoong"), null, null, null, null), expectedEvent);
 
         AddEventCommand command = (AddEventCommand) parser.parseCommand(
-                "event add l/CS2103 Meeting d/Complete feature list s/21-02-26 1100 "
-                        + "e/21-02-26 1500 to/Lee eejoong");
+                "event add d/Complete feature list start/21-02-26 1100 "
+                        + "end/21-02-26 1500 to/Lee eejoong");
 
         assertEquals(expectedCommand, command);
     }

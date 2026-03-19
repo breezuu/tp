@@ -3,6 +3,7 @@ package seedu.address.logic.parser;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
@@ -13,6 +14,7 @@ import java.util.stream.Stream;
 import seedu.address.logic.commands.AddEventCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.Email;
 import seedu.address.model.person.Event;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.PersonInformation;
@@ -24,10 +26,9 @@ import seedu.address.model.tag.Tag;
  */
 public class AddEventParser implements Parser<AddEventCommand> {
 
-    private static final Prefix PREFIX_LABEL = new Prefix("l/");
     private static final Prefix PREFIX_DESCRIPTION = new Prefix("d/");
-    private static final Prefix PREFIX_START = new Prefix("s/");
-    private static final Prefix PREFIX_END = new Prefix("e/");
+    private static final Prefix PREFIX_START = new Prefix("start/");
+    private static final Prefix PREFIX_END = new Prefix("end/");
     private static final Prefix PREFIX_TO = new Prefix("to/");
 
     // Note: email disambiguation is excluded here because e/ is reserved for event end datetime.
@@ -42,19 +43,16 @@ public class AddEventParser implements Parser<AddEventCommand> {
         requireNonNull(args);
 
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args,
-                PREFIX_LABEL, PREFIX_DESCRIPTION, PREFIX_START, PREFIX_END, PREFIX_TO,
+                PREFIX_DESCRIPTION, PREFIX_START, PREFIX_END, PREFIX_TO, PREFIX_EMAIL,
                 PREFIX_NAME, PREFIX_PHONE, PREFIX_ADDRESS, PREFIX_TAG);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_LABEL, PREFIX_DESCRIPTION, PREFIX_START, PREFIX_END, PREFIX_TO)
+        if (!arePrefixesPresent(argMultimap, PREFIX_DESCRIPTION, PREFIX_START, PREFIX_END, PREFIX_TO)
                 || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddEventCommand.MESSAGE_USAGE));
         }
         argMultimap.verifyNoDuplicatePrefixesFor(
-                PREFIX_LABEL, PREFIX_DESCRIPTION, PREFIX_START, PREFIX_END, PREFIX_TO,
+                PREFIX_DESCRIPTION, PREFIX_START, PREFIX_END, PREFIX_TO,
                 PREFIX_PHONE, PREFIX_ADDRESS);
-
-        // TODO: More checks are required
-        // String label = argMultimap.getValue(PREFIX_LABEL).get().trim();
         String description = argMultimap.getValue(PREFIX_DESCRIPTION).orElse("").trim();
         String startDateTime = argMultimap.getValue(PREFIX_START).get().trim();
         String endDateTime = argMultimap.getValue(PREFIX_END).get().trim();
@@ -70,6 +68,9 @@ public class AddEventParser implements Parser<AddEventCommand> {
                     : null;
             Address address = argMultimap.getValue(PREFIX_ADDRESS).isPresent()
                     ? ParserUtil.parseAddress(argMultimap.getValue(PREFIX_ADDRESS).get())
+                    : null;
+            Email email = argMultimap.getValue(PREFIX_EMAIL).isPresent()
+                    ? ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get())
                     : null;
             Set<Tag> tags = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
             PersonInformation targetInfo = new PersonInformation(name, phone, null, address, tags);
