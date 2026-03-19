@@ -107,14 +107,17 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_filter() throws Exception {
-        assertTrue(parser.parseCommand(FilterCommand.COMMAND_WORD) instanceof FilterCommand);
-        assertTrue(parser.parseCommand(FilterCommand.COMMAND_WORD + " t/ Roy") instanceof FilterCommand);
+        String singleTag = FilterCommand.COMMAND_WORD + " t/friends";
+        assertTrue(parser.parseCommand(singleTag) instanceof FilterCommand);
+
+        String doubleTag = FilterCommand.COMMAND_WORD + " t/friends, colleagues";
+        assertTrue(parser.parseCommand(doubleTag) instanceof FilterCommand);
     }
 
     @Test
     public void parseCommand_import() throws Exception {
         String type = "add";
-        String file = "test";
+        String file = "testImport";
         ImportCommand expectedCommand = new ImportCommand(type, file);
 
         ImportCommand command = (ImportCommand) parser.parseCommand(
@@ -126,7 +129,7 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_export() throws Exception {
         String type = "all";
-        String file = "backup";
+        String file = "testExport";
         ExportCommand expectedCommand = new ExportCommand(type, file);
 
         ExportCommand command = (ExportCommand) parser.parseCommand(
@@ -139,7 +142,7 @@ public class AddressBookParserTest {
     public void parseCommand_import_missingPrefixThrowsParseException() {
         // Missing 'f/' prefix
         assertThrows(ParseException.class, () ->
-                parser.parseCommand(ImportCommand.COMMAND_WORD + " t/add "));
+                parser.parseCommand(ImportCommand.COMMAND_WORD + " t/add"));
     }
 
     @Test
