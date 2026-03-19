@@ -33,7 +33,7 @@ public class ExportCommandParserTest {
     }
 
     @Test
-    public void parse_invalidValue_failure() {
+    public void parse_invalidValue_throwsParseException() {
         // Invalid export type
         assertParseFailure(parser, " t/fake f/data",
                 String.format(MESSAGE_INVALID_EXPORT_TYPE, ExportCommand.MESSAGE_USAGE));

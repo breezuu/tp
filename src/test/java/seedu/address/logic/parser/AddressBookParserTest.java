@@ -17,8 +17,11 @@ import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.commands.ExitCommand;
+import seedu.address.logic.commands.ExportCommand;
+import seedu.address.logic.commands.FilterCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
+import seedu.address.logic.commands.ImportCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Event;
@@ -100,6 +103,50 @@ public class AddressBookParserTest {
     public void parseCommand_list() throws Exception {
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD) instanceof ListCommand);
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " 3") instanceof ListCommand);
+    }
+
+    @Test
+    public void parseCommand_filter() throws Exception {
+        assertTrue(parser.parseCommand(FilterCommand.COMMAND_WORD) instanceof FilterCommand);
+        assertTrue(parser.parseCommand(FilterCommand.COMMAND_WORD + " t/ Roy") instanceof FilterCommand);
+    }
+
+    @Test
+    public void parseCommand_import() throws Exception {
+        String type = "add";
+        String file = "test";
+        ImportCommand expectedCommand = new ImportCommand(type, file);
+
+        ImportCommand command = (ImportCommand) parser.parseCommand(
+                ImportCommand.COMMAND_WORD + " t/" + type + " f/" + file);
+
+        assertEquals(expectedCommand, command);
+    }
+
+    @Test
+    public void parseCommand_export() throws Exception {
+        String type = "all";
+        String file = "backup";
+        ExportCommand expectedCommand = new ExportCommand(type, file);
+
+        ExportCommand command = (ExportCommand) parser.parseCommand(
+                ExportCommand.COMMAND_WORD + " t/" + type + " f/" + file);
+
+        assertEquals(expectedCommand, command);
+    }
+
+    @Test
+    public void parseCommand_import_missingPrefixThrowsParseException() {
+        // Missing 'f/' prefix
+        assertThrows(ParseException.class, () ->
+                parser.parseCommand(ImportCommand.COMMAND_WORD + " t/add "));
+    }
+
+    @Test
+    public void parseCommand_export_missingPrefixThrowsParseException() {
+        // Missing 't/' prefix
+        assertThrows(ParseException.class, () ->
+                parser.parseCommand(ExportCommand.COMMAND_WORD + " f/ testExport"));
     }
 
     @Test
