@@ -80,7 +80,9 @@ public class Person {
         return address;
     }
 
-    public Optional<Photo> getPhoto() {return photo;}
+    public Optional<Photo> getPhoto() {
+        return photo;
+    }
 
     /**
      * Returns an immutable tag set, which throws {@code UnsupportedOperationException}

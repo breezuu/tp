@@ -3,6 +3,10 @@ package seedu.address.model.person;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 
+/**
+ * Represents a Person's photo in the address book.
+ * Guarantees: immutable; is valid as declared in {@link #isValidPhoto(String)}
+ */
 public class Photo {
 
     public static final String MESSAGE_CONSTRAINTS = "Photos should only be in .png, .jpg, .jpeg format";
@@ -41,19 +45,36 @@ public class Photo {
     }
 
     /**
-     * Returns true if the photo is the default placeholder
+     * Returns true if the photo is the default placeholder.
      */
     public boolean isDefault() {
         return this.value.equals(DEFAULT_PHOTO_PATH);
     }
 
     /**
-     * Returns true if the photo is already in the directory
+     * Returns true if the photo is already in the directory.
      */
     public boolean isSavedLocally() {
         return this.value.startsWith("data/images/");
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
 
+        // instanceof handles nulls
+        if (!(other instanceof Photo)) {
+            return false;
+        }
 
+        Photo otherPhoto = (Photo) other;
+        return value.equals(otherPhoto.value);
+    }
+
+    @Override
+    public String toString() {
+        return this.value;
+    }
 }

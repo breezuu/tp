@@ -9,6 +9,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_PHOTO;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.Set;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.CollectionUtil;
+import seedu.address.commons.util.PhotoStorageUtil;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -80,12 +82,34 @@ public class EditCommand extends Command {
         }
 
         Person personToEdit = lastShownList.get(index.getZeroBased());
-        Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
+        Person dummyPerson = createEditedPerson(personToEdit, editPersonDescriptor);
 
-        if (!personToEdit.isSamePerson(editedPerson) && model.hasPerson(editedPerson)) {
+        if (!personToEdit.isSamePerson(dummyPerson) && model.hasPerson(dummyPerson)) {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
         }
 
+        if (editPersonDescriptor.getPhoto().isPresent()) {
+            Photo newPhoto;
+            try {
+                newPhoto = PhotoStorageUtil.copyPhotoToDirectory(editPersonDescriptor.getPhoto().get());
+                editPersonDescriptor.setPhoto(newPhoto);
+            } catch (IOException e) {
+                throw new CommandException(Messages.MESSAGE_SAVE_PHOTO_FAIL + e.getMessage());
+            }
+
+            if (personToEdit.getPhoto().isPresent()) {
+                Photo oldPhoto = personToEdit.getPhoto().get();
+                if (!oldPhoto.equals(newPhoto)) {
+                    try {
+                        PhotoStorageUtil.deletePhoto(oldPhoto);
+                    } catch (IOException e) {
+                        throw new CommandException(Messages.MESSAGE_DELETE_PHOTO_FAIL + e.getMessage());
+                    }
+                }
+            }
+        }
+
+        Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
         model.setPerson(personToEdit, editedPerson);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson)));
@@ -106,7 +130,8 @@ public class EditCommand extends Command {
             ? editPersonDescriptor.getAddress() : personToEdit.getAddress();
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
         Optional<Photo> updatedPhoto = editPersonDescriptor.getPhoto().isPresent()
-                ? editPersonDescriptor.getPhoto() : personToEdit.getPhoto();
+                ? editPersonDescriptor.getPhoto()
+                : personToEdit.getPhoto();
 
         Person editedPerson = new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
                 updatedPhoto);

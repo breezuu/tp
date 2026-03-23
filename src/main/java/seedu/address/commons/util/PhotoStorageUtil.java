@@ -9,16 +9,22 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.logic.Messages;
 import seedu.address.model.person.Photo;
 
 /**
-* Utility class to handle the copying and storage of image files
+* Utility class to handle the copying and storage of image files.
 */
 
 public class PhotoStorageUtil {
     private static final Logger logger = LogsCenter.getLogger(PhotoStorageUtil.class);
     private static final String IMAGE_DIRECTORY = "data/images/";
 
+    /**
+     * Copies over a file specified by the user, to the data/images/ directory of NAB.
+     * @param photo is the photo object specified by the user, it contains the raw file path.
+     * @return a photo object that contains the encoded UUID file path for usage by NAB.
+     */
     public static Photo copyPhotoToDirectory(Photo photo) throws IOException {
         // Check if the copying operation is needed
         if (photo.isDefault() || photo.isSavedLocally()) {
@@ -30,12 +36,12 @@ public class PhotoStorageUtil {
 
         // Check existence of file and is regular file
         if (!Files.exists(srcPath) || !Files.isRegularFile(srcPath)) {
-           throw new IOException("The specified image file cannot be found: " + srcPath);
+            throw new IOException("The specified image file cannot be found: " + srcPath);
         }
 
         // Check if data/images directory exists, otherwise create directory
         Path destDir = Paths.get(IMAGE_DIRECTORY);
-        if(!Files.exists(destDir)) {
+        if (!Files.exists(destDir)) {
             Files.createDirectories(destDir);
             logger.info("Created default image directory at: " + destDir.toAbsolutePath());
         }
@@ -45,7 +51,7 @@ public class PhotoStorageUtil {
         String fileExtension = "";
         int i = fileName.lastIndexOf(".");
         if (i > 0) {
-           fileExtension = fileName.substring(i);
+            fileExtension = fileName.substring(i);
         }
 
         // Generate UUID using file name
@@ -57,5 +63,44 @@ public class PhotoStorageUtil {
         // Update the photo saved in JSON
         String relativePath = (IMAGE_DIRECTORY + uniqueFileName).replace("\\", "/");
         return new Photo(relativePath);
+    }
+
+    /**
+     * Deletes a specified photo object from data/images.
+     * @param photo is the photo object to be deleted.
+     */
+    public static void deletePhoto(Photo photo) throws IOException {
+        // Do not delete default photos and photos outside /data/images
+        if (photo.isDefault() || !photo.isSavedLocally()) {
+            return;
+        }
+
+        Path pathToDelete = Paths.get(photo.value);
+
+        try {
+            Files.deleteIfExists(pathToDelete);
+        } catch (IOException e) {
+            throw new IOException("The old image file cannot be deleted: " + pathToDelete);
+        }
+    }
+
+
+    /**
+     * Clears the entire data/images directory.
+     */
+    public static void clearDirectory() throws IOException {
+        Path toBeDeleted = Paths.get(IMAGE_DIRECTORY);
+
+        if (!Files.exists(toBeDeleted)) {
+            return;
+        }
+
+        try (java.util.stream.Stream<Path> paths = Files.walk(toBeDeleted)) {
+            paths.sorted(java.util.Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(java.io.File::delete);
+        } catch (IOException e) {
+            throw new IOException(Messages.MESSAGE_DELETE_PHOTO_FAIL + e.getMessage());
+        }
     }
 }

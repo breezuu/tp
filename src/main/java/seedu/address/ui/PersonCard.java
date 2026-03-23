@@ -5,13 +5,10 @@ import java.util.Comparator;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Photo;
@@ -71,14 +68,14 @@ public class PersonCard extends UiPart<Region> {
 
     /**
      * Handles the type of image that should be displayed.
-     * @param person is the image we need to extract from.
+     * @param person is the Person we need to extract the Photo object from to display on the card.
      */
     public void handlePhoto(Person person) {
         Photo photoObject = person.getPhoto().orElse(new Photo(""));
         Image profilePicture = null;
 
         try {
-            if(photoObject.isDefault()) {
+            if (photoObject.isDefault()) {
                 java.io.InputStream stream = this.getClass().getResourceAsStream(photoObject.value);
                 if (stream != null) {
                     profilePicture = new Image(stream);
@@ -94,11 +91,12 @@ public class PersonCard extends UiPart<Region> {
         if (profilePicture != null && !profilePicture.isError()) {
             photo.setFill(new javafx.scene.paint.ImagePattern(profilePicture));
             altText.setVisible(false);
-            photo.setStroke(javafx.scene.paint.Color.valueOf("#EF7C00")); // NUS Gold color
-            photo.setStrokeWidth(2.0); // Thickness of Border
         } else {
             photo.setFill(javafx.scene.paint.Color.valueOf("#424242"));
             altText.setVisible(true);
         }
+
+        photo.setStroke(javafx.scene.paint.Color.valueOf("#EF7C00")); // NUS Gold color
+        photo.setStrokeWidth(2.0); // Thickness of Border
     }
 }
