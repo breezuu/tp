@@ -22,8 +22,8 @@ public class PhotoStorageUtilTest {
     @TempDir
     public Path sharedTempFolder; // Simulate data/
 
-    public Path testFolder; // Simulate data_images
-    public Path userFolder; // Simulate user_desktop
+    private Path testFolder; // Simulate data_images
+    private Path userFolder; // Simulate user_desktop
 
     private String originalDirectory;
 
