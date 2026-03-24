@@ -135,6 +135,6 @@ public class ParserUtil {
         if (!Photo.isValidPhoto(trimmedPhoto)) {
             throw new ParseException(Photo.MESSAGE_CONSTRAINTS);
         }
-        return new Photo(photo);
+        return new Photo(trimmedPhoto);
     }
 }
