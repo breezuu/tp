@@ -38,7 +38,7 @@ public class JsonAdaptedPersonTest {
     private static final List<JsonAdaptedEvent> VALID_EVENTS = BENSON.getEvents().stream()
             .map(JsonAdaptedEvent::new)
             .collect(Collectors.toList());
-    private static final String VALID_PHOTO = BENSON.getPhoto().map(Photo::toString).orElse("");
+    private static final String VALID_PHOTO = "valid.jpg";
 
     @Test
     public void toModelType_validPersonDetails_returnsPerson() throws Exception {
@@ -162,5 +162,18 @@ public class JsonAdaptedPersonTest {
                 VALID_EVENTS);
 
         assertEquals(Optional.empty(), person.toModelType().getPhoto());
+    }
+
+    @Test
+    public void toModelType_validPhoto_returnsPersonWithValidPhoto() throws Exception {
+        JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME,
+                VALID_PHONE,
+                VALID_EMAIL,
+                VALID_ADDRESS,
+                VALID_PHOTO,
+                VALID_TAGS,
+                VALID_EVENTS);
+
+        assertEquals(Optional.of(new Photo(VALID_PHOTO)), person.toModelType().getPhoto());
     }
 }

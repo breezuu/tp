@@ -71,6 +71,7 @@ public class ImportCommandTest {
                 .withAddress("Blk 123")
                 .withTags()
                 .withEvents()
+                .withPhoto("hello_world.jpg")
                 .build();
 
         Person expectedTest2 = new PersonBuilder()
@@ -80,6 +81,7 @@ public class ImportCommandTest {
                 .withAddress("Blk 456")
                 .withTags()
                 .withEvents()
+                .withPhoto("this_is_another.jpg")
                 .build();
 
         model.addPerson(expectedTest1);
