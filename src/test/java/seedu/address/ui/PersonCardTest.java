@@ -69,7 +69,7 @@ public class PersonCardTest {
 
         assertEquals(List.of("classmate", "family", "friend"), getDisplayedTagTexts(personCard));
     }
-    
+
     @Test
     public void personCard_sameTagDifferentCase_hasSameStyle() {
         Person person = new PersonBuilder().withTags("friends", "FRIENDS").build();
