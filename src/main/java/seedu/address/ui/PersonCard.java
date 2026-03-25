@@ -1,12 +1,16 @@
 package seedu.address.ui;
 
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
 import seedu.address.model.person.Person;
 
 /**
@@ -15,6 +19,10 @@ import seedu.address.model.person.Person;
 public class PersonCard extends UiPart<Region> {
 
     private static final String FXML = "PersonListCard.fxml";
+    private static final Map<String, String> TAG_STYLE_BY_NAME = new HashMap<>();
+
+    private static final String TAG_BORDER_COLOR = "black";
+    private static final String TAG_BORDER_WIDTH = "0.5";
 
     /**
      * Note: Certain keywords such as "location" and "resources" are reserved keywords in JavaFX.
@@ -54,6 +62,60 @@ public class PersonCard extends UiPart<Region> {
         email.setText(person.getEmail().map(email -> email.value).orElse(""));
         person.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
-                .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
+                .forEach(tag -> tags.getChildren().add(createTagLabel(tag.tagName)));
+    }
+
+    /**
+     * Creates a tag label and applies the generated style for the given tag name.
+     *
+     * @param tagName Name of the tag to display.
+     * @return A styled JavaFX {@code Label} representing the tag.
+     */
+    private static Label createTagLabel(String tagName) {
+        Label label = new Label(tagName);
+        label.setStyle(getTagStyle(tagName));
+        return label;
+    }
+
+    /**
+     * Returns the style for a tag if it does not exist yet.
+     *
+     * @param tagName Name of the tag.
+     * @return Inline CSS style string for the tag.
+     */
+    private static String getTagStyle(String tagName) {
+        String lowerCaseTagName = tagName.toLowerCase();
+        return TAG_STYLE_BY_NAME.computeIfAbsent(lowerCaseTagName, PersonCard::generateTagStyle);
+    }
+
+    /**
+     * Generates a deterministic random-looking style for a tag name.
+     *
+     * @param tagName Lowercase tag name used as the random seed source.
+     * @return Inline CSS style containing text and background colors.
+     */
+    private static String generateTagStyle(String tagName) {
+        Random random = new Random(tagName.hashCode());
+        Color backgroundColor = Color.hsb(
+                random.nextDouble() * 360,
+                0.5 + random.nextDouble() * 0.35,
+                0.55 + random.nextDouble() * 0.3);
+        Color textColor = backgroundColor.getBrightness() < 0.65 ? Color.WHITE : Color.BLACK;
+
+        return String.format("-fx-text-fill: %s; -fx-background-color: %s; -fx-border-color: %s; -fx-border-width: %s;",
+                toHex(textColor), toHex(backgroundColor), TAG_BORDER_COLOR, TAG_BORDER_WIDTH);
+    }
+
+    /**
+     * Converts a JavaFX {@code Color} into a {@code #RRGGBB} hex string.
+     *
+     * @param color JavaFX color to convert.
+     * @return Hex color string in the form {@code #RRGGBB}.
+     */
+    private static String toHex(Color color) {
+        return String.format("#%02X%02X%02X",
+                (int) Math.round(color.getRed() * 255),
+                (int) Math.round(color.getGreen() * 255),
+                (int) Math.round(color.getBlue() * 255));
     }
 }
