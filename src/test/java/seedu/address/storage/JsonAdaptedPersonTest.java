@@ -1,18 +1,25 @@
 package seedu.address.storage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static seedu.address.storage.JsonAdaptedPerson.MISSING_FIELD_MESSAGE_FORMAT;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.BENSON;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.exceptions.IllegalValueException;
+import seedu.address.model.event.Description;
+import seedu.address.model.event.Event;
+import seedu.address.model.event.TimeRange;
+import seedu.address.model.event.Title;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
@@ -159,5 +166,22 @@ public class JsonAdaptedPersonTest {
                 VALID_EVENTS);
 
         assertEquals(Optional.of(new Photo(VALID_PHOTO)), person.toModelType().getPhoto());
+    }
+
+    @Test
+    public void toModelType_withEventMap_reusesMappedEventInstance() throws IllegalValueException {
+        JsonAdaptedEvent linkedEvent = new JsonAdaptedEvent("Project Review", "Review scope",
+                "2026-03-25 0900", "2026-03-25 1000", 2);
+        JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS,
+                VALID_PHOTO, VALID_TAGS, List.of(linkedEvent));
+
+        Event sharedEvent = new Event(new Title("Project Review"), Optional.of(new Description("Review scope")),
+                new TimeRange("2026-03-25 0900", "2026-03-25 1000"), 5);
+        Map<String, Event> eventMap = new HashMap<>();
+        eventMap.put("Project Review|2026-03-25 0900|2026-03-25 1000", sharedEvent);
+
+        Event personEvent = person.toModelType(eventMap).getEvents().get(0);
+        assertSame(sharedEvent, personEvent);
+        assertEquals(5, personEvent.getNumberOfPersonLinked());
     }
 }

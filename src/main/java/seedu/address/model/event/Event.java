@@ -33,7 +33,22 @@ public class Event {
         this.description = description;
         this.timeRange = timeRange;
         this.numberOfPersonLinked = 1;
-        this.eventId = Objects.hash(this.title, this.timeRange);
+        this.eventId = Objects.hash(title.fullTitle, timeRange.getStartTimeFormatted(),
+            timeRange.getEndTimeFormatted());
+    }
+
+    /**
+     * Reconstruction constructor for storage deserialization.
+     * Restores an event with a specific participant count instead of defaulting to 1.
+     */
+    public Event(Title title, Optional<Description> description, TimeRange timeRange, int numberOfPersonLinked) {
+        requireAllNonNull(title, description, timeRange);
+        this.title = title;
+        this.description = description;
+        this.timeRange = timeRange;
+        this.numberOfPersonLinked = numberOfPersonLinked;
+        this.eventId = Objects.hash(title.fullTitle, timeRange.getStartTimeFormatted(),
+            timeRange.getEndTimeFormatted());
     }
 
     public Title getTitle() {

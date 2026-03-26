@@ -22,6 +22,7 @@ class JsonAdaptedEvent {
     private final String description;
     private final String startTime;
     private final String endTime;
+    private final int numberOfPersonLinked;
 
     /**
      * Constructs a {@code JsonAdaptedEvent} with the given event details.
@@ -30,11 +31,13 @@ class JsonAdaptedEvent {
     public JsonAdaptedEvent(@JsonProperty("title") String title,
                             @JsonProperty("description") String description,
                             @JsonProperty("startTime") String startTime,
-                            @JsonProperty("endTime") String endTime) {
+                            @JsonProperty("endTime") String endTime,
+                            @JsonProperty("numberOfPersonLinked") int numberOfPersonLinked) {
         this.title = title;
         this.description = description;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.numberOfPersonLinked = numberOfPersonLinked;
     }
 
     /**
@@ -45,6 +48,7 @@ class JsonAdaptedEvent {
         description = source.getDescription().map(desc -> desc.fullDescription).orElse(null);
         startTime = source.getStartTimeFormatted();
         endTime = source.getEndTimeFormatted();
+        numberOfPersonLinked = source.getNumberOfPersonLinked();
     }
 
     /**
@@ -82,6 +86,6 @@ class JsonAdaptedEvent {
             throw new IllegalValueException(TimeRange.MESSAGE_CONSTRAINTS);
         }
 
-        return new Event(modelTitle, modelDescription, modelTimeRange);
+        return new Event(modelTitle, modelDescription, modelTimeRange, numberOfPersonLinked);
     }
 }

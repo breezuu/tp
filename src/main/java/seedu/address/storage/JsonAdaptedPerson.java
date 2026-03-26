@@ -1,8 +1,10 @@
 package seedu.address.storage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -80,7 +82,7 @@ class JsonAdaptedPerson {
      *
      * @throws IllegalValueException if there were any data constraints violated in the adapted person.
      */
-    public Person toModelType() throws IllegalValueException {
+    public Person toModelType(Map<String, Event> eventMap) throws IllegalValueException {
         final List<Tag> personTags = new ArrayList<>();
         for (JsonAdaptedTag tag : tags) {
             personTags.add(tag.toModelType());
@@ -133,12 +135,26 @@ class JsonAdaptedPerson {
         }
 
         Person person = new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelPhoto);
-        for (JsonAdaptedEvent event : events) {
-            Event modelEvent = event.toModelType();
+        for (JsonAdaptedEvent jsonEvent : events) {
+            Event tempEvent = jsonEvent.toModelType();
+            String key = tempEvent.getTitle().fullTitle
+                    + "|" + tempEvent.getStartTimeFormatted()
+                    + "|" + tempEvent.getEndTimeFormatted();
+            Event modelEvent = eventMap.getOrDefault(key, tempEvent);
             person.addEvent(modelEvent);
         }
 
         return person;
+    }
+
+    /**
+     * Overload for backwards-compatibility during transition. Calls {@link #toModelType(Map)} with an empty map,
+     * so no events will be linked. Remove once all callers are updated.
+     *
+     * @throws IllegalValueException if person data is invalid.
+     */
+    public Person toModelType() throws IllegalValueException {
+        return toModelType(new HashMap<>());
     }
 
 }

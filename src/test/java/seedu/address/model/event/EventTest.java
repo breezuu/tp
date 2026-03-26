@@ -34,6 +34,15 @@ public class EventTest {
     }
 
     @Test
+    public void constructor_withLinkedPersonCount_success() {
+        Event event = new Event(TITLE_MEETING, Optional.of(DESC_A), timeRange1(), 4);
+        assertEquals(TITLE_MEETING, event.getTitle());
+        assertEquals(Optional.of(DESC_A), event.getDescription());
+        assertEquals(timeRange1(), event.getTimeRange());
+        assertEquals(4, event.getNumberOfPersonLinked());
+    }
+
+    @Test
     public void constructor_nullFields_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new Event(null, Optional.empty(), timeRange1()));
         assertThrows(NullPointerException.class, () -> new Event(TITLE_MEETING, null, timeRange1()));
