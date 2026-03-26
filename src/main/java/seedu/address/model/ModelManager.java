@@ -124,6 +124,12 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public boolean hasOverlappingEvent(Event event) {
+        requireNonNull(event);
+        return addressBook.hasOverlappingEvent(event);
+    }
+
+    @Override
     public void addEvent(Event event) {
         addressBook.addEvent(event);
     }

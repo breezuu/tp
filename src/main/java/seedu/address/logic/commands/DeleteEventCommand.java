@@ -52,12 +52,12 @@ public class DeleteEventCommand extends Command {
         Person personToEdit = targetPerson(model, targetInfo);
 
         // Checking if the event is in the Person's List<Event>
-        if (!personToEdit.getEvents().contains(toDelete)) {
+        if (!personToEdit.hasEvent(toDelete)) {
             logger.info("DeleteEvent: event not found for " + personToEdit.getName() + ": " + toDelete);
             throw new CommandException(String.format(MESSAGE_EVENT_NOT_FOUND, toDelete));
         }
 
-        // unlink globally (decrement count, remove if count reaches 0)
+        // unlink globally (decrement count, remove from global list if count reaches 0)
         Event eventToUnlink = model.unlinkPersonFromEvent(toDelete);
         logger.info("DeleteEvent: unlinking event " + toDelete + " from " + personToEdit.getName()
                 + ", remaining links=" + eventToUnlink.getNumberOfPersonLinked());

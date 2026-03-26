@@ -25,6 +25,13 @@ public class TimeRangeTest {
     }
 
     @Test
+    public void constructor_nonExistentDate_throwsIllegalArgumentException() {
+        // Feb 30 does not exist — should be rejected, not coerced to Feb 28
+        assertThrows(IllegalArgumentException.class, () ->
+                new TimeRange("2026-02-30 0900", "2026-02-30 1000"));
+    }
+
+    @Test
     public void constructor_endBeforeStart_throwsIllegalArgumentException() {
         assertThrows(IllegalArgumentException.class, () ->
                 new TimeRange("2026-03-25 1000", "2026-03-25 0900"));
@@ -55,6 +62,36 @@ public class TimeRangeTest {
         TimeRange a = new TimeRange("2026-03-25 0900", "2026-03-25 1000");
         TimeRange b = new TimeRange("2026-03-25 0900", "2026-03-25 1000");
         assertEquals(a.hashCode(), b.hashCode());
+    }
+
+    @Test
+    public void isOverlapping_overlappingRanges_returnsTrue() {
+        TimeRange a = new TimeRange("2026-03-25 0900", "2026-03-25 1100");
+        TimeRange b = new TimeRange("2026-03-25 1000", "2026-03-25 1200");
+        assertTrue(a.isOverlapping(b));
+        assertTrue(b.isOverlapping(a));
+    }
+
+    @Test
+    public void isOverlapping_nonOverlappingRanges_returnsFalse() {
+        TimeRange a = new TimeRange("2026-03-25 0900", "2026-03-25 1000");
+        TimeRange b = new TimeRange("2026-03-25 1000", "2026-03-25 1100");
+        assertFalse(a.isOverlapping(b));
+    }
+
+    @Test
+    public void isValidDateTimeFormat_validFormat_returnsTrue() {
+        assertTrue(TimeRange.isValidDateTimeFormat("2026-03-25 0900"));
+        assertTrue(TimeRange.isValidDateTimeFormat("2026-12-01 2359"));
+    }
+
+    @Test
+    public void isValidDateTimeFormat_invalidFormat_returnsFalse() {
+        assertFalse(TimeRange.isValidDateTimeFormat("25-03-2026 0900"));
+        assertFalse(TimeRange.isValidDateTimeFormat("2026/03/25 0900"));
+        assertFalse(TimeRange.isValidDateTimeFormat("not-a-date"));
+        assertFalse(TimeRange.isValidDateTimeFormat(""));
+        assertFalse(TimeRange.isValidDateTimeFormat("2026-02-30 0900")); // non-existent date
     }
 
     @Test

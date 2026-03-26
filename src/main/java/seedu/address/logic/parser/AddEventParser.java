@@ -55,8 +55,8 @@ public class AddEventParser implements Parser<AddEventCommand> {
                 PREFIX_TITLE, PREFIX_DESC, PREFIX_START, PREFIX_END, PREFIX_TO,
                 PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS);
 
+        Event event = createEvent(argMultimap);
         try {
-            Event event = createEvent(argMultimap);
             PersonInformation targetInfo = createPersonInformation(argMultimap);
             return new AddEventCommand(targetInfo, event);
         } catch (ParseException pe) {
@@ -81,16 +81,30 @@ public class AddEventParser implements Parser<AddEventCommand> {
         return new PersonInformation(name, phone, email, address, tags);
     }
 
-    private static Event createEvent(ArgumentMultimap argMultimap) {
-        Title title = new Title(argMultimap.getValue(PREFIX_TITLE).get().trim());
-        Optional<Description> description = argMultimap.getValue(PREFIX_DESC)
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .map(Description::new);
+    private static Event createEvent(ArgumentMultimap argMultimap) throws ParseException {
+        String titleStr = argMultimap.getValue(PREFIX_TITLE).get().trim();
+        if (!Title.isValidTitle(titleStr)) {
+            throw new ParseException(Title.MESSAGE_CONSTRAINTS);
+        }
+        Title title = new Title(titleStr);
+        String descStr = argMultimap.getValue(PREFIX_DESC).map(String::trim).orElse(null);
+        if (descStr != null && !descStr.isEmpty() && !Description.isValidDescription(descStr)) {
+            throw new ParseException(Description.MESSAGE_CONSTRAINTS);
+        }
+        Optional<Description> description = (descStr != null && !descStr.isEmpty())
+                ? Optional.of(new Description(descStr))
+                : Optional.empty();
         String startDateTime = argMultimap.getValue(PREFIX_START).get().trim();
         String endDateTime = argMultimap.getValue(PREFIX_END).get().trim();
-        TimeRange timeRange = new TimeRange(startDateTime, endDateTime);
-        return new Event(title, description, timeRange);
+        if (!TimeRange.isValidDateTimeFormat(startDateTime) || !TimeRange.isValidDateTimeFormat(endDateTime)) {
+            throw new ParseException(TimeRange.MESSAGE_INVALID_DATETIME_FORMAT);
+        }
+        try {
+            TimeRange timeRange = new TimeRange(startDateTime, endDateTime);
+            return new Event(title, description, timeRange);
+        } catch (IllegalArgumentException e) {
+            throw new ParseException(TimeRange.MESSAGE_END_NOT_AFTER_START, e);
+        }
     }
 
     /**

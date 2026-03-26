@@ -196,6 +196,27 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void hasOverlappingEvent_nullEvent_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.hasOverlappingEvent(null));
+    }
+
+    @Test
+    public void hasOverlappingEvent_noOverlap_returnsFalse() {
+        Event event = newEvent("Meeting", "Discuss", "2026-03-25 0900", "2026-03-25 1000");
+        modelManager.addEvent(event);
+        Event nonOverlapping = newEvent("Lunch", null, "2026-03-25 1200", "2026-03-25 1300");
+        assertFalse(modelManager.hasOverlappingEvent(nonOverlapping));
+    }
+
+    @Test
+    public void hasOverlappingEvent_withOverlap_returnsTrue() {
+        Event event = newEvent("Meeting", "Discuss", "2026-03-25 0900", "2026-03-25 1100");
+        modelManager.addEvent(event);
+        Event overlapping = newEvent("Call", null, "2026-03-25 1000", "2026-03-25 1200");
+        assertTrue(modelManager.hasOverlappingEvent(overlapping));
+    }
+
+    @Test
     public void updateFilteredEventList_filtersByTitle() {
         Event meeting = newEvent("Team Meeting", "Discuss milestones",
                 "2026-03-20 0900", "2026-03-20 1000");

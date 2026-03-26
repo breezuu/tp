@@ -8,6 +8,7 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import seedu.address.model.event.exceptions.ClashingEventException;
 import seedu.address.model.event.exceptions.DuplicateEventException;
 import seedu.address.model.event.exceptions.EventNotFoundException;
 
@@ -30,13 +31,24 @@ public class UniqueEventList implements Iterable<Event> {
     }
 
     /**
+     * Returns true if any event in the list overlaps with {@code toCheck}.
+     */
+    public boolean hasOverlappingEvent(Event toCheck) {
+        requireNonNull(toCheck);
+        return internalList.stream().anyMatch(toCheck::isClashingWith);
+    }
+
+    /**
      * Adds an event to the list.
      * The event must not already exist in the list.
      */
     public void add(Event toAdd) {
         requireNonNull(toAdd);
-        if (contains(toAdd)) {
+        if (contains(toAdd)) { // Defensive
             throw new DuplicateEventException();
+        }
+        if (hasOverlappingEvent(toAdd)) { // Defensive
+            throw new ClashingEventException();
         }
         internalList.add(toAdd);
     }
@@ -83,7 +95,7 @@ public class UniqueEventList implements Iterable<Event> {
      */
     public void setEvents(List<Event> events) {
         requireAllNonNull(events);
-        if (!eventsAreUnique(events)) {
+        if (!eventsAreUnique(events)) { // Defensive
             throw new DuplicateEventException();
         }
         internalList.setAll(events);
@@ -120,7 +132,6 @@ public class UniqueEventList implements Iterable<Event> {
     }
 
     /**
-     * TODO: Overlapping events check & Event linkage (and AlreadyLinkedException)
      * Returns true if {@code events} contains only unique events.
      */
     private boolean eventsAreUnique(List<Event> events) {

@@ -235,6 +235,9 @@ public class DeleteEventCommandTest {
         @Override public Event unlinkPersonFromEvent(Event eventToUnlink) {
             throw new AssertionError("This method should not be called.");
         }
+        @Override public boolean hasOverlappingEvent(Event event) {
+            throw new AssertionError("This method should not be called.");
+        }
     }
 
     private class ModelStubWithPerson extends ModelStub {

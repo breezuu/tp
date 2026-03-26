@@ -23,6 +23,7 @@ import seedu.address.model.event.Description;
 import seedu.address.model.event.Event;
 import seedu.address.model.event.TimeRange;
 import seedu.address.model.event.Title;
+import seedu.address.model.event.exceptions.ClashingEventException;
 import seedu.address.model.event.exceptions.DuplicateEventException;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.exceptions.DuplicatePersonException;
@@ -122,6 +123,35 @@ public class AddressBookTest {
         Event event = newEvent("Meeting", "Discuss", "2026-03-25 0900", "2026-03-25 1000");
         addressBook.addEvent(event);
         assertTrue(addressBook.hasEvent(event));
+    }
+
+    @Test
+    public void hasOverlappingEvent_nullEvent_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> addressBook.hasOverlappingEvent(null));
+    }
+
+    @Test
+    public void hasOverlappingEvent_noOverlap_returnsFalse() {
+        Event existing = newEvent("Meeting", "Discuss", "2026-03-25 0900", "2026-03-25 1000");
+        addressBook.addEvent(existing);
+        Event nonOverlapping = newEvent("Lunch", null, "2026-03-25 1200", "2026-03-25 1300");
+        assertFalse(addressBook.hasOverlappingEvent(nonOverlapping));
+    }
+
+    @Test
+    public void hasOverlappingEvent_withOverlap_returnsTrue() {
+        Event existing = newEvent("Meeting", "Discuss", "2026-03-25 0900", "2026-03-25 1100");
+        addressBook.addEvent(existing);
+        Event overlapping = newEvent("Call", null, "2026-03-25 1000", "2026-03-25 1200");
+        assertTrue(addressBook.hasOverlappingEvent(overlapping));
+    }
+
+    @Test
+    public void addEvent_overlappingEvent_throwsClashingEventException() {
+        Event existing = newEvent("Meeting", "Discuss", "2026-03-25 0900", "2026-03-25 1100");
+        addressBook.addEvent(existing);
+        Event overlapping = newEvent("Call", null, "2026-03-25 1000", "2026-03-25 1200");
+        assertThrows(ClashingEventException.class, () -> addressBook.addEvent(overlapping));
     }
 
     @Test

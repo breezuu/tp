@@ -108,6 +108,20 @@ public class Person {
         return true;
     }
 
+    /**
+     * Returns true if this person is linked to an event that is the same as {@code event}.
+     */
+    public boolean hasEvent(Event event) {
+        return events.stream().anyMatch(e -> e.isSameEvent(event));
+    }
+
+    /**
+     * Removes the event that is the same as {@code event} from this person's event list.
+     */
+    public void removeEvent(Event event) {
+        events.removeIf(e -> e.isSameEvent(event));
+    }
+
 
     /**
      * Returns true if both persons have the same name.

@@ -121,6 +121,14 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
+     * Returns true if any event in the address book overlaps with {@code event}.
+     */
+    public boolean hasOverlappingEvent(Event event) {
+        requireNonNull(event);
+        return events.hasOverlappingEvent(event);
+    }
+
+    /**
      * Adds an event to the address book.
      * The event must not already exist in the address book.
      */

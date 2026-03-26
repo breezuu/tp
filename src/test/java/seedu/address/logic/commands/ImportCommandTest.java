@@ -253,6 +253,50 @@ public class ImportCommandTest {
     }
 
     @Test
+    public void parseTags_validTagString_returnsTagSet() {
+        ImportCommand importCommand = new ImportCommand("add", "testFile");
+        var tags = importCommand.parseTags("friends;colleagues");
+        assertEquals(2, tags.size());
+        assertTrue(tags.stream().anyMatch(t -> t.tagName.equals("friends")));
+        assertTrue(tags.stream().anyMatch(t -> t.tagName.equals("colleagues")));
+    }
+
+    @Test
+    public void parseTags_nullOrEmpty_returnsEmptySet() {
+        ImportCommand importCommand = new ImportCommand("add", "testFile");
+        assertTrue(importCommand.parseTags(null).isEmpty());
+        assertTrue(importCommand.parseTags("").isEmpty());
+        assertTrue(importCommand.parseTags("   ").isEmpty());
+    }
+
+    @Test
+    public void execute_rowWithTags_importsPerson() throws Exception {
+        createCsvFile("tagged", header + "\nCharlie,87654321,charlie@u.nus.edu,Blk 789,friends;CS2103,,");
+
+        ImportCommand command = createTestCommand("add", "tagged");
+        CommandResult result = command.execute(model);
+
+        assertTrue(result.getFeedbackToUser().contains("1 row(s) added"));
+    }
+
+    @Test
+    public void execute_rowWithEvents_importsPerson() throws Exception {
+        createCsvFile("withevents", header
+                + "\nEve,81234567,eve@u.nus.edu,Blk 321,,Meeting|Kickoff|2026-05-06 1000|2026-05-06 1100,");
+
+        ImportCommand command = createTestCommand("add", "withevents");
+        CommandResult result = command.execute(model);
+
+        assertTrue(result.getFeedbackToUser().contains("1 row(s) added"));
+    }
+
+    @Test
+    public void toString_returnsExpectedString() {
+        ImportCommand importCommand = new ImportCommand("add", "myFile");
+        assertEquals("Importing list from: myFile.csv", importCommand.toString());
+    }
+
+    @Test
     public void equals() {
         ImportCommand importFirst = new ImportCommand("overwrite", "file1");
         ImportCommand importSecond = new ImportCommand("overwrite", "file1");

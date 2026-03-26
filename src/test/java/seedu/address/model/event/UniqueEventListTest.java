@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.model.event.exceptions.ClashingEventException;
 import seedu.address.model.event.exceptions.DuplicateEventException;
 import seedu.address.model.event.exceptions.EventNotFoundException;
 
@@ -34,6 +35,31 @@ public class UniqueEventListTest {
         list.add(event);
         Event duplicate = newEvent("Meeting", "2026-03-25 0900", "2026-03-25 1000");
         assertThrows(DuplicateEventException.class, () -> list.add(duplicate));
+    }
+
+    @Test
+    public void add_clashingEvent_throwsClashingEventException() {
+        UniqueEventList list = new UniqueEventList();
+        Event event = newEvent("Meeting", "2026-03-25 0900", "2026-03-25 1100");
+        list.add(event);
+        Event clashing = newEvent("Call", "2026-03-25 1000", "2026-03-25 1200");
+        assertThrows(ClashingEventException.class, () -> list.add(clashing));
+    }
+
+    @Test
+    public void hasOverlappingEvent_noOverlap_returnsFalse() {
+        UniqueEventList list = new UniqueEventList();
+        list.add(newEvent("Meeting", "2026-03-25 0900", "2026-03-25 1000"));
+        Event nonOverlapping = newEvent("Lunch", "2026-03-25 1200", "2026-03-25 1300");
+        assertFalse(list.hasOverlappingEvent(nonOverlapping));
+    }
+
+    @Test
+    public void hasOverlappingEvent_withOverlap_returnsTrue() {
+        UniqueEventList list = new UniqueEventList();
+        list.add(newEvent("Meeting", "2026-03-25 0900", "2026-03-25 1100"));
+        Event overlapping = newEvent("Call", "2026-03-25 1000", "2026-03-25 1200");
+        assertTrue(list.hasOverlappingEvent(overlapping));
     }
 
     @Test

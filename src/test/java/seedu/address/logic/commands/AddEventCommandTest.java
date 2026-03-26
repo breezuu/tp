@@ -103,6 +103,33 @@ public class AddEventCommandTest {
     }
 
     @Test
+    public void execute_personAlreadyHasEvent_throwsCommandException() {
+        Event eventToAdd = eventOf(VALID_TITLE, VALID_DESC, VALID_START, VALID_END);
+        AddEventCommand addEventCommand = new AddEventCommand(infoOf(VALID_NAME), eventToAdd);
+
+        Person personWithEvent = new PersonBuilder().withName(VALID_NAME).build();
+        personWithEvent.addEvent(eventToAdd);
+        ModelStubWithPersonNoEvent modelStub = new ModelStubWithPersonNoEvent(personWithEvent);
+
+        assertThrows(CommandException.class,
+                String.format(AddEventCommand.MESSAGE_DUPLICATE_EVENT, eventToAdd), () ->
+                    addEventCommand.execute(modelStub));
+    }
+
+    @Test
+    public void execute_clashingEvent_throwsCommandException() {
+        Event eventToAdd = eventOf(VALID_TITLE, VALID_DESC, VALID_START, VALID_END);
+        AddEventCommand addEventCommand = new AddEventCommand(infoOf(VALID_NAME), eventToAdd);
+
+        Person person = new PersonBuilder().withName(VALID_NAME).build();
+        ModelStubWithOverlappingEvent modelStub = new ModelStubWithOverlappingEvent(person);
+
+        assertThrows(CommandException.class,
+            AddEventCommand.MESSAGE_CLASHING_EVENT, () ->
+                addEventCommand.execute(modelStub));
+    }
+
+    @Test
     public void execute_contactNotFound_throwsCommandException() {
         Event eventToAdd = eventOf(VALID_TITLE, VALID_DESC, VALID_START, VALID_END);
         AddEventCommand addEventCommand = new AddEventCommand(infoOf(VALID_NAME), eventToAdd);
@@ -247,6 +274,11 @@ public class AddEventCommandTest {
         public Event unlinkPersonFromEvent(Event eventToUnlink) {
             throw new AssertionError("This method should not be called.");
         }
+
+        @Override
+        public boolean hasOverlappingEvent(Event event) {
+            throw new AssertionError("This method should not be called.");
+        }
     }
 
     private class ModelStubWithPersonNoEvent extends ModelStub {
@@ -303,6 +335,11 @@ public class AddEventCommandTest {
             linkCalled = true;
             return eventToAdd;
         }
+
+        @Override
+        public boolean hasOverlappingEvent(Event event) {
+            return false;
+        }
     }
 
     private class ModelStubWithPersonExistingEvent extends ModelStub {
@@ -356,6 +393,40 @@ public class AddEventCommandTest {
             linkCalled = true;
             return existingEvent;
         }
+
+        @Override
+        public boolean hasOverlappingEvent(Event event) {
+            return false;
+        }
+    }
+
+    private class ModelStubWithOverlappingEvent extends ModelStub {
+        private final Person person;
+
+        ModelStubWithOverlappingEvent(Person person) {
+            this.person = person;
+        }
+
+        @Override
+        public List<Person> findPersons(PersonInformation info) {
+            return List.of(person);
+        }
+
+        @Override
+        public boolean hasEvent(Event event) {
+            return false;
+        }
+
+        @Override
+        public boolean hasOverlappingEvent(Event event) {
+            return true;
+        }
+
+        @Override
+        public void updateFilteredPersonList(Predicate<Person> predicate) {}
+
+        @Override
+        public void updateFilteredEventList(Predicate<Event> predicate) {}
     }
 
     private class ModelStubWithNoPerson extends ModelStub {
@@ -369,6 +440,11 @@ public class AddEventCommandTest {
 
         @Override
         public void updateFilteredEventList(Predicate<Event> predicate) {}
+
+        @Override
+        public boolean hasOverlappingEvent(Event event) {
+            return false;
+        }
     }
 
     private class ModelStubWithMultiplePersons extends ModelStub {
@@ -393,6 +469,11 @@ public class AddEventCommandTest {
         @Override
         public void updateFilteredEventList(Predicate<Event> predicate) {
             filteredEventsUpdated = true;
+        }
+
+        @Override
+        public boolean hasOverlappingEvent(Event event) {
+            return false;
         }
     }
 }

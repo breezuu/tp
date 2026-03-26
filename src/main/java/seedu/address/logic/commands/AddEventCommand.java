@@ -21,6 +21,8 @@ public class AddEventCommand extends Command {
 
     public static final String COMMAND_WORD = "add";
     public static final String MESSAGE_SUCCESS = "Added event for %1$s: %2$s";
+    public static final String MESSAGE_DUPLICATE_EVENT = "This contact is already linked to this event: %1$s";
+    public static final String MESSAGE_CLASHING_EVENT = "This event clashes with an existing event in the calendar.";
     public static final String MESSAGE_USAGE = "event " + COMMAND_WORD
             + ": Adds an event and tags it to a contact.\n"
             + "Parameters: event add title/TITLE [desc/DESCRIPTION] start/START end/END to/NAME "
@@ -43,31 +45,36 @@ public class AddEventCommand extends Command {
         this.targetInfo = targetInfo;
     }
 
-    // Developer Notes:
-    // 1. Resolve the target person [YL]
-    // 2. Checking if event is in Unique Event List [EJ to throw exception]
-    //     2.1 model::hasEvent(toAdd) --> If have, increment numberOfPersonLinked
-    //     2.2 else, creating the event, add into the unique event list
-    // 3. Add the event into the List<Event> inside the Person [YL]
-    // Take note: Rendering of UI is now inside model operations, as per discussion.
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
-        // Step 1:
+        // Step 1: resolve target person
         Person personToEdit = targetPerson(model, targetInfo);
 
-        // Step 2
+        // Case 1: Person is already linked to this event
+        if (personToEdit.hasEvent(toAdd)) {
+            logger.info("AddEvent: linking existing event " + toAdd + " to " + personToEdit.getName());
+            throw new CommandException(String.format(MESSAGE_DUPLICATE_EVENT, toAdd));
+        }
+
+        // Case 2: Existing global event
         Event eventToLink;
         if (model.hasEvent(toAdd)) {
             logger.info("AddEvent: linking existing event " + toAdd + " to " + personToEdit.getName());
             eventToLink = model.linkPersonToEvent(toAdd);
         } else {
+            // Case 3: Overlapping event
+            if (model.hasOverlappingEvent(toAdd)) {
+                logger.info("AddEvent: event clashes with existing event " + toAdd);
+                throw new CommandException(MESSAGE_CLASHING_EVENT);
+            }
+            // Case 4: New event
             logger.info("AddEvent: creating new event " + toAdd + " for " + personToEdit.getName());
             model.addEvent(toAdd);
             eventToLink = toAdd;
         }
 
-        // Step 3
+        // Update person's event list
         Person editedPerson = createPersonWithEvent(personToEdit, eventToLink);
         model.setPerson(personToEdit, editedPerson);
         logger.info("AddEvent: person updated " + personToEdit.getName()

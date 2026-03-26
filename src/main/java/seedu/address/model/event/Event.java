@@ -92,7 +92,15 @@ public class Event {
         }
 
         return otherEvent != null
-                && otherEvent.getEventId() == (getEventId());
+                && otherEvent.title.equals(title)
+                && otherEvent.timeRange.equals(timeRange);
+    }
+
+    /**
+     * Returns true if both event's time range are overlapping
+     */
+    public boolean isClashingWith(Event otherEvent) {
+        return timeRange.isOverlapping(otherEvent.timeRange);
     }
 
     @Override

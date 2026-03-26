@@ -100,6 +100,11 @@ public interface Model {
     boolean hasEvent(Event event);
 
     /**
+     * Returns true if any event in the address book overlaps with {@code event}.
+     */
+    boolean hasOverlappingEvent(Event event);
+
+    /**
      * Adds the given event.
      * The event must not already exist in the address book.
      */
