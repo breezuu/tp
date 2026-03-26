@@ -2,12 +2,10 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import seedu.address.commons.core.LogsCenter;
-import seedu.address.logic.Messages;
+import seedu.address.commons.util.EventUtil;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.event.Event;
@@ -49,7 +47,7 @@ public class DeleteEventCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        Person personToEdit = targetPerson(model, targetInfo);
+        Person personToEdit = EventUtil.targetPerson(model, targetInfo);
 
         // Checking if the event is in the Person's List<Event>
         if (!personToEdit.hasEvent(toDelete)) {
@@ -69,21 +67,6 @@ public class DeleteEventCommand extends Command {
 
         model.showEventsForPerson(personToEdit);
         return new CommandResult(String.format(MESSAGE_SUCCESS, personToEdit.getName(), toDelete));
-    }
-
-    private static Person targetPerson(Model model, PersonInformation targetInfo) throws CommandException {
-        List<Person> matches = model.findPersons(targetInfo);
-        if (matches.isEmpty()) {
-            throw new CommandException(Messages.MESSAGE_NO_MATCH);
-        }
-
-        if (matches.size() > 1) {
-            Set<Person> matchingPersons = Set.copyOf(matches);
-            model.showMatchingPersons(matchingPersons);
-            throw new CommandException(Messages.MESSAGE_MULTIPLE_MATCH);
-        }
-
-        return matches.get(0);
     }
 
     /**

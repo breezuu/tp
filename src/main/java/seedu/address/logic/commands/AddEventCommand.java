@@ -2,12 +2,10 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import seedu.address.commons.core.LogsCenter;
-import seedu.address.logic.Messages;
+import seedu.address.commons.util.EventUtil;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.event.Event;
@@ -49,7 +47,7 @@ public class AddEventCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
         // Step 1: resolve target person
-        Person personToEdit = targetPerson(model, targetInfo);
+        Person personToEdit = EventUtil.targetPerson(model, targetInfo);
 
         // Case 1: Person is already linked to this event
         if (personToEdit.hasEvent(toAdd)) {
@@ -82,21 +80,6 @@ public class AddEventCommand extends Command {
 
         model.showEventsForPerson(personToEdit);
         return new CommandResult(String.format(MESSAGE_SUCCESS, personToEdit.getName(), toAdd));
-    }
-
-    private static Person targetPerson(Model model, PersonInformation targetInfo) throws CommandException {
-        List<Person> matches = model.findPersons(targetInfo);
-        if (matches.isEmpty()) {
-            throw new CommandException(Messages.MESSAGE_NO_MATCH);
-        }
-
-        if (matches.size() > 1) {
-            Set<Person> matchingPersons = Set.copyOf(matches);
-            model.showMatchingPersons(matchingPersons);
-            throw new CommandException(Messages.MESSAGE_MULTIPLE_MATCH);
-        }
-
-        return matches.get(0);
     }
 
     private static Person createPersonWithEvent(Person personToEdit, Event eventToAdd) {

@@ -2,11 +2,10 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.commons.util.EventUtil;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -49,30 +48,13 @@ public class FindEventCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
-        Person matchedPerson = targetPerson(model, targetInfo);
+        Person matchedPerson = EventUtil.targetPerson(model, targetInfo);
 
         model.showEventsForPerson(matchedPerson);
         logger.info("FindEvent: matched " + matchedPerson.getName()
                 + ", events=" + model.getFilteredEventList().size());
         return new CommandResult(
                 String.format(Messages.MESSAGE_EVENTS_LISTED_OVERVIEW, model.getFilteredEventList().size()));
-    }
-
-    private static Person targetPerson(Model model, PersonInformation targetInfo) throws CommandException {
-        List<Person> matches = model.findPersons(targetInfo);
-        if (matches.isEmpty()) {
-            logger.info("FindEvent: no matches for " + targetInfo.name);
-            throw new CommandException(Messages.MESSAGE_NO_MATCH);
-        }
-
-        if (matches.size() > 1) {
-            logger.info("FindEvent: multiple matches (" + matches.size() + ") for " + targetInfo.name);
-            Set<Person> matchingPersons = Set.copyOf(matches);
-            model.showMatchingPersons(matchingPersons);
-            throw new CommandException(Messages.MESSAGE_MULTIPLE_MATCH);
-        }
-
-        return matches.get(0);
     }
 
     @Override
