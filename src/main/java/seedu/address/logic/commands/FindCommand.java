@@ -38,7 +38,6 @@ public class FindCommand extends Command {
             + PREFIX_NAME + "Alex Tan "
             + PREFIX_PHONE + "91234567";
 
-    private final int ONE = 1;
     private final PersonInformation targetInfo;
 
     /**
@@ -61,7 +60,7 @@ public class FindCommand extends Command {
         int count = matches.size();
 
         // Case 1: Only 1 matching
-        if (count == ONE) {
+        if (count == 1) {
             model.showEventsForPerson(matches.get(0));
             return new CommandResult(Messages.MESSAGE_ONE_PERSON_LISTED_OVERVIEW);
         }
