@@ -24,16 +24,18 @@ public class HelpStorageUtilTest {
     @BeforeEach
     @AfterEach
     public void cleanup() throws IOException {
+        if (Files.exists(HELP_DIR)) {
+            HELP_DIR.toFile().setWritable(true);
+        }
         HelpStorageUtil.clearDirectory();
     }
 
     @Test
     public void copyOverOfflineHelp_createsDirectory_success() {
-        assertFalse(Files.exists(HELP_DIR));
+        assertFalse(Files.isDirectory(HELP_DIR));
         assertDoesNotThrow(() -> HelpStorageUtil.copyOverOfflineHelp());
 
         // Verify the directory was created
-        assertTrue(Files.exists(HELP_DIR));
         assertTrue(Files.isDirectory(HELP_DIR));
     }
 
@@ -42,18 +44,19 @@ public class HelpStorageUtilTest {
         Files.createDirectories(HELP_DIR);
         Path dummyFile = HELP_DIR.resolve("dummy_test_file.txt");
         Files.createFile(dummyFile);
+
         assertTrue(Files.exists(dummyFile));
-        assertTrue(Files.exists(HELP_DIR));
+        assertTrue(Files.isDirectory(HELP_DIR));
 
         HelpStorageUtil.clearDirectory();
 
         assertFalse(Files.exists(dummyFile), "The dummy file should be deleted");
-        assertFalse(Files.exists(HELP_DIR), "The help directory should be deleted");
+        assertFalse(Files.isDirectory(HELP_DIR), "The help directory should be deleted");
     }
 
     @Test
     public void clearDirectory_nonExistentDirectory_doesNothing() {
-        assertFalse(Files.exists(HELP_DIR));
+        assertFalse(Files.isDirectory(HELP_DIR));
         assertDoesNotThrow(() -> HelpStorageUtil.clearDirectory());
     }
 

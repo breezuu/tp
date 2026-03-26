@@ -33,7 +33,7 @@ public class HelpStorageUtil {
     static void copyFiles(List<String> fileNames) throws IOException {
         Path userHelpDir = Paths.get(HELP_DIR_STRING);
 
-        if (!Files.exists(userHelpDir)) {
+        if (!Files.isDirectory(userHelpDir)) {
             Files.createDirectories(userHelpDir);
             logger.info("Created default help directory at: " + userHelpDir.toAbsolutePath());
         }
@@ -61,7 +61,7 @@ public class HelpStorageUtil {
     public static void clearDirectory() throws IOException {
         Path userHelpDir = Paths.get(HELP_DIR_STRING);
 
-        if (!Files.exists(userHelpDir)) {
+        if (!Files.isDirectory(userHelpDir)) {
             return;
         }
 
