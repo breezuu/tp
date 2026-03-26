@@ -208,7 +208,7 @@ Examples:
 
 Delete an event for a specified person
 
-Format: `event delete n/NAME start/START_TIME end/END_TIME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
+Format: `event delete title/TITLE start/START_TIME end/END_TIME n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 * The `NAME` is case-insensitive. e.g. `aLeX YeOH` will match `Alex Yeoh`
 * Only full words will be matched e.g. `Alex Yeo` will not match `Alex Yeoh`
@@ -268,8 +268,8 @@ Action     | Format, Examples
 **Clear**  | `clear`
 **Delete** | `delete n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `delete n/Alex Yeoh t/cs2103 t/cs2105`
 **Edit**   | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
-**Event Add** | `event add d/DESCRIPTION start/START_DATE end/END_DATE to/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `event add d/Complete Quiz 4 start/12-03-2026 1100 end/12-04-2026 2359 to/Bernice Yu`
-**Event Delete** | `event delete n/NAME start/START_TIME end/END_TIME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `event delete n/Bernice Yu start/12-03-2026 1100 end/12-04-2026 2359`
+**Event Add** | `event add title/TITLE [desc/DESCRIPTION] start/START_DATE end/END_DATE to/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]`<br> e.g., `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 to/David Li`
+**Event Delete** | `event delete title/TITLE start/START_TIME end/END_TIME n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]`<br> e.g., `event delete title/Meeting start/2026-03-12 1100 end/2026-03-12 2359 n/David Li`
 **Event View** | `event view n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `event view n/Bernice Yu`
 **Exit**   | `exit`
 **Filter** | `filter t/TAG[, TAG]...`<br> e.g., `filter t/friends`
