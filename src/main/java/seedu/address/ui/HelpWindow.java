@@ -1,5 +1,10 @@
 package seedu.address.ui;
 
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Logger;
 
 import javafx.fxml.FXML;
@@ -7,25 +12,35 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.commons.util.HelpStorageUtil;
 
 /**
  * Controller for a help page
  */
 public class HelpWindow extends UiPart<Stage> {
 
-    public static final String USERGUIDE_URL = "https://se-education.org/addressbook-level3/UserGuide.html";
+    public static final String USERGUIDE_URL = "https://ay2526s2-cs2103-f08-4.github.io/tp/UserGuide.html";
     public static final String HELP_MESSAGE = "Refer to the user guide: " + USERGUIDE_URL;
+    public static final String LOCAL_HELP_MESSAGE = "If you are unable to view the help page, click this button ->";
 
     private static final Logger logger = LogsCenter.getLogger(HelpWindow.class);
     private static final String FXML = "HelpWindow.fxml";
+    private static final String USER_FILE_PATH = "data/help/index.html";
 
     @FXML
     private Button copyButton;
 
     @FXML
     private Label helpMessage;
+
+    @FXML
+    private Button openLocalHelp;
+
+    @FXML
+    private Label localHelpMessage;
 
     /**
      * Creates a new HelpWindow.
@@ -35,6 +50,9 @@ public class HelpWindow extends UiPart<Stage> {
     public HelpWindow(Stage root) {
         super(FXML, root);
         helpMessage.setText(HELP_MESSAGE);
+        helpMessage.setFont(new Font(15));
+        localHelpMessage.setText(LOCAL_HELP_MESSAGE);
+        localHelpMessage.setFont(new Font(15));
     }
 
     /**
@@ -98,5 +116,33 @@ public class HelpWindow extends UiPart<Stage> {
         final ClipboardContent url = new ClipboardContent();
         url.putString(USERGUIDE_URL);
         clipboard.setContent(url);
+    }
+
+    /**
+     * Copies over resource file and opens the offline user guide for the user
+     */
+    @FXML
+    private void openOfflineHelp() {
+        try {
+            HelpStorageUtil.copyOverOfflineHelp();
+            Path htmlFilePath = Paths.get(USER_FILE_PATH);
+
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                URI fileUri = htmlFilePath.toUri();
+
+                // Create browser in new thread, otherwise will crash on linux systems
+                new Thread(() -> {
+                    try {
+                        Desktop.getDesktop().browse(fileUri);
+                    } catch (IOException e) {
+                        logger.severe("Failed to open the offline help guide: " + e.getMessage());
+                    }
+                }).start();
+            } else {
+                logger.warning("Desktop browsing not supported on this system");
+            }
+        } catch (IOException e) {
+            logger.severe("Offline help guide process failed: " + e.getMessage());
+        }
     }
 }

@@ -1,0 +1,228 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.table-of-content {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.table-of-content li {
+    padding-bottom: 5px;
+}
+
+a {
+    color: #003D7C;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+    color: #EF7C00;
+    text-decoration: underline;
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+h1, h2 {
+    color: #003D7C;
+    border-bottom: 2px solid #EF7C00;
+    padding-bottom: 5px;
+}
+
+.feature-header {
+    color: #003D7C;
+    padding-bottom: 2.5px;
+    border-bottom: none;
+}
+
+code {
+    color: #e83e8c; /* Pink text color */
+    background-color: #f8f9fa; /* Light grey background */
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.9em;
+}
+
+.command-box {
+    background-color: #2b2b2b;
+    color: #f8f8f2;
+    padding: 15px;
+    border-radius: 5px;
+    font-family: monospace;
+    overflow-x: auto;
+}
+
+/* The main container for the quote/info block */
+.info-callout {
+    display: flex;
+    border-left: 6px solid #003D7C; /* NUS Blue */
+    padding: 15px 15px 15px 20px;
+    margin: 20px 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #333;
+}
+
+.info-callout:hover {
+    background-color: #F5F5F5;
+    cursor: pointer;
+}
+
+/* The 'i' icon styling */
+.info-icon {
+    color: #003D7C;
+    font-family: Georgia, serif; /* Gives the 'i' that classic information look */
+    font-size: 24px;
+    font-weight: bold;
+    margin-right: 15px;
+    line-height: 1;
+}
+
+/* The text content wrapper */
+.info-content h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 16px;
+    color: #000;
+}
+
+.info-content ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.info-content li {
+    margin-bottom: 15px;
+}
+
+.code-comment {
+    color: #a0a0a0;
+    font-style: italic;
+}
+
+/* The main container for the quote/info block -> caution variant*/
+.caution-callout {
+    display: flex;
+    border-left: 6px solid #EF7C00; /* NUS Blue */
+    padding: 15px 15px 15px 20px;
+    margin: 20px 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #333;
+}
+
+
+.caution-callout:hover {
+    background-color: #F5F5F5;
+    cursor: pointer;
+}
+
+/* The 'i' icon styling */
+.caution-icon {
+    color: #EF7C00;
+    font-family: Georgia, serif; /* Gives the 'i' that classic information look */
+    font-size: 24px;
+    font-weight: bold;
+    margin-right: 15px;
+    line-height: 1;
+}
+
+/* The text content wrapper */
+.caution-content h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 16px;
+    color: #000;
+}
+
+.floating-top-btn {
+    /* Anchor bottom right */
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+
+    background-color: #003D7C;
+    color: #ffffff;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-family: sans-serif;
+    font-weight: bold;
+    text-decoration: none;
+
+
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+/* Make it pop when hovered */
+.floating-top-btn:hover {
+    background-color: #EF7C00;
+    transform: translateY(-3px);
+    color: black;
+}
+
+.feature-block {
+    padding: 20px;
+    margin-bottom: 30px;
+    background-color: #ffffff;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.feature-block:hover {
+    /* Lifts the entire block up by 5 px*/
+    transform: translateY(-5px);
+    /* Create float illusion per block*/
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Main table container */
+.command-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+    color: #333;
+    margin: 20px 0;
+}
+
+/* Base styling for all cells */
+.command-table th, .command-table td {
+    padding: 12px 16px;
+    vertical-align: top; /* Keeps text at the top if the row gets tall */
+    text-align: left;
+    border:  1px solid #003D7C;
+}
+
+/* Header specific styling */
+.command-table thead th {
+    border:  1px solid #003D7C;
+    background-color: #fff;
+    font-weight: bold;
+}
+
+/* Zebra striping for alternating rows */
+.command-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Light grey for even rows */
+}
+
+/* Makes the first column (Action) bold and a fixed width */
+.command-table td:first-child {
+    font-weight: bold;
+    width: 15%;
+}
