@@ -122,14 +122,14 @@ public class EditCommandTest {
     }
 
     @Test
-    public void execute_editAddsOnlyNewTagsWhenSomeAlreadyPresent_success() {
+    public void execute_editTogglesExistingTagAndAddsNewTag_success() {
         Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
                 .withTags("friends", VALID_TAG_HUSBAND)
                 .build();
         EditCommand editCommand = new EditCommand(targetInfoFromPerson(personToEdit), descriptor);
 
-        Person editedPerson = new PersonBuilder(personToEdit).withTags("friends", VALID_TAG_HUSBAND).build();
+        Person editedPerson = new PersonBuilder(personToEdit).withTags(VALID_TAG_HUSBAND).build();
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
@@ -140,23 +140,35 @@ public class EditCommandTest {
     }
 
     @Test
-    public void execute_editWithOnlyExistingTag_noChangesDone() {
+    public void execute_editWithOnlyExistingTag_removesTag() {
         Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withTags("friends").build();
         EditCommand editCommand = new EditCommand(targetInfoFromPerson(personToEdit), descriptor);
 
+        Person editedPerson = new PersonBuilder(personToEdit).withTags().build();
+        String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
+
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
-        assertCommandSuccess(editCommand, model, EditCommand.MESSAGE_NO_CHANGES_DONE, expectedModel);
+        expectedModel.setPerson(personToEdit, editedPerson);
+        expectedModel.updateFilteredPersonList(p -> p.equals(editedPerson));
+
+        assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
     }
 
     @Test
-    public void execute_editWithOnlyExistingTagDifferentCase_noChangesDone() {
+    public void execute_editWithOnlyExistingTagDifferentCase_removesTag() {
         Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withTags("Friends").build();
         EditCommand editCommand = new EditCommand(targetInfoFromPerson(personToEdit), descriptor);
 
+        Person editedPerson = new PersonBuilder(personToEdit).withTags().build();
+        String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
+
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
-        assertCommandSuccess(editCommand, model, EditCommand.MESSAGE_NO_CHANGES_DONE, expectedModel);
+        expectedModel.setPerson(personToEdit, editedPerson);
+        expectedModel.updateFilteredPersonList(p -> p.equals(editedPerson));
+
+        assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
     }
 
     @Test
