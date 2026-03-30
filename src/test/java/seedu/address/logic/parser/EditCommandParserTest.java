@@ -102,6 +102,18 @@ public class EditCommandParserTest {
     }
 
     @Test
+    public void parse_duplicateTargetSingleValuedPrefixes_failure() {
+        String userInput = TARGET_NAME_AMY + PHONE_DESC_AMY + PHONE_DESC_BOB + DELIMITER + EMAIL_DESC_AMY.trim();
+        assertParseFailure(parser, userInput, Messages.getErrorMessageForDuplicatePrefixes(PREFIX_PHONE));
+    }
+
+    @Test
+    public void parse_nonPrefixedUpdatePreamble_failure() {
+        String userInput = TARGET_NAME_AMY + DELIMITER + "oops " + PHONE_DESC_AMY.trim();
+        assertParseFailure(parser, userInput, MESSAGE_INVALID_FORMAT);
+    }
+
+    @Test
     public void parse_invalidValue_failure() {
         assertParseFailure(parser, TARGET_NAME_AMY + DELIMITER + INVALID_NAME_DESC.trim(), Name.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, TARGET_NAME_AMY + DELIMITER + INVALID_PHONE_DESC.trim(), Phone.MESSAGE_CONSTRAINTS);

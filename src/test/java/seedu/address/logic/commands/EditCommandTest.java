@@ -21,6 +21,7 @@ import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -38,6 +39,7 @@ import seedu.address.model.event.Event;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonInformation;
+import seedu.address.model.tag.Tag;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 
@@ -203,6 +205,48 @@ public class EditCommandTest {
 
         assertCommandFailure(editCommand, model, Messages.MESSAGE_NO_MATCH);
     }
+
+        @Test
+        public void execute_multipleMatchingPersonsUnfilteredList_failure() {
+        Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person duplicateNamePerson = new PersonBuilder(firstPerson)
+            .withPhone("81234567")
+            .build();
+        model.addPerson(duplicateNamePerson);
+
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withPhone("92345678").build();
+        EditCommand editCommand = new EditCommand(
+            new PersonInformation(firstPerson.getName(), null, null, null, null), descriptor);
+
+        assertThrows(CommandException.class, Messages.MESSAGE_MULTIPLE_MATCH, () -> editCommand.execute(model));
+        assertEquals(2, model.getFilteredPersonList().size());
+        assertTrue(model.getFilteredPersonList().contains(firstPerson));
+        assertTrue(model.getFilteredPersonList().contains(duplicateNamePerson));
+        }
+
+        @Test
+        public void execute_findPersonsMiss_caseInsensitiveTagFallback_success() {
+        Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withPhone("85556666").build();
+
+        PersonInformation targetWithDifferentTagCase = new PersonInformation(
+            personToEdit.getName(),
+            null,
+            null,
+            null,
+            Set.of(new Tag("FRIENDS")));
+
+        EditCommand editCommand = new EditCommand(targetWithDifferentTagCase, descriptor);
+
+        Person editedPerson = new PersonBuilder(personToEdit).withPhone("85556666").build();
+        String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        expectedModel.setPerson(personToEdit, editedPerson);
+        expectedModel.updateFilteredPersonList(p -> p.equals(editedPerson));
+
+        assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
+        }
 
     /**
          * Edit still matches against the full address book even when current list is filtered.
