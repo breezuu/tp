@@ -65,7 +65,8 @@ NAB is a **desktop app for NUS students to manage contacts across multiple modul
 * Extraneous parameters for commands that do not take in parameters (such as `help`, `list`, `exit` and `clear`) will be ignored.<br>
   e.g. if the command specifies `help 123`, it will be interpreted as `help`.
 
-* Tags are case-insensitive. t/Friends and t/friends are treated as 1 unique tag. Error may occur if both tags are used at the same time.
+* Tags are case-insensitive. t/Friends and t/friends are treated as 1 unique tag. Multiple use of the same tags with different case sensitivity should not be used.
+e.g `find n/John Doe t/Friends t/friends` 
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
 </box>
