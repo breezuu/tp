@@ -7,15 +7,21 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_PHOTO;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BOB;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.model.event.Event;
+import seedu.address.model.event.TimeRange;
+import seedu.address.model.event.Title;
 import seedu.address.testutil.PersonBuilder;
 
 public class PersonTest {
@@ -42,6 +48,7 @@ public class PersonTest {
         // different phone, all other attributes same -> returns false
         editedAlice = new PersonBuilder(ALICE).withPhone(VALID_PHONE_BOB).build();
         assertFalse(ALICE.isSamePerson(editedAlice));
+
     }
 
     @Test
@@ -84,20 +91,59 @@ public class PersonTest {
 
         // different events -> returns false
         editedAlice = new PersonBuilder(ALICE)
-                .withEvents("Project meeting,21-02-26 1100,21-02-26 1200")
+                .withEvents("Project meeting,2026-02-21 1100,2026-02-21 1200")
                 .build();
+        assertFalse(ALICE.equals(editedAlice));
+
+        // different photo -> return false
+        editedAlice = new PersonBuilder(ALICE).withPhoto(VALID_PHOTO).build();
         assertFalse(ALICE.equals(editedAlice));
     }
 
     @Test
-    public void constructor_withUniqueEventList_setsEventsCorrectly() {
-        UniqueEventList events = new UniqueEventList();
-        Event event = new Event("Meeting", "21-02-26 1100", "21-02-26 1500");
-        events.add(event);
+    public void constructor_withEventList_setsEventsCorrectly() {
+        Event event = new Event(new Title("Meeting"), Optional.empty(),
+                new TimeRange("2026-02-21 1100", "2026-02-21 1500"));
         Person person = new Person(ALICE.getName(), ALICE.getPhone(),
-                ALICE.getEmail(), ALICE.getAddress(), Collections.emptySet(), events);
+                ALICE.getEmail(), ALICE.getAddress(), Collections.emptySet(), List.of(event), ALICE.getPhoto());
         assertEquals(ALICE.getName(), person.getName());
         assertTrue(person.getEvents().contains(event));
+    }
+
+    @Test
+    public void hasEvent_eventPresent_returnsTrue() {
+        Person person = new PersonBuilder().build();
+        Event event = new Event(new Title("Meeting"), Optional.empty(),
+                new TimeRange("2026-03-25 0900", "2026-03-25 1000"));
+        person.addEvent(event);
+        assertTrue(person.hasEvent(event));
+    }
+
+    @Test
+    public void hasEvent_eventAbsent_returnsFalse() {
+        Person person = new PersonBuilder().build();
+        Event event = new Event(new Title("Meeting"), Optional.empty(),
+                new TimeRange("2026-03-25 0900", "2026-03-25 1000"));
+        assertFalse(person.hasEvent(event));
+    }
+
+    @Test
+    public void removeEvent_eventPresent_removesEvent() {
+        Person person = new PersonBuilder().build();
+        Event event = new Event(new Title("Meeting"), Optional.empty(),
+                new TimeRange("2026-03-25 0900", "2026-03-25 1000"));
+        person.addEvent(event);
+        person.removeEvent(event);
+        assertFalse(person.hasEvent(event));
+    }
+
+    @Test
+    public void removeEvent_eventAbsent_noChange() {
+        Person person = new PersonBuilder().build();
+        Event event = new Event(new Title("Meeting"), Optional.empty(),
+                new TimeRange("2026-03-25 0900", "2026-03-25 1000"));
+        person.removeEvent(event); // should not throw
+        assertTrue(person.getEvents().isEmpty());
     }
 
     @Test
@@ -105,7 +151,8 @@ public class PersonTest {
         String expected = Person.class.getCanonicalName() + "{name=" + ALICE.getName() + ", phone=" + ALICE.getPhone()
                 + ", email=" + ALICE.getEmail().map(email -> email.toString()).orElse("")
                 + ", address=" + ALICE.getAddress().map(addr -> addr.toString()).orElse("")
-                + ", tags=" + ALICE.getTags() + ", events=" + ALICE.getEvents() + "}";
+                + ", tags=" + ALICE.getTags() + ", events=" + ALICE.getEvents()
+                + ", photo=" + ALICE.getPhoto().map(Object::toString).orElse("") + "}";
         assertEquals(expected, ALICE.toString());
     }
 }

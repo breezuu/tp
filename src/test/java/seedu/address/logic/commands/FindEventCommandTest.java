@@ -29,15 +29,17 @@ public class FindEventCommandTest {
     }
 
     @Test
-    public void execute_noMatchingPerson_throwsCommandExceptionAndClearsPanels() {
+    public void execute_noMatchingPerson_throwsCommandExceptionAndKeepsPanels() {
         Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        int originalPersonCount = model.getFilteredPersonList().size();
+        int originalEventCount = model.getFilteredEventList().size();
         FindEventCommand command = new FindEventCommand(
                 new PersonInformation(new Name("Nobody Here"), null, null, null, null));
 
         assertThrows(CommandException.class, MESSAGE_NO_MATCH, () -> command.execute(model));
 
-        assertTrue(model.getFilteredPersonList().isEmpty());
-        assertTrue(model.getFilteredEventList().isEmpty());
+        assertEquals(originalPersonCount, model.getFilteredPersonList().size());
+        assertEquals(originalEventCount, model.getFilteredEventList().size());
     }
 
     @Test
@@ -63,6 +65,11 @@ public class FindEventCommandTest {
     public void execute_singleMatchingPerson_returnsEventsOverviewAndShowsOnlyMatchedPersonEvents()
             throws CommandException {
         Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        Person matchedPerson = model.getFilteredPersonList().stream()
+                .filter(p -> p.getName().equalsIgnoreCase(new Name("Alice Pauline")))
+                .findFirst()
+                .orElseThrow();
+        matchedPerson.getEvents().forEach(model::addEvent);
         FindEventCommand command = new FindEventCommand(
                 new PersonInformation(new Name("Alice Pauline"), null, null, null, null));
 
@@ -70,7 +77,7 @@ public class FindEventCommandTest {
 
         assertEquals(String.format(MESSAGE_EVENTS_LISTED_OVERVIEW, 1), result.getFeedbackToUser());
         assertEquals(1, model.getFilteredPersonList().size());
-        Person matchedPerson = model.getFilteredPersonList().get(0);
+        matchedPerson = model.getFilteredPersonList().get(0);
         assertEquals(new Name("Alice Pauline"), matchedPerson.getName());
         assertEquals(1, model.getFilteredEventList().size());
         assertTrue(model.getFilteredEventList().stream().allMatch(matchedPerson.getEvents()::contains));
@@ -80,11 +87,13 @@ public class FindEventCommandTest {
     public void execute_singleMatchingPersonByOptionalField_returnsEventsOverview() throws CommandException {
         Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
         Person first = new PersonBuilder().withName("Ryan Lim").withPhone("81111111")
-                .withEvents("Consult,21-02-26 0900,21-02-26 1000").build();
+                .withEvents("Consult,2026-02-21 0900,2026-02-21 1000").build();
         Person second = new PersonBuilder().withName("Ryan Lim").withPhone("82222222")
-                .withEvents("Demo,21-02-26 1100,21-02-26 1200").build();
+                .withEvents("Demo,2026-02-21 1100,2026-02-21 1200").build();
         model.addPerson(first);
         model.addPerson(second);
+        first.getEvents().forEach(model::addEvent);
+        second.getEvents().forEach(model::addEvent);
 
         FindEventCommand command = new FindEventCommand(
                 new PersonInformation(new Name("Ryan Lim"), new Phone("82222222"), null, null, null));

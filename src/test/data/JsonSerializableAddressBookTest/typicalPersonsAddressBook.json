@@ -7,9 +7,10 @@
     "address" : "123, Jurong West Ave 6, #08-111",
     "tags" : [ "friends" ],
     "events" : [ {
+      "title" : "Lunch",
       "description" : "Lunch",
-      "startTime" : "21-02-26 1200",
-      "endTime" : "21-02-26 1300"
+      "startTime" : "2026-02-21 1200",
+      "endTime" : "2026-02-21 1300"
     } ]
   }, {
     "name" : "Benson Meier",
@@ -18,13 +19,15 @@
     "address" : "311, Clementi Ave 2, #02-25",
     "tags" : [ "owesMoney", "friends" ],
     "events" : [ {
+      "title" : "Client Call",
       "description" : "Client Call",
-      "startTime" : "21-02-26 0900",
-      "endTime" : "21-02-26 0930"
+      "startTime" : "2026-02-21 0900",
+      "endTime" : "2026-02-21 0930"
     }, {
+      "title" : "Project Review",
       "description" : "Project Review",
-      "startTime" : "21-02-27 1400",
-      "endTime" : "21-02-27 1500"
+      "startTime" : "2026-02-27 1400",
+      "endTime" : "2026-02-27 1500"
     } ]
   }, {
     "name" : "Carl Kurz",

@@ -3,6 +3,8 @@ package seedu.address.ui;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -17,6 +19,8 @@ public class CommandBox extends UiPart<Region> {
     private static final String FXML = "CommandBox.fxml";
 
     private final CommandExecutor commandExecutor;
+    private final CommandHistory commandHistory = new CommandHistory();
+    private boolean isNavigatingHistory;
 
     @FXML
     private TextField commandTextField;
@@ -28,7 +32,12 @@ public class CommandBox extends UiPart<Region> {
         super(FXML);
         this.commandExecutor = commandExecutor;
         // calls #setStyleToDefault() whenever there is a change to the text of the command box.
-        commandTextField.textProperty().addListener((unused1, unused2, unused3) -> setStyleToDefault());
+        commandTextField.textProperty().addListener((unused1, unused2, unused3) -> {
+            setStyleToDefault();
+            if (!isNavigatingHistory) {
+                commandHistory.syncWithUserInput(commandTextField.getText());
+            }
+        });
     }
 
     /**
@@ -41,12 +50,40 @@ public class CommandBox extends UiPart<Region> {
             return;
         }
 
+        commandHistory.recordCommand(commandText);
+
         try {
             commandExecutor.execute(commandText);
             commandTextField.setText("");
         } catch (CommandException | ParseException e) {
             setStyleToIndicateCommandFailure();
         }
+    }
+
+    /**
+     * Handles the Up/Down key pressed events for command history navigation.
+     */
+    @FXML
+    private void handleCommandHistoryNavigation(KeyEvent event) {
+        KeyCode keyCode = event.getCode();
+        if (keyCode == KeyCode.UP) {
+            String currentText = commandTextField.getText();
+            String previousCommand = commandHistory.navigateUp(currentText);
+            setCommandText(previousCommand);
+            event.consume();
+        } else if (keyCode == KeyCode.DOWN) {
+            String currentText = commandTextField.getText();
+            String nextCommand = commandHistory.navigateDown(currentText);
+            setCommandText(nextCommand);
+            event.consume();
+        }
+    }
+
+    private void setCommandText(String commandText) {
+        isNavigatingHistory = true;
+        commandTextField.setText(commandText);
+        commandTextField.positionCaret(commandTextField.getText().length());
+        isNavigatingHistory = false;
     }
 
     /**

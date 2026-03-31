@@ -6,7 +6,8 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.testutil.Assert.assertThrows;
-import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
@@ -17,11 +18,17 @@ import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.commands.ExitCommand;
+import seedu.address.logic.commands.ExportCommand;
+import seedu.address.logic.commands.FilterCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
+import seedu.address.logic.commands.ImportCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.Event;
+import seedu.address.model.event.Description;
+import seedu.address.model.event.Event;
+import seedu.address.model.event.TimeRange;
+import seedu.address.model.event.Title;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonInformation;
@@ -42,14 +49,15 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_eventAdd() throws Exception {
-        Event expectedEvent = new Event("Complete feature list", "21-02-26 1100",
-            "21-02-26 1500");
+        Event expectedEvent = new Event(new Title("Complete feature list"),
+                Optional.of(new Description("All tasks")),
+                new TimeRange("2026-02-21 1100", "2026-02-21 1500"));
         AddEventCommand expectedCommand = new AddEventCommand(
                 new PersonInformation(new Name("Lee eejoong"), null, null, null, null), expectedEvent);
 
         AddEventCommand command = (AddEventCommand) parser.parseCommand(
-                "event add l/CS2103 Meeting d/Complete feature list s/21-02-26 1100 "
-                        + "e/21-02-26 1500 to/Lee eejoong");
+                "event add title/Complete feature list desc/All tasks start/2026-02-21 1100 "
+                        + "end/2026-02-21 1500 to/Lee eejoong");
 
         assertEquals(expectedCommand, command);
     }
@@ -73,8 +81,10 @@ public class AddressBookParserTest {
         Person person = new PersonBuilder().build();
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder(person).build();
         EditCommand command = (EditCommand) parser.parseCommand(EditCommand.COMMAND_WORD + " "
-                + INDEX_FIRST_PERSON.getOneBased() + " " + PersonUtil.getEditPersonDescriptorDetails(descriptor));
-        assertEquals(new EditCommand(INDEX_FIRST_PERSON, descriptor), command);
+            + PREFIX_NAME + person.getName().fullName + " -- "
+            + PersonUtil.getEditPersonDescriptorDetails(descriptor));
+        assertEquals(new EditCommand(new PersonInformation(person.getName(), null, null, null, null), descriptor),
+            command);
     }
 
     @Test
@@ -101,6 +111,53 @@ public class AddressBookParserTest {
     public void parseCommand_list() throws Exception {
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD) instanceof ListCommand);
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " 3") instanceof ListCommand);
+    }
+
+    @Test
+    public void parseCommand_filter() throws Exception {
+        String singleTag = FilterCommand.COMMAND_WORD + " t/friends";
+        assertTrue(parser.parseCommand(singleTag) instanceof FilterCommand);
+
+        String doubleTag = FilterCommand.COMMAND_WORD + " t/friends, colleagues";
+        assertTrue(parser.parseCommand(doubleTag) instanceof FilterCommand);
+    }
+
+    @Test
+    public void parseCommand_import() throws Exception {
+        String type = "add";
+        String file = "testImport";
+        ImportCommand expectedCommand = new ImportCommand(type, file);
+
+        ImportCommand command = (ImportCommand) parser.parseCommand(
+                ImportCommand.COMMAND_WORD + " t/" + type + " f/" + file);
+
+        assertEquals(expectedCommand, command);
+    }
+
+    @Test
+    public void parseCommand_export() throws Exception {
+        String type = "all";
+        String file = "testExport";
+        ExportCommand expectedCommand = new ExportCommand(type, file);
+
+        ExportCommand command = (ExportCommand) parser.parseCommand(
+                ExportCommand.COMMAND_WORD + " t/" + type + " f/" + file);
+
+        assertEquals(expectedCommand, command);
+    }
+
+    @Test
+    public void parseCommand_import_missingPrefixThrowsParseException() {
+        // Missing 'f/' prefix
+        assertThrows(ParseException.class, () ->
+                parser.parseCommand(ImportCommand.COMMAND_WORD + " t/add"));
+    }
+
+    @Test
+    public void parseCommand_export_missingPrefixThrowsParseException() {
+        // Missing 't/' prefix
+        assertThrows(ParseException.class, () ->
+                parser.parseCommand(ExportCommand.COMMAND_WORD + " f/ testExport"));
     }
 
     @Test

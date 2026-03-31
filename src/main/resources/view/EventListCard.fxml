@@ -16,7 +16,8 @@
       <padding>
         <Insets top="8" right="12" bottom="8" left="15" />
       </padding>
-      <Label fx:id="description" styleClass="cell_big_label" />
+      <Label fx:id="title" styleClass="cell_big_label" />
+      <Label fx:id="description" styleClass="cell_small_label" />
       <Label fx:id="from" styleClass="cell_small_label" />
       <Label fx:id="to" styleClass="cell_small_label" />
     </VBox>

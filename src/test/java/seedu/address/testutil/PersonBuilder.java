@@ -6,12 +6,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import seedu.address.model.event.Description;
+import seedu.address.model.event.Event;
+import seedu.address.model.event.TimeRange;
+import seedu.address.model.event.Title;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
-import seedu.address.model.person.Event;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Photo;
 import seedu.address.model.tag.Tag;
 import seedu.address.model.util.SampleDataUtil;
 
@@ -31,6 +35,7 @@ public class PersonBuilder {
     private Optional<Address> address;
     private Set<Tag> tags;
     private List<Event> events;
+    private Optional<Photo> photo;
 
     /**
      * Creates a {@code PersonBuilder} with the default details.
@@ -42,6 +47,7 @@ public class PersonBuilder {
         address = Optional.of(new Address(DEFAULT_ADDRESS));
         tags = new HashSet<>();
         events = new ArrayList<>();
+        photo = Optional.empty();
     }
 
     /**
@@ -54,6 +60,7 @@ public class PersonBuilder {
         address = personToCopy.getAddress();
         tags = new HashSet<>(personToCopy.getTags());
         events = new ArrayList<>(personToCopy.getEvents());
+        photo = personToCopy.getPhoto();
     }
 
     /**
@@ -119,8 +126,41 @@ public class PersonBuilder {
         this.events.clear();
         for (String s : events) {
             String[] parts = s.split(",");
-            this.events.add(new Event(parts[0], parts[1], parts[2]));
+            Title title = new Title(parts[0].trim());
+            Optional<Description> description = Optional.empty();
+            String start;
+            String end;
+
+            if (parts.length == 4) {
+                String descValue = parts[1].trim();
+                if (!descValue.isEmpty()) {
+                    description = Optional.of(new Description(descValue));
+                }
+                start = parts[2].trim();
+                end = parts[3].trim();
+            } else {
+                start = parts[1].trim();
+                end = parts[2].trim();
+            }
+
+            this.events.add(new Event(title, description, new TimeRange(start, end)));
         }
+        return this;
+    }
+
+    /**
+     * Sets the {@code Photo} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withPhoto(String photoPath) {
+        this.photo = Optional.of(new Photo(photoPath));
+        return this;
+    }
+
+    /**
+     * Removes the {@code Photo} from the {@code Person} that we are building.
+     */
+    public PersonBuilder withoutPhoto() {
+        this.photo = Optional.empty();
         return this;
     }
 
@@ -129,7 +169,7 @@ public class PersonBuilder {
      * @return Person
      */
     public Person build() {
-        Person person = new Person(name, phone, email, address, tags);
+        Person person = new Person(name, phone, email, address, tags, photo);
         for (Event event : events) {
             person.addEvent(event);
         }

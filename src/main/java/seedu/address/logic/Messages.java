@@ -25,6 +25,12 @@ public class Messages {
             "Multiple matches identified! Please provide more arguments.";
     public static final String MESSAGE_NO_MATCH =
             "No matches identified!";
+    public static final String MESSAGE_SAVE_PHOTO_FAIL = "Error saving photo : ";
+    public static final String MESSAGE_DELETE_PHOTO_FAIL = "Error deleting photo : ";
+    public static final String MESSAGE_CLEAR_USER_IMAGE_FAIL = "Address book cleared, "
+            + "but some images could not be deleted: ";
+    public static final String MESSAGE_FAILED_OFFLINE_GUIDE = "Something went wrong with loading the offline guide: ";
+    public static final String MESSAGE_MISSING_INTERNAL_RESOURCE = "Missing internal application resource: ";
 
     /**
      * Returns an error message indicating the duplicate prefixes.
@@ -52,6 +58,8 @@ public class Messages {
                 .append(person.getAddress().map(address -> address.toString()).orElse(""))
                 .append("; Tags: ");
         person.getTags().forEach(builder::append);
+        builder.append("; Photo: ")
+                .append(person.getPhoto().map(photo -> photo.toString()).orElse(""));
         return builder.toString();
     }
 

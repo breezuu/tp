@@ -2,8 +2,8 @@ package seedu.address.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.model.Model.PREDICATE_SHOW_ALL_EVENTS;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
@@ -13,13 +13,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.event.Description;
+import seedu.address.model.event.Event;
+import seedu.address.model.event.TimeRange;
+import seedu.address.model.event.Title;
 import seedu.address.model.person.Email;
-import seedu.address.model.person.Event;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
@@ -32,6 +36,12 @@ import seedu.address.testutil.PersonBuilder;
 public class ModelManagerTest {
 
     private ModelManager modelManager = new ModelManager();
+
+    private static Event newEvent(String title, String description, String startTime, String endTime) {
+        return new Event(new Title(title),
+                description == null ? Optional.empty() : Optional.of(new Description(description)),
+                new TimeRange(startTime, endTime));
+    }
 
     @Test
     public void constructor() {
@@ -115,86 +125,109 @@ public class ModelManagerTest {
     }
 
     @Test
-    public void constructor_withPersonsHavingEvents_populatesFilteredEventList() {
-        Person aliceWithEvent = new PersonBuilder()
-                .withName("Alice Pauline")
-                .withPhone("94351253")
-                .withEvents("Project Meeting,2026-03-20 0900,2026-03-20 1000")
-                .build();
-        Person bensonWithEvents = new PersonBuilder()
-                .withName("Benson Meier")
-                .withPhone("98765432")
-                .withEvents("Code Review,2026-03-21 1400,2026-03-21 1500",
-                        "Demo Prep,2026-03-22 1000,2026-03-22 1100")
-                .build();
-
-        AddressBook seededAddressBook = new AddressBookBuilder()
-                .withPerson(aliceWithEvent)
-                .withPerson(bensonWithEvents)
-                .build();
-
-        ModelManager seededModel = new ModelManager(seededAddressBook, new UserPrefs());
-
-        assertEquals(3, seededModel.getFilteredEventList().size());
+    public void hasEvent_nullEvent_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.hasEvent(null));
     }
 
     @Test
-    public void addPerson_withEvents_updatesFilteredEventList() {
-        Person personWithEvent = new PersonBuilder()
-                .withName("Event Owner")
-                .withPhone("90001111")
-                .withEvents("Consultation,2026-03-25 1300,2026-03-25 1400")
-                .build();
+    public void hasEvent_eventNotInAddressBook_returnsFalse() {
+        Event event = newEvent("Project Meeting", "Discuss milestones",
+                "2026-03-20 0900", "2026-03-20 1000");
+        assertFalse(modelManager.hasEvent(event));
+    }
 
-        modelManager.addPerson(personWithEvent);
-
+    @Test
+    public void addEvent_eventAdded_updatesFilteredEventList() {
+        Event event = newEvent("Consultation", "Client sync",
+                "2026-03-25 1300", "2026-03-25 1400");
+        modelManager.addEvent(event);
+        assertTrue(modelManager.hasEvent(event));
         assertEquals(1, modelManager.getFilteredEventList().size());
     }
 
     @Test
-    public void setPerson_replacesEvents_refreshesFilteredEventList() {
-        Person original = new PersonBuilder()
-                .withName("Alex Tan")
-                .withPhone("90002222")
-                .withEvents("Old Event,2026-03-23 0900,2026-03-23 1000")
-                .build();
-        modelManager.addPerson(original);
-
-        Person edited = new PersonBuilder(original)
-                .withEvents("New Event,2026-03-24 0900,2026-03-24 1000")
-                .build();
-
-        modelManager.setPerson(original, edited);
-
-        assertEquals(1, modelManager.getFilteredEventList().size());
-        Event expected = new Event("New Event", "2026-03-24 0900", "2026-03-24 1000");
-        assertTrue(modelManager.getFilteredEventList().contains(expected));
-    }
-
-    @Test
-    public void deletePerson_removesPersonEventsFromFilteredEventList() {
-        Person personWithEvent = new PersonBuilder()
-                .withName("Delete Me")
-                .withPhone("90003333")
-                .withEvents("Delete Event,2026-03-26 0900,2026-03-26 1000")
-                .build();
-        modelManager.addPerson(personWithEvent);
-
+    public void deleteEvent_removesEventFromFilteredEventList() {
+        Event event = newEvent("Delete Event", "Cleanup",
+                "2026-03-26 0900", "2026-03-26 1000");
+        modelManager.addEvent(event);
         assertEquals(1, modelManager.getFilteredEventList().size());
 
-        modelManager.deletePerson(personWithEvent);
-
+        modelManager.deleteEvent(event);
         assertEquals(0, modelManager.getFilteredEventList().size());
+        assertFalse(modelManager.hasEvent(event));
     }
 
     @Test
-    public void findPersonByName_personInFilteredList_returnsPerson() {
-        modelManager.addPerson(ALICE);
-        modelManager.addPerson(BENSON);
+    public void setEvent_replacesEvent_success() {
+        Event original = newEvent("Old Event", "Old desc",
+                "2026-03-23 0900", "2026-03-23 1000");
+        Event edited = newEvent("New Event", "New desc",
+                "2026-03-24 0900", "2026-03-24 1000");
+        modelManager.addEvent(original);
+        modelManager.setEvent(original, edited);
+        assertFalse(modelManager.hasEvent(original));
+        assertTrue(modelManager.hasEvent(edited));
+    }
 
-        assertEquals(ALICE, modelManager.findPersonByName(ALICE.getName()));
-        assertEquals(BENSON, modelManager.findPersonByName(BENSON.getName()));
-        assertNull(modelManager.findPersonByName(new Name("Lee Eejoong")));
+    @Test
+    public void linkPersonToEvent_incrementsCount() {
+        Event event = newEvent("Team Meeting", "Discuss milestones",
+                "2026-03-20 0900", "2026-03-20 1000");
+        modelManager.addEvent(event);
+
+        Event linkRequest = newEvent("Team Meeting", "Other",
+                "2026-03-20 0900", "2026-03-20 1000");
+        Event linked = modelManager.linkPersonToEvent(linkRequest);
+
+        assertEquals(2, linked.getNumberOfPersonLinked());
+        assertEquals(2, event.getNumberOfPersonLinked());
+    }
+
+    @Test
+    public void unlinkPersonFromEvent_decrementsAndRemoves() {
+        Event event = newEvent("Cleanup", "Wrap up",
+                "2026-03-25 1300", "2026-03-25 1400");
+        modelManager.addEvent(event);
+
+        Event unlinked = modelManager.unlinkPersonFromEvent(event);
+
+        assertEquals(0, unlinked.getNumberOfPersonLinked());
+        assertFalse(modelManager.hasEvent(event));
+    }
+
+    @Test
+    public void hasOverlappingEvent_nullEvent_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.hasOverlappingEvent(null));
+    }
+
+    @Test
+    public void hasOverlappingEvent_noOverlap_returnsFalse() {
+        Event event = newEvent("Meeting", "Discuss", "2026-03-25 0900", "2026-03-25 1000");
+        modelManager.addEvent(event);
+        Event nonOverlapping = newEvent("Lunch", null, "2026-03-25 1200", "2026-03-25 1300");
+        assertFalse(modelManager.hasOverlappingEvent(nonOverlapping));
+    }
+
+    @Test
+    public void hasOverlappingEvent_withOverlap_returnsTrue() {
+        Event event = newEvent("Meeting", "Discuss", "2026-03-25 0900", "2026-03-25 1100");
+        modelManager.addEvent(event);
+        Event overlapping = newEvent("Call", null, "2026-03-25 1000", "2026-03-25 1200");
+        assertTrue(modelManager.hasOverlappingEvent(overlapping));
+    }
+
+    @Test
+    public void updateFilteredEventList_filtersByTitle() {
+        Event meeting = newEvent("Team Meeting", "Discuss milestones",
+                "2026-03-20 0900", "2026-03-20 1000");
+        Event review = newEvent("Code Review", "Quality check",
+                "2026-03-21 1400", "2026-03-21 1500");
+        modelManager.addEvent(meeting);
+        modelManager.addEvent(review);
+
+        modelManager.updateFilteredEventList(event -> event.getTitle().toString().contains("Meeting"));
+        assertEquals(1, modelManager.getFilteredEventList().size());
+        assertTrue(modelManager.getFilteredEventList().contains(meeting));
     }
 
     @Test
@@ -227,11 +260,64 @@ public class ModelManagerTest {
 
         // resets modelManager to initial state for upcoming tests
         modelManager.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        modelManager.updateFilteredEventList(PREDICATE_SHOW_ALL_EVENTS);
 
         // different userPrefs -> returns false
         UserPrefs differentUserPrefs = new UserPrefs();
         differentUserPrefs.setAddressBookFilePath(Paths.get("differentFilePath"));
         assertFalse(modelManager.equals(new ModelManager(addressBook, differentUserPrefs)));
+    }
+
+    @Test
+    public void showAllPersons_resetsPersonFilter() {
+        modelManager.addPerson(ALICE);
+        modelManager.addPerson(BENSON);
+        modelManager.updateFilteredPersonList(p -> p.equals(ALICE));
+        assertEquals(1, modelManager.getFilteredPersonList().size());
+
+        modelManager.showAllPersons();
+        assertEquals(2, modelManager.getFilteredPersonList().size());
+    }
+
+    @Test
+    public void showPersons_filtersByPredicate() {
+        modelManager.addPerson(ALICE);
+        modelManager.addPerson(BENSON);
+
+        modelManager.showPersons(p -> p.equals(ALICE));
+        assertEquals(1, modelManager.getFilteredPersonList().size());
+        assertEquals(ALICE, modelManager.getFilteredPersonList().get(0));
+    }
+
+    @Test
+    public void showMatchingPersons_showsOnlyMatchingPersonsAndClearsEvents() {
+        modelManager.addPerson(ALICE);
+        modelManager.addPerson(BENSON);
+        Event event = newEvent("Meeting", null, "2026-03-25 0900", "2026-03-25 1000");
+        modelManager.addEvent(event);
+
+        modelManager.showMatchingPersons(Set.of(ALICE));
+
+        assertEquals(1, modelManager.getFilteredPersonList().size());
+        assertEquals(ALICE, modelManager.getFilteredPersonList().get(0));
+        assertEquals(0, modelManager.getFilteredEventList().size());
+    }
+
+    @Test
+    public void showEventsForPerson_filtersPersonAndTheirEvents() {
+        Person personWithEvent = new PersonBuilder().withName("Eve Tan").withPhone("91110000").build();
+        modelManager.addPerson(personWithEvent);
+        modelManager.addPerson(BENSON);
+        Event event = newEvent("Consult", null, "2026-03-27 0900", "2026-03-27 1000");
+        modelManager.addEvent(event);
+        personWithEvent.addEvent(event);
+
+        modelManager.showEventsForPerson(personWithEvent);
+
+        assertEquals(1, modelManager.getFilteredPersonList().size());
+        assertEquals(personWithEvent, modelManager.getFilteredPersonList().get(0));
+        assertEquals(1, modelManager.getFilteredEventList().size());
+        assertTrue(modelManager.getFilteredEventList().contains(event));
     }
 
     @Test

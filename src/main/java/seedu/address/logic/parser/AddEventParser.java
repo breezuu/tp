@@ -3,17 +3,27 @@ package seedu.address.logic.parser;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DESC;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_END;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_START;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TITLE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TO;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import seedu.address.logic.commands.AddEventCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.event.Description;
+import seedu.address.model.event.Event;
+import seedu.address.model.event.TimeRange;
+import seedu.address.model.event.Title;
 import seedu.address.model.person.Address;
-import seedu.address.model.person.Event;
+import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.PersonInformation;
 import seedu.address.model.person.Phone;
@@ -24,15 +34,6 @@ import seedu.address.model.tag.Tag;
  */
 public class AddEventParser implements Parser<AddEventCommand> {
 
-    private static final Prefix PREFIX_LABEL = new Prefix("l/");
-    private static final Prefix PREFIX_DESCRIPTION = new Prefix("d/");
-    private static final Prefix PREFIX_START = new Prefix("s/");
-    private static final Prefix PREFIX_END = new Prefix("e/");
-    private static final Prefix PREFIX_TO = new Prefix("to/");
-
-    // Note: email disambiguation is excluded here because e/ is reserved for event end datetime.
-    // Use p/, a/, t/ for contact disambiguation instead.
-
     /**
      * Parses the given {@code String} of arguments in the context of the AddEventCommand
      * and returns an AddEventCommand object for execution.
@@ -42,41 +43,67 @@ public class AddEventParser implements Parser<AddEventCommand> {
         requireNonNull(args);
 
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args,
-                PREFIX_LABEL, PREFIX_DESCRIPTION, PREFIX_START, PREFIX_END, PREFIX_TO,
-                PREFIX_NAME, PREFIX_PHONE, PREFIX_ADDRESS, PREFIX_TAG);
+                PREFIX_TITLE, PREFIX_DESC, PREFIX_START, PREFIX_END, PREFIX_TO,
+                PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS, PREFIX_TAG);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_LABEL, PREFIX_DESCRIPTION, PREFIX_START, PREFIX_END, PREFIX_TO)
+        if (!arePrefixesPresent(argMultimap, PREFIX_TITLE, PREFIX_START, PREFIX_END, PREFIX_TO)
                 || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddEventCommand.MESSAGE_USAGE));
         }
+
         argMultimap.verifyNoDuplicatePrefixesFor(
-                PREFIX_LABEL, PREFIX_DESCRIPTION, PREFIX_START, PREFIX_END, PREFIX_TO,
-                PREFIX_PHONE, PREFIX_ADDRESS);
+                PREFIX_TITLE, PREFIX_DESC, PREFIX_START, PREFIX_END, PREFIX_TO,
+                PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS);
 
-        // TODO: More checks are required
-        // String label = argMultimap.getValue(PREFIX_LABEL).get().trim();
-        String description = argMultimap.getValue(PREFIX_DESCRIPTION).orElse("").trim();
-        String startDateTime = argMultimap.getValue(PREFIX_START).get().trim();
-        String endDateTime = argMultimap.getValue(PREFIX_END).get().trim();
-        String taggedContact = argMultimap.getValue(PREFIX_TO).get().trim();
-        Event event = new Event(description, startDateTime, endDateTime);
-
-        // Manually construct PersonInformation — cannot use PersonInformationParser here
-        // because e/ is reserved for event end datetime, not email.
+        Event event = createEvent(argMultimap);
         try {
-            Name name = ParserUtil.parseName(taggedContact);
-            Phone phone = argMultimap.getValue(PREFIX_PHONE).isPresent()
-                    ? ParserUtil.parsePhone(argMultimap.getValue(PREFIX_PHONE).get())
-                    : null;
-            Address address = argMultimap.getValue(PREFIX_ADDRESS).isPresent()
-                    ? ParserUtil.parseAddress(argMultimap.getValue(PREFIX_ADDRESS).get())
-                    : null;
-            Set<Tag> tags = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
-            PersonInformation targetInfo = new PersonInformation(name, phone, null, address, tags);
+            PersonInformation targetInfo = createPersonInformation(argMultimap);
             return new AddEventCommand(targetInfo, event);
         } catch (ParseException pe) {
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddEventCommand.MESSAGE_USAGE), pe);
+        }
+    }
+
+    private static PersonInformation createPersonInformation(ArgumentMultimap argMultimap) throws ParseException {
+        String taggedContact = argMultimap.getValue(PREFIX_TO).get().trim();
+        Name name = ParserUtil.parseName(taggedContact);
+        Phone phone = argMultimap.getValue(PREFIX_PHONE).isPresent()
+                ? ParserUtil.parsePhone(argMultimap.getValue(PREFIX_PHONE).get())
+                : null;
+        Email email = argMultimap.getValue(PREFIX_EMAIL).isPresent()
+                ? ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get())
+                : null;
+        Address address = argMultimap.getValue(PREFIX_ADDRESS).isPresent()
+                ? ParserUtil.parseAddress(argMultimap.getValue(PREFIX_ADDRESS).get())
+                : null;
+        Set<Tag> tags = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
+        return new PersonInformation(name, phone, email, address, tags);
+    }
+
+    private static Event createEvent(ArgumentMultimap argMultimap) throws ParseException {
+        String titleStr = argMultimap.getValue(PREFIX_TITLE).get().trim();
+        if (!Title.isValidTitle(titleStr)) {
+            throw new ParseException(Title.MESSAGE_CONSTRAINTS);
+        }
+        Title title = new Title(titleStr);
+        String descStr = argMultimap.getValue(PREFIX_DESC).map(String::trim).orElse(null);
+        if (descStr != null && !descStr.isEmpty() && !Description.isValidDescription(descStr)) {
+            throw new ParseException(Description.MESSAGE_CONSTRAINTS);
+        }
+        Optional<Description> description = (descStr != null && !descStr.isEmpty())
+                ? Optional.of(new Description(descStr))
+                : Optional.empty();
+        String startDateTime = argMultimap.getValue(PREFIX_START).get().trim();
+        String endDateTime = argMultimap.getValue(PREFIX_END).get().trim();
+        if (!TimeRange.isValidDateTimeFormat(startDateTime) || !TimeRange.isValidDateTimeFormat(endDateTime)) {
+            throw new ParseException(TimeRange.MESSAGE_INVALID_DATETIME_FORMAT);
+        }
+        try {
+            TimeRange timeRange = new TimeRange(startDateTime, endDateTime);
+            return new Event(title, description, timeRange);
+        } catch (IllegalArgumentException e) {
+            throw new ParseException(TimeRange.MESSAGE_END_NOT_AFTER_START, e);
         }
     }
 

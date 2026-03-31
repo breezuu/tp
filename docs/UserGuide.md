@@ -13,7 +13,7 @@ NAB is a **desktop app for NUS students to manage contacts across multiple modul
 
 --------------------------------------------------------------------------------------------------------------------
 
-## Quick start
+## Quick Start
 
 1. Ensure you have Java `17` or above installed in your Computer.<br>
    **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
@@ -27,7 +27,7 @@ NAB is a **desktop app for NUS students to manage contacts across multiple modul
    ![Ui](images/Ui.png)
 
 1. Type the command in the command box and press Enter to execute it. <br>e.g. typing **`help`** and pressing Enter will open the help window.<br>
-   
+
     Some example commands you can try:
 
    * `list` : Lists all contacts.
@@ -85,8 +85,10 @@ Format: `add n/NAME p/PHONE_NUMBER [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 <box type="tip" seamless>
 
-**Tip:** A person can have any number of tags (including 0)
+**Tip:** Can associate 0 or more tags during the add process
 </box>
+
+* Contact cannot be added if the added phone number is already registered in the address book
 
 Examples:
 * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
@@ -102,18 +104,30 @@ Format: `list`
 
 Edits an existing person in the address book.
 
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
+Format: `edit n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG] -- [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG] [pfp/PHOTO_PATH]`
 
-* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, ...
-* At least one of the optional fields must be provided.
+**Tip:** If there are multiple contacts with the same `NAME`, utilize the other optional parameters to narrow down the updating of the correct contact. This can be done by supplying any of the following information just after `edit n/NAME`: Phone number, Email, Address or Tag.
+
+* The segment before `--` identifies which contact to edit.
+* The segment after `--` specifies fields to be updated.
+  * Updatable fields: `n/NAME`, `p/PHONE_NUMBER`, `e/EMAIL`, `a/ADDRESS`, `t/TAG`, `pfp/PHOTO_PATH`.
+* `n/NAME` in the target segment is required.
 * Existing values will be updated to the input values.
-* When editing tags, the existing tags of the person will be removed i.e. adding of tags is not cumulative.
-* You can remove all the person’s tags by typing `t/` without
-    specifying any tags after it.
+* To add tags, you can specify new tags by typing `t/<tag>` in the updated field.
+* To delete a specific tag, type an existing tag in the updated field.
+* You can remove all the person’s tags by typing `t/` without specifying any tags after it.
+* Tags are case-insensitive.
+
+Additional information for updating profile picture:
+* For `pfp/PHOTO_PATH`, accepted file extensions are `.png`, `.jpg`, and `.jpeg`.
+* `PHOTO_PATH` can be absolute (e.g., `C:/Users/Alex/Pictures/me.jpg`) or relative to the app folder (e.g., `images/me.png`).
+* The file must exist; NAB will copy it into `data/images/`.
 
 Examples:
-*  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
-*  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
+*  `edit n/John Doe -- p/91234567 e/johndoe@example.com` edits John Doe's phone and email.
+*  `edit n/John Doe p/98765432 -- n/Johnathan Doe t/teammate` uniquely identifies John Doe by phone, then updates name and tags.
+*  `edit n/Betsy Crower -- t/` clears all tags for Betsy Crower.
+*  `edit n/Alex Yeoh -- pfp/C:/Users/Alex/Pictures/profile.jpg` updates Alex Yeoh's profile picture.
 
 ### Locating persons by name: `find`
 
@@ -174,6 +188,49 @@ Clears all entries from the address book.
 
 Format: `clear`
 
+### Adding an event : `event add`
+
+Create a new event for a specified person.
+
+Format: `event add title/TITLE [desc/DESCRIPTION] start/START_DATE end/END_DATE to/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
+
+* The `NAME` is case-insensitive. e.g. `aLeX YeOH` will match `Alex Yeoh`
+* Only full words will be matched e.g. `Alex Yeo` will not match `Alex Yeoh`
+* Order of parameters does not matter.
+* The date time format for start/ and end/ is YYYY-MM-DD HHmm or DD-MM-YYYY HHmm
+
+Examples:
+* `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 to/David Li` adds an event to David Li.
+* Suppose there are multiple `David Li`, an enriched search would be `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 to/David Li p/99272758`
+
+### View an event : `event view`
+
+View all events for a specified person
+
+Format: `event view n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
+
+* The `NAME` is case-insensitive. e.g. `aLeX YeOH` will match `Alex Yeoh`
+* Only full words will be matched e.g. `Alex Yeo` will not match `Alex Yeoh`
+
+Examples:
+* `event view n/Bernice Yu` views all events that Bernice Yu has.
+* Suppose there are multiple `Bernice Yu`, an enriched search would be `event view n/Bernice Yu e/berniceyu@example.com`
+
+### Delete an event : `event delete`
+
+Delete an event for a specified person
+
+Format: `event delete title/TITLE start/START_TIME end/END_TIME n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
+
+* The `NAME` is case-insensitive. e.g. `aLeX YeOH` will match `Alex Yeoh`
+* Only full words will be matched e.g. `Alex Yeo` will not match `Alex Yeoh`
+* Order of parameters does not matter.
+* The date time format for start/ and end/ is YYYY-MM-DD HHmm or DD-MM-YYYY HHmm
+
+Examples:
+* `event delete title/Meeting start/2026-03-12 1100 end/2026-03-12 2359 n/David Li` deletes the event that titled Meeting which starts at 12 March 2026 1100 and ends at 12 April 2026 2359 assigned to David Li.
+* Suppose there are multiple `David Li`, an enriched search would be `event delete title/Meeting start/2026-03-12 1100 end/2026-03-12 2359 n/David Li p/99272758`
+
 ### Exiting the program : `exit`
 
 Exits the program.
@@ -219,11 +276,15 @@ _Details coming soon ..._
 
 Action     | Format, Examples
 -----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**Add**    | `add n/NAME p/PHONE_NUMBER [e/EMAIL] a[/ADDRESS] [t/TAG]...` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
+**Add**    | `add n/NAME p/PHONE_NUMBER [e/EMAIL] [a/ADDRESS] [t/TAG]...` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
 **Clear**  | `clear`
 **Delete** | `delete n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `delete n/Alex Yeoh t/cs2103 t/cs2105`
-**Edit**   | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
-**Find**   | `find n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `find n/James Jake p/67676969`
+**Edit**   | `edit n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG] -- [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG] [pfp/PHOTO_PATH]`<br> e.g.,`edit n/James Lee e/jameslee@example.com -- t/CS2100 pfp/images/james.jpg`
+**Event Add** | `event add title/TITLE [desc/DESCRIPTION] start/START_DATE end/END_DATE to/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]`<br> e.g., `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 to/David Li`
+**Event Delete** | `event delete title/TITLE start/START_TIME end/END_TIME n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]`<br> e.g., `event delete title/Meeting start/2026-03-12 1100 end/2026-03-12 2359 n/David Li`
+**Event View** | `event view n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `event view n/Bernice Yu`
+**Exit**   | `exit`
 **Filter** | `filter t/TAG[, TAG]...`<br> e.g., `filter t/friends`
-**List**   | `list`
+**Find**   | `find n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `find n/James Jake p/67676969`
 **Help**   | `help`
+**List**   | `list`

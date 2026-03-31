@@ -1,8 +1,10 @@
 package seedu.address.storage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,13 +13,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
+import seedu.address.model.event.Event;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
-import seedu.address.model.person.Event;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
-import seedu.address.model.person.exceptions.DuplicateEventException;
+import seedu.address.model.person.Photo;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -26,12 +28,12 @@ import seedu.address.model.tag.Tag;
 class JsonAdaptedPerson {
 
     public static final String MISSING_FIELD_MESSAGE_FORMAT = "Person's %s field is missing!";
-    public static final String DUPLICATE_EVENT_MESSAGE_FORMAT = "Duplicate event for person %1$s: %2$s";
 
     private final String name;
     private final String phone;
     private final String email;
     private final String address;
+    private final String photo;
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
     private final List<JsonAdaptedEvent> events = new ArrayList<>();
 
@@ -40,13 +42,16 @@ class JsonAdaptedPerson {
      */
     @JsonCreator
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
-            @JsonProperty("email") String email, @JsonProperty("address") String address,
+            @JsonProperty("email") String email,
+            @JsonProperty("address") String address,
+            @JsonProperty("photo") String photo,
             @JsonProperty("tags") List<JsonAdaptedTag> tags,
             @JsonProperty("events") List<JsonAdaptedEvent> events) {
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
+        this.photo = photo;
         if (tags != null) {
             this.tags.addAll(tags);
         }
@@ -63,6 +68,7 @@ class JsonAdaptedPerson {
         phone = source.getPhone().value;
         email = source.getEmail().map(email -> email.value).orElse(null);
         address = source.getAddress().map(address -> address.value).orElse(null);
+        photo = source.getPhoto().map(photo -> photo.getPath()).orElse(null);
         tags.addAll(source.getTags().stream()
                 .map(JsonAdaptedTag::new)
                 .collect(Collectors.toList()));
@@ -76,7 +82,7 @@ class JsonAdaptedPerson {
      *
      * @throws IllegalValueException if there were any data constraints violated in the adapted person.
      */
-    public Person toModelType() throws IllegalValueException {
+    public Person toModelType(Map<String, Event> eventMap) throws IllegalValueException {
         final List<Tag> personTags = new ArrayList<>();
         for (JsonAdaptedTag tag : tags) {
             personTags.add(tag.toModelType());
@@ -117,17 +123,38 @@ class JsonAdaptedPerson {
         }
 
         final Set<Tag> modelTags = new HashSet<>(personTags);
-        Person person = new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags);
-        for (JsonAdaptedEvent event : events) {
-            Event modelEvent = event.toModelType();
-            try {
-                person.addEvent(modelEvent);
-            } catch (DuplicateEventException e) {
-                throw new IllegalValueException(String.format(
-                        DUPLICATE_EVENT_MESSAGE_FORMAT, modelName.fullName, modelEvent), e);
-            }
+
+        final Optional<Photo> modelPhoto;
+        if (photo == null) {
+            modelPhoto = Optional.empty();
+        } else if (!Photo.isValidPhoto(photo)) {
+            // Scenario: Invalid format,
+            modelPhoto = Optional.of(new Photo("data/images/corrupted_data.jpg"));
+        } else {
+            modelPhoto = Optional.of(new Photo(photo));
         }
+
+        Person person = new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelPhoto);
+        for (JsonAdaptedEvent jsonEvent : events) {
+            Event tempEvent = jsonEvent.toModelType();
+            String key = tempEvent.getTitle().fullTitle
+                    + "|" + tempEvent.getStartTimeFormatted()
+                    + "|" + tempEvent.getEndTimeFormatted();
+            Event modelEvent = eventMap.getOrDefault(key, tempEvent);
+            person.addEvent(modelEvent);
+        }
+
         return person;
+    }
+
+    /**
+     * Overload for backwards-compatibility during transition. Calls {@link #toModelType(Map)} with an empty map,
+     * so no events will be linked. Remove once all callers are updated.
+     *
+     * @throws IllegalValueException if person data is invalid.
+     */
+    public Person toModelType() throws IllegalValueException {
+        return toModelType(new HashMap<>());
     }
 
 }

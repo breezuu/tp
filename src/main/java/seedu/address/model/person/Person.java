@@ -2,17 +2,17 @@ package seedu.address.model.person;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.event.Event;
 import seedu.address.model.tag.Tag;
-
-
 
 /**
  * Represents a Person in the address book.
@@ -27,36 +27,40 @@ public class Person {
     // Optional Data fields
     private final Optional<Email> email;
     private final Optional<Address> address;
+    private final Optional<Photo> photo;
     private final Set<Tag> tags = new HashSet<>();
 
+
     // Event fields
-    private final UniqueEventList events;
+    private final List<Event> events;
 
     /**
      * Name and phone are compulsory. Email and address are optional.
      */
-    public Person(Name name, Phone phone, Optional<Email> email, Optional<Address> address, Set<Tag> tags) {
-        requireAllNonNull(name, phone, email, address, tags);
+    public Person(Name name, Phone phone, Optional<Email> email, Optional<Address> address, Set<Tag> tags,
+                  Optional<Photo> photo) {
+        requireAllNonNull(name, phone, email, address, tags, photo);
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.tags.addAll(tags);
-        this.events = new UniqueEventList();
+        this.events = new ArrayList<>();
+        this.photo = photo;
     }
 
     /**
      * Overloaded constructor: Name and phone are compulsory. Email and address are optional.
-     * UniqueEventList is compulsory
      */
     public Person(Name name, Phone phone, Optional<Email> email, Optional<Address> address,
-        Set<Tag> tags, UniqueEventList events) {
+        Set<Tag> tags, List<Event> events, Optional<Photo> photo) {
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.tags.addAll(tags);
         this.events = events;
+        this.photo = photo;
     }
 
     public Name getName() {
@@ -75,6 +79,10 @@ public class Person {
         return address;
     }
 
+    public Optional<Photo> getPhoto() {
+        return photo;
+    }
+
     /**
      * Returns an immutable tag set, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
@@ -86,8 +94,8 @@ public class Person {
     /**
      * Returns an immutable Event List
      */
-    public ObservableList<Event> getEvents() {
-        return this.events.asUnmodifiableObservableList();
+    public List<Event> getEvents() {
+        return this.events;
     }
 
     /**
@@ -98,6 +106,20 @@ public class Person {
     public boolean addEvent(Event event) {
         events.add(event);
         return true;
+    }
+
+    /**
+     * Returns true if this person is linked to an event that is the same as {@code event}.
+     */
+    public boolean hasEvent(Event event) {
+        return events.stream().anyMatch(e -> e.isSameEvent(event));
+    }
+
+    /**
+     * Removes the event that is the same as {@code event} from this person's event list.
+     */
+    public void removeEvent(Event event) {
+        events.removeIf(e -> e.isSameEvent(event));
     }
 
 
@@ -121,28 +143,22 @@ public class Person {
      */
     @Override
     public boolean equals(Object other) {
-        if (other == this) {
-            return true;
+        if (other instanceof Person otherPerson) {
+            return name.equals(otherPerson.name)
+                    && phone.equals(otherPerson.phone)
+                    && email.equals(otherPerson.email)
+                    && address.equals(otherPerson.address)
+                    && tags.equals(otherPerson.tags)
+                    && events.equals(otherPerson.events)
+                    && photo.equals(otherPerson.photo);
         }
-
-        // instanceof handles nulls
-        if (!(other instanceof Person)) {
-            return false;
-        }
-
-        Person otherPerson = (Person) other;
-        return name.equals(otherPerson.name)
-                && phone.equals(otherPerson.phone)
-                && email.equals(otherPerson.email)
-                && address.equals(otherPerson.address)
-                && tags.equals(otherPerson.tags)
-                && events.equals(otherPerson.events);
+        return false;
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, tags);
+        return Objects.hash(name, phone, email, address, tags, photo);
     }
 
     @Override
@@ -154,6 +170,7 @@ public class Person {
                 .add("address", address.map(Address::toString).orElse(""))
                 .add("tags", tags)
                 .add("events", events)
+                .add("photo", photo.isPresent() ? photo.get().getPath() : "")
                 .toString();
     }
 

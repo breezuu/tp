@@ -2,12 +2,12 @@ package seedu.address.model;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
-import seedu.address.model.person.Event;
-import seedu.address.model.person.Name;
+import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonInformation;
 
@@ -91,9 +91,53 @@ public interface Model {
     void updateFilteredPersonList(Predicate<Person> predicate);
 
     /**
-     * Return the correct contact based on the optional
+     * Resets the filtered person list to show all persons.
      */
-    Person findPersonByName(Name name);
+    void showAllPersons();
+
+    /**
+     * Filters the person list to persons matching {@code predicate}.
+     * Does not modify the event list.
+     */
+    void showPersons(Predicate<Person> predicate);
+
+    /**
+     * Filters the person list to show only {@code persons} and clears the event list.
+     */
+    void showMatchingPersons(Set<Person> persons);
+
+    /**
+     * Return a list of correct contact(s) based on the optional parameters provided
+     */
+    List<Person> findPersons(PersonInformation info);
+
+    /**
+     * Returns true if an event with the same identity as {@code event} exists.
+     */
+    boolean hasEvent(Event event);
+
+    /**
+     * Returns true if any event in the address book overlaps with {@code event}.
+     */
+    boolean hasOverlappingEvent(Event event);
+
+    /**
+     * Adds the given event.
+     * The event must not already exist in the address book.
+     */
+    void addEvent(Event event);
+
+    /**
+     * Deletes the given event.
+     * The event must exist in the address book.
+     */
+    void deleteEvent(Event target);
+
+    /**
+     * Replaces the given event {@code target} with {@code editedEvent}.
+     * {@code target} must exist and {@code editedEvent} must not duplicate another event.
+     */
+    void setEvent(Event target, Event editedEvent);
 
     /** Returns an unmodifiable view of the filtered event list */
     ObservableList<Event> getFilteredEventList();
@@ -104,9 +148,15 @@ public interface Model {
      */
     void updateFilteredEventList(Predicate<Event> predicate);
 
+    Event linkPersonToEvent(Event eventToAdd);
+
+    Event unlinkPersonFromEvent(Event eventToUnlink);
+
     /**
-     * Return a list of correct contact(s) based on the optional parameters provided
+     * Updates the filtered event list to show only events linked to {@code person},
+     * and the filtered person list to show only {@code person}.
      */
-    List<Person> findPersons(PersonInformation info);
+    void showEventsForPerson(Person person);
+
 }
 

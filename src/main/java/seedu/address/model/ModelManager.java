@@ -8,13 +8,11 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
-import seedu.address.model.person.Event;
-import seedu.address.model.person.Name;
+import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonInformation;
 
@@ -27,7 +25,6 @@ public class ModelManager implements Model {
     private final AddressBook addressBook;
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
-    private final ObservableList<Event> allEvents;
     private final FilteredList<Event> filteredEvents;
 
     /**
@@ -41,11 +38,7 @@ public class ModelManager implements Model {
         this.addressBook = new AddressBook(addressBook);
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
-
-        allEvents = FXCollections.observableArrayList();
-        filteredEvents = new FilteredList<>(allEvents);
-
-        refreshEventList();
+        filteredEvents = new FilteredList<>(this.addressBook.getEventList());
     }
 
     public ModelManager() {
@@ -92,7 +85,6 @@ public class ModelManager implements Model {
     @Override
     public void setAddressBook(ReadOnlyAddressBook addressBook) {
         this.addressBook.resetData(addressBook);
-        refreshEventList();
     }
 
     @Override
@@ -109,22 +101,57 @@ public class ModelManager implements Model {
     @Override
     public void deletePerson(Person target) {
         addressBook.removePerson(target);
-        refreshEventList();
     }
 
     @Override
     public void addPerson(Person person) {
         addressBook.addPerson(person);
-        updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
-        refreshEventList();
     }
 
     @Override
     public void setPerson(Person target, Person editedPerson) {
         requireAllNonNull(target, editedPerson);
-
         addressBook.setPerson(target, editedPerson);
-        refreshEventList();
+    }
+
+    @Override
+    public boolean hasEvent(Event event) {
+        requireNonNull(event);
+        return addressBook.hasEvent(event);
+    }
+
+    @Override
+    public boolean hasOverlappingEvent(Event event) {
+        requireNonNull(event);
+        return addressBook.hasOverlappingEvent(event);
+    }
+
+    @Override
+    public void addEvent(Event event) {
+        addressBook.addEvent(event);
+    }
+
+    @Override
+    public void deleteEvent(Event target) {
+        addressBook.removeEvent(target);
+    }
+
+    @Override
+    public void setEvent(Event target, Event editedEvent) {
+        requireAllNonNull(target, editedEvent);
+        addressBook.setEvent(target, editedEvent);
+    }
+
+    @Override
+    public Event linkPersonToEvent(Event toLink) {
+        requireAllNonNull(toLink);
+        return addressBook.linkPersonToEvent(toLink);
+    }
+
+    @Override
+    public Event unlinkPersonFromEvent(Event eventToUnlink) {
+        requireAllNonNull(eventToUnlink);
+        return addressBook.unlinkPersonFromEvent(eventToUnlink);
     }
 
     //=========== Filtered Person List Accessors =============================================================
@@ -145,38 +172,38 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-
-        // instanceof handles nulls
-        if (!(other instanceof ModelManager)) {
-            return false;
-        }
-
-        ModelManager otherModelManager = (ModelManager) other;
-        return addressBook.equals(otherModelManager.addressBook)
-                && userPrefs.equals(otherModelManager.userPrefs)
-                && filteredPersons.equals(otherModelManager.filteredPersons)
-                && filteredEvents.equals(otherModelManager.filteredEvents);
+    public void showAllPersons() {
+        updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
     }
 
-    // Assumption: valid inputs
     @Override
-    public Person findPersonByName(Name nameToBeFind) {
-        for (Person p : this.filteredPersons) {
-            if (p.getName().equals(nameToBeFind)) {
-                return p;
-            }
+    public void showPersons(Predicate<Person> predicate) {
+        requireNonNull(predicate);
+        updateFilteredPersonList(predicate);
+    }
+
+    @Override
+    public void showMatchingPersons(java.util.Set<Person> persons) {
+        requireNonNull(persons);
+        updateFilteredPersonList(persons::contains);
+        updateFilteredEventList(event -> false);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof ModelManager otherModelManager) {
+            return addressBook.equals(otherModelManager.addressBook)
+                    && userPrefs.equals(otherModelManager.userPrefs)
+                    && filteredPersons.equals(otherModelManager.filteredPersons)
+                    && filteredEvents.equals(otherModelManager.filteredEvents);
         }
-        return null;
+        return false;
     }
 
     //=========== Filtered Event List Accessors =============================================================
 
     /**
-     * Returns an unmodifiable view of the list of {@code Event} from all persons.
+     * Returns an unmodifiable view of the list of {@code Event} from all events.
      */
     @Override
     public ObservableList<Event> getFilteredEventList() {
@@ -189,15 +216,11 @@ public class ModelManager implements Model {
         filteredEvents.setPredicate(predicate);
     }
 
-    /**
-     * Rebuilds the master event list from all events attached to persons in the address book.
-     */
-    private void refreshEventList() {
-        ObservableList<Event> rebuiltEvents = FXCollections.observableArrayList();
-        for (Person person : addressBook.getPersonList()) {
-            rebuiltEvents.addAll(person.getEvents());
-        }
-        allEvents.setAll(rebuiltEvents);
+    @Override
+    public void showEventsForPerson(Person person) {
+        requireNonNull(person);
+        updateFilteredPersonList(p -> p.equals(person));
+        updateFilteredEventList(person::hasEvent);
     }
 
     /**
