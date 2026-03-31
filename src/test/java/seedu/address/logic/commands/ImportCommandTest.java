@@ -123,6 +123,27 @@ public class ImportCommandTest {
     }
 
     @Test
+    public void execute_overwriteImportType_handlesEmptyOptionalField() throws Exception {
+        Person expectedTest1 = new PersonBuilder()
+                .withName("Alice")
+                .withPhone("12345678")
+                .withoutEmail()
+                .withoutAddress()
+                .withTags()
+                .withEvents()
+                .withoutPhoto()
+                .build();
+
+        createCsvFile("valid", header + "\nAlice,12345678,,,,,");
+
+        ImportCommand command = createTestCommand("overwrite", "valid");
+        CommandResult result = command.execute(model);
+
+        assertTrue(model.hasPerson(expectedTest1));
+        assertEquals(1, model.getAddressBook().getPersonList().size());
+    }
+
+    @Test
     public void execute_fileNotFound_throwsCommandException() {
         ImportCommand command = createTestCommand("add", "invalid_file");
 
