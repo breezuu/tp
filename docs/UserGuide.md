@@ -65,6 +65,9 @@ NAB is a **desktop app for NUS students to manage contacts across multiple modul
 * Extraneous parameters for commands that do not take in parameters (such as `help`, `list`, `exit` and `clear`) will be ignored.<br>
   e.g. if the command specifies `help 123`, it will be interpreted as `help`.
 
+* Tags are case-insensitive. t/Friends and t/friends are treated as 1 unique tag. Multiple use of the same tags with different case sensitivity should not be used.
+e.g `find n/John Doe t/Friends t/friends` 
+
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
 </box>
 
@@ -104,7 +107,7 @@ Format: `list`
 
 Edits an existing person in the address book.
 
-Format: `edit n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG] -- [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG] [pfp/PHOTO_PATH]`
+Format: `edit n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... -- [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_PATH]`
 
 **Tip:** If there are multiple contacts with the same `NAME`, utilize the other optional parameters to narrow down the updating of the correct contact. This can be done by supplying any of the following information just after `edit n/NAME`: Phone number, Email, Address or Tag.
 
@@ -279,7 +282,7 @@ Action     | Format, Examples
 **Add**    | `add n/NAME p/PHONE_NUMBER [e/EMAIL] [a/ADDRESS] [t/TAG]...` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
 **Clear**  | `clear`
 **Delete** | `delete n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `delete n/Alex Yeoh t/cs2103 t/cs2105`
-**Edit**   | `edit n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG] -- [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG] [pfp/PHOTO_PATH]`<br> e.g.,`edit n/James Lee e/jameslee@example.com -- t/CS2100 pfp/images/james.jpg`
+**Edit**   | `edit n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]... -- [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_PATH]`<br> e.g.,`edit n/James Lee e/jameslee@example.com -- t/CS2100 pfp/images/james.jpg`
 **Event Add** | `event add title/TITLE [desc/DESCRIPTION] start/START_DATE end/END_DATE to/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]`<br> e.g., `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 to/David Li`
 **Event Delete** | `event delete title/TITLE start/START_TIME end/END_TIME n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]`<br> e.g., `event delete title/Meeting start/2026-03-12 1100 end/2026-03-12 2359 n/David Li`
 **Event View** | `event view n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `event view n/Bernice Yu`

@@ -22,6 +22,7 @@ import seedu.address.model.tag.Tag;
 public class ParserUtil {
 
     public static final String MESSAGE_INVALID_INDEX = "Index is not a non-zero unsigned integer.";
+    public static final String MESSAGE_DUPLICATE_TAGS = "Duplicate tags found in command.";
 
     /**
      * Parses {@code oneBasedIndex} into an {@code Index} and returns it. Leading and trailing whitespaces will be
@@ -118,7 +119,10 @@ public class ParserUtil {
         requireNonNull(tags);
         final Set<Tag> tagSet = new HashSet<>();
         for (String tagName : tags) {
-            tagSet.add(parseTag(tagName));
+            Tag parsedTag = parseTag(tagName);
+            if (!tagSet.add(parsedTag)) {
+                throw new ParseException(MESSAGE_DUPLICATE_TAGS);
+            }
         }
         return tagSet;
     }
