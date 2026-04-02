@@ -195,7 +195,7 @@ public class PersonCard extends UiPart<Region> {
         // Optional Fields
         String tag = person.getTagsString();
         String address = person.getAddressString().orElse("");
-        String email = person.getEmailString().orElse("");
+        String email = person.getEmailString().map(e -> "mailto:" + e).orElse("");
 
         // Copy Operation
         String textToCopy = Stream.of(name, phoneNumber, tag, address, email)
