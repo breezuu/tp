@@ -189,13 +189,13 @@ public class PersonCard extends UiPart<Region> {
         final Clipboard clipboard = Clipboard.getSystemClipboard();
         final ClipboardContent personInformation = new ClipboardContent();
         // Mandatory Fields
-        String name = person.getNameString();
-        String phoneNumber = person.getPhoneString();
+        String name = "Name: " + person.getNameString();
+        String phoneNumber = "Phone: " + person.getPhoneString();
 
         // Optional Fields
         String tag = person.getTagsString();
-        String address = person.getAddressString().orElse("");
-        String email = person.getEmailString().map(e -> "mailto:" + e).orElse("");
+        String address = person.getAddressString().map(e -> "Address: " + e).orElse("");
+        String email = person.getEmailString().map(e -> "Email: " + e).orElse("");
 
         // Copy Operation
         String textToCopy = Stream.of(name, phoneNumber, tag, address, email)
