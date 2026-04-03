@@ -60,6 +60,7 @@
             <li><a href="#editing-person">Editing a person</a></li>
             <li><a href="#finding-person">Finding persons by name</a></li>
             <li><a href="#filtering-person">Filtering persons by context</a></li>
+            <li><a href="#tagging-person">Assigning tag(s) to person(s)</a></li>
             <li><a href="#deleting-person">Deleting a person</a></li>
             <li><a href="#adding-event">Adding an event</a></li>
             <li><a href="#viewing-event">Viewing an event</a></li>
@@ -192,6 +193,29 @@
                 > filter t/friends<br><br>
                 <span class="code-comment"># Finds all contacts that have any of these tags.<br></span>
                 > filter t/cs2103, cs2105, cs2109s
+            </div>
+        </div>
+
+        <div class="feature-block">
+            <h2 class="feature-header" id="tagging-person">Assigning tag(s) to person(s): <code>tag</code></h2>
+            <p>Assigns one or more tags to one or more contacts in one command.</p>
+            <p>Format: <code>tag label/TAG_TO_ASSIGN [label/TAG_TO_ASSIGN]... n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]... [n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...]...</code></p>
+            <p><b>Tip: </b>Use optional fields immediately after each <code>n/NAME</code> to disambiguate contacts with the same name.</p>
+            <ul>
+                <li><code>label/...</code> are the tags that will be assigned to all specified contacts.</li>
+                <li>Contact segments start with <code>n/NAME</code>.</li>
+                <li>Optional fields after a given <code>n/NAME</code> apply only to that contact segment.</li>
+                <li>The tag-assignment segment (<code>label/...</code>) and person segments (<code>n/...</code>) cannot be mixed.
+                    All <code>label/...</code> entries must appear before the first <code>n/...</code>.</li>
+                <li>If a tag does not exist yet, NAB creates it automatically.</li>
+                <li>If a person segment matches multiple contacts, NAB shows those matches and asks for a more specific command.</li>
+            </ul>
+            <div class="command-box">
+                <span class="code-comment"># Assign CS2103 and CS2030S to Alice and Bob.<br></span>
+                > tag label/CS2103 label/CS2030S n/Alice n/Bob<br><br>
+                <span class="code-comment"># Suppose there are multiple Alice and Bob, an enriched search would be<br></span>
+                > tag label/CS2103 label/CS2030S n/Alice p/81234567 n/Bob a/Clementi<br>
+                <span class="code-comment"># where Alice has phone 81234567 and Bob has address Clementi.</span>
             </div>
         </div>
 
@@ -431,6 +455,14 @@
                 <td>
                     <code>filter t/TAG[, TAG]...</code><br>
                     <span class="example-text">e.g., <code>filter t/friends</code></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Tag</td>
+                <td>
+                    <code>tag label/TAG_TO_ASSIGN [label/TAG_TO_ASSIGN]... n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]... [n/NAME ...]...</code><br>
+                    <span class="example-text">e.g., <code>tag label/CS2103 label/CS2030S n/Alice n/Bob p/81234567</code></span>
                 </td>
             </tr>
 

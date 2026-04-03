@@ -165,6 +165,31 @@ Examples:
 * `filter t/friends` finds all contacts that are tagged `friends`
 * `filter t/cs2103, cs2105, cs2109s` finds all contacts that have any of these tags.
 
+### Assigning tag(s) to person(s) : `tag`
+
+Assigns one or more tags to one or more contacts in one command.
+
+Format: `tag label/TAG_TO_ASSIGN [label/TAG_TO_ASSIGN]... n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]... [n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...]...`
+
+<box type="tip" seamless>
+
+**Tip:** Use optional fields immediately after each `n/NAME` to disambiguate contacts with the same name.
+</box>
+
+How it works:
+* `label/...` are the tags that will be assigned to **all** specified contacts.
+* Contact segments start with `n/NAME`.
+* Optional fields after a given `n/NAME` apply only to that contact segment.
+* The tag-assignment segment (`label/...`) and person segments (`n/...`) cannot be mixed.
+  All `label/...` entries must appear before the first `n/...`.
+* If a tag does not exist yet, NAB creates it automatically.
+* If a person segment matches multiple contacts, NAB shows those matches and asks for a more specific command.
+
+Examples:
+* `tag label/CS2103 label/CS2030S n/Alice n/Bob`
+* Suppose there are multiple `Alice` and `Bob` , an enriched search would be`tag label/CS2103 label/CS2030S n/Alice p/81234567 n/Bob a/Clementi`,
+  where Alice has a phone number of `81234567` and Bob has an address of `Clementi`
+
 ### Deleting a person : `delete`
 
 Deletes the specified person from the address book.
@@ -291,3 +316,4 @@ Action     | Format, Examples
 **Find**   | `find n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `find n/James Jake p/67676969`
 **Help**   | `help`
 **List**   | `list`
+**Tag**    | `tag label/TAG_TO_ASSIGN [label/TAG_TO_ASSIGN]... n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]... [n/NAME ...]...`<br> e.g., `tag label/CS2103 label/CS2030S n/Alice n/Joe t/Family`

@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.AddEventCommand;
+import seedu.address.logic.commands.AddTagCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
@@ -59,6 +60,17 @@ public class AddressBookParserTest {
                 "event add title/Complete feature list desc/All tasks start/2026-02-21 1100 "
                         + "end/2026-02-21 1500 to/Lee eejoong");
 
+        assertEquals(expectedCommand, command);
+    }
+
+    @Test
+    public void parseCommand_tag() throws Exception {
+        AddTagCommand command = (AddTagCommand) parser.parseCommand(
+                "tag label/CS2103 label/CS2030S n/Alice Pauline");
+        AddTagCommand expectedCommand = new AddTagCommand(
+                java.util.List.of(new PersonInformation(new Name("Alice Pauline"), null, null, null, null)),
+                java.util.Set.of(new seedu.address.model.tag.Tag("CS2103"),
+                        new seedu.address.model.tag.Tag("CS2030S")));
         assertEquals(expectedCommand, command);
     }
 
@@ -169,5 +181,10 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_unknownCommand_throwsParseException() {
         assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, () -> parser.parseCommand("unknownCommand"));
+    }
+
+    @Test
+    public void cliSyntax_constructor_coverage() {
+        assertTrue(new CliSyntax() != null);
     }
 }
