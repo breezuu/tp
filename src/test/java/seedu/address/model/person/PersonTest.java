@@ -163,8 +163,9 @@ public class PersonTest {
         assertEquals("94351253", ALICE.getPhoneString());
         assertEquals(Optional.of("123, Jurong West Ave 6, #08-111"), ALICE.getAddressString());
         assertEquals(Optional.of("alice@example.com"), ALICE.getEmailString());
-        System.out.println(ALICE.getTagsString());
         assertEquals("Tags: friends", ALICE.getTagsString());
         assertEquals("", CARL.getTagsString());
+        assertEquals(Optional.empty(), CARL.getPhotoPath());
+        assertEquals(List.of("friends"), ALICE.getTagNames());
     }
 }
