@@ -103,7 +103,7 @@ public class AddressBook implements ReadOnlyAddressBook {
         requireNonNull(editedPerson);
 
         persons.setPerson(target, editedPerson);
-        
+
         if (pinnedPersons.contains(target)) {
             pinnedPersons.setPerson(target, editedPerson);
         }
