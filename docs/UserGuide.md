@@ -66,7 +66,7 @@ NAB is a **desktop app for NUS students to manage contacts across multiple modul
   e.g. if the command specifies `help 123`, it will be interpreted as `help`.
 
 * Tags are case-insensitive. t/Friends and t/friends are treated as 1 unique tag. Multiple use of the same tags with different case sensitivity should not be used.
-e.g `find n/John Doe t/Friends t/friends` 
+e.g `find n/John Doe t/Friends t/friends`
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
 </box>
@@ -282,7 +282,7 @@ Format: `event view n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 <box type="tip" seamless>
 
-**Tip:** If there are multiple contacts with the same `NAME`, utilize the other optional parameters to 
+**Tip:** If there are multiple contacts with the same `NAME`, utilize the other optional parameters to
 view the events of the correct contact. This can be done by supplying any of the
 following information just after `event view n/NAME`: Phone number, Email, Address or Tag.
 
@@ -346,7 +346,7 @@ Imports a list of contacts from a CSV formatted file.
 Format: `import t/IMPORT_TYPE f/FILENAME`
 
 * `IMPORT_TYPE` dictates how the data is imported. Expected inputs are `add`
-(appends the contacts from the list to existing address book) or `overwrite` 
+(appends the contacts from the list to existing address book) or `overwrite`
 (replaces all the current address book information with contacts from the list).
 * `FILENAME` dictates the name of the source CSV file. Do not include the `.csv` extension in the input
 * The file to be imported must be located in the same directory as your current AddressBook data file.
