@@ -89,7 +89,7 @@ public class EditCommand extends Command {
         Person personToEdit = CommandUtil.targetPerson(model, targetInfo);
         Person previewPerson = createEditedPerson(personToEdit, editPersonDescriptor);
 
-        //If edit is not the same, but phone number already exsist to another person
+        //If edit is not the same, but phone number already exist to another person
         if (!personToEdit.isSamePerson(previewPerson) && model.hasPerson(previewPerson)) {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
         }
@@ -107,7 +107,10 @@ public class EditCommand extends Command {
                 Photo oldPhoto = personToEdit.getPhoto().get();
                 if (!oldPhoto.equals(newPhoto)) {
                     try {
-                        PhotoStorageUtil.deletePhoto(oldPhoto);
+                        // Only delete if this oldPhoto is not used by other contacts
+                        if (!model.isPhotoShared(oldPhoto, personToEdit)) {
+                            PhotoStorageUtil.deletePhoto(oldPhoto);
+                        }
                     } catch (IOException e) {
                         throw new CommandException(Messages.MESSAGE_DELETE_PHOTO_FAIL + e.getMessage());
                     }

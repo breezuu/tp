@@ -18,6 +18,7 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonInformation;
+import seedu.address.model.person.Photo;
 
 /**
  * Deletes a person identified using it's displayed name from the address book.
@@ -73,8 +74,12 @@ public class DeleteCommand extends Command {
 
         Person personToDelete = listOfPersonToDelete.get(0);
         try {
+            // Scenario : Only attempt to delete photo if isPresent and not shared by other contacts
             if (personToDelete.getPhoto().isPresent()) {
-                PhotoStorageUtil.deletePhoto(personToDelete.getPhoto().get());
+                Photo photoToDelete = personToDelete.getPhoto().get();
+                if (!model.isPhotoShared(photoToDelete, personToDelete)) {
+                    PhotoStorageUtil.deletePhoto(photoToDelete);
+                }
             }
         } catch (IOException e) {
             throw new CommandException(Messages.MESSAGE_DELETE_PHOTO_FAIL + e.getMessage());
