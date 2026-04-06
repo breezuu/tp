@@ -20,7 +20,7 @@ Here is how NAB can **make student networking easier**:
 <!-- * Table of Contents -->
 <page-nav-print />
 
-
+---
 
 ## Navigating this User Guide
 
@@ -251,10 +251,7 @@ This `add` feature allows you to add a person to the address book.
 Format: `add n/NAME p/PHONE_NUMBER [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_PATH]`
 
 
-<div>
-<box type="info" icon=":fa-solid-code:">
-
-**EXAMPLES**
+<panel header=":fa-solid-code: **Examples**" type="info" expanded>
 
 - `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`<br>
   Adds a new contact named John Doe with a phone number, email, and address.
@@ -265,26 +262,21 @@ Format: `add n/NAME p/PHONE_NUMBER [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_P
 - `add n/Kim Chaewon p/67676969 pfp/C:\Users\User\Desktop\Photos\Le_sserafim.jpg`<br>
   Adds a new contact named Kim Chaewon with phone and a profile photo.
 
-</box>
+</panel>
 
-<box type="important" icon=":fa-solid-exclamation-triangle:">
-
-**IMPORTANT**
+<panel header=":fa-solid-exclamation-triangle: **Important**" type="danger" expanded>
 
 - `add` command with `pfp/` succeeds only if the image file exists, is readable, and is a supported image format.
 - Contact cannot be added if the added phone number is already registered in the address book.
 - Refer to the [user disambiguation](#user-disambiguation) section if you encounter the error: `Multiple matches identified!`
 
-</box>
+</panel>
 
-<box theme="success" icon=":fa-solid-lightbulb:">
+<panel header=":fa-solid-lightbulb: **Tip**" type="success">
 
-**TIP**  
-- Can associate 0 or more tags during the add process
+Can associate 0 or more tags during the add process.
 
-</box>
-
-</div>
+</panel>
 
 
 ### Listing all persons: `list`
@@ -443,22 +435,26 @@ Creates a new event for a specified person.
 
 Format: `event add title/TITLE [desc/DESCRIPTION] start/START_DATE end/END_DATE to/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
-<box type="tip" seamless>
-
-**Tip:** If there are multiple contacts with the same `NAME`, utilize the other optional parameters to narrow down the
-creation of event for the correct contact. This can be done by supplying any of the
-following information just after `event ... to/NAME`: Phone number, Email, Address or Tag.
-
-</box>
-
 * The `NAME` is case-insensitive. e.g. `aLeX YeOH` will match `Alex Yeoh`.
 * Only full words will be matched e.g. `Alex Yeo` will not match `Alex Yeoh`.
 * Order of parameters does not matter.
-* The date time format for start/ and end/ is `YYYY-MM-DD HHmm` or `DD-MM-YYYY HHmm`.
+* The date time format for `start/` and `end/` is `YYYY-MM-DD HHmm` or `DD-MM-YYYY HHmm`.
 
-Examples:
-* `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 to/David Li` adds an event to David Li.
-* Suppose there are multiple `David Li`, an enriched search would be `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 to/David Li p/99272758`
+<panel header=":fa-solid-code: **Examples**" type="info" expanded>
+
+- `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 to/David Li`<br>
+  Adds an event titled "CS2109S Meeting" to David Li.
+
+- `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 to/David Li p/99272758`<br>
+  Adds an event to the David Li with phone number `99272758`, disambiguating between multiple contacts with the same name.
+
+</panel>
+
+<panel header=":fa-solid-lightbulb: **Tip: Disambiguating contacts with the same name**" type="success">
+
+Add optional parameters immediately after `to/NAME` to narrow down the match — Phone number, Email, Address, or Tag. See [User Disambiguation](#user-disambiguation) for details.
+
+</panel>
 
 ### View an event: `event view`
 
@@ -466,42 +462,51 @@ Views all events for a specified person.
 
 Format: `event view n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
-<box type="tip" seamless>
-
-**Tip:** If there are multiple contacts with the same `NAME`, utilize the other optional parameters to
-view the events of the correct contact. This can be done by supplying any of the
-following information just after `event view n/NAME`: Phone number, Email, Address or Tag.
-
-</box>
-
 * The `NAME` is case-insensitive. e.g. `aLeX YeOH` will match `Alex Yeoh`.
 * Only full words will be matched e.g. `Alex Yeo` will not match `Alex Yeoh`.
 
-Examples:
-* `event view n/Bernice Yu` views all events that Bernice Yu has.
-* Suppose there are multiple `Bernice Yu`, an enriched search would be `event view n/Bernice Yu e/berniceyu@example.com`
+<panel header=":fa-solid-code: **Examples**" type="info" expanded>
+
+- `event view n/Bernice Yu`<br>
+  Views all events for Bernice Yu.
+
+- `event view n/Bernice Yu e/berniceyu@example.com`<br>
+  Views events for the Bernice Yu with the given email, disambiguating between multiple contacts with the same name.
+
+</panel>
+
+<panel header=":fa-solid-lightbulb: **Tip: Disambiguating contacts with the same name**" type="success">
+
+Add optional parameters immediately after `n/NAME` to narrow down the match — Phone number, Email, Address, or Tag. See [User Disambiguation](#user-disambiguation) for details.
+
+</panel>
 
 ### Delete an event: `event delete`
 
 Deletes an event for a specified person.
 
 Format: `event delete title/TITLE start/START_DATE end/END_DATE n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
-<box type="tip" seamless>
-
-**Tip:** If there are multiple contacts with the same `NAME`, utilize the other optional parameters to narrow down the
-deletion of event for the correct contact. This can be done by supplying any of the
-following information just after `event ... n/NAME`: Phone number, Email, Address or Tag.
-
-</box>
 
 * The `NAME` is case-insensitive. e.g. `aLeX YeOH` will match `Alex Yeoh`.
 * Only full words will be matched e.g. `Alex Yeo` will not match `Alex Yeoh`.
 * Order of parameters does not matter.
-* The date time format for start/ and end/ is `YYYY-MM-DD HHmm` or `DD-MM-YYYY HHmm`.
+* The date time format for `start/` and `end/` is `YYYY-MM-DD HHmm` or `DD-MM-YYYY HHmm`.
 
-Examples:
-* `event delete title/Meeting start/2026-03-12 1100 end/2026-04-12 2359 n/David Li` deletes the event that titled Meeting which starts at 12 March 2026 1100 and ends at 12 April 2026 2359 assigned to David Li.
-* Suppose there are multiple `David Li`, an enriched search would be `event delete title/Meeting start/2026-03-12 1100 end/2026-04-12 2359 n/David Li p/99272758`
+<panel header=":fa-solid-code: **Examples**" type="info" expanded>
+
+- `event delete title/Meeting start/2026-03-12 1100 end/2026-04-12 2359 n/David Li`<br>
+  Deletes the event titled "Meeting" (12 Mar 2026 1100 – 12 Apr 2026 2359) assigned to David Li.
+
+- `event delete title/Meeting start/2026-03-12 1100 end/2026-04-12 2359 n/David Li p/99272758`<br>
+  Deletes the event for the David Li with phone number `99272758`, disambiguating between multiple contacts with the same name.
+
+</panel>
+
+<panel header=":fa-solid-lightbulb: **Tip: Disambiguating contacts with the same name**" type="success">
+
+Add optional parameters immediately after `n/NAME` to narrow down the match — Phone number, Email, Address, or Tag. See [User Disambiguation](#user-disambiguation) for details.
+
+</panel>
 
 ## Data and Storage
 
