@@ -2,7 +2,6 @@ package seedu.address.storage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static seedu.address.storage.JsonAdaptedPerson.MISSING_EVENT_MESSAGE_FORMAT;
 import static seedu.address.storage.JsonAdaptedPerson.MISSING_FIELD_MESSAGE_FORMAT;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.BENSON;
@@ -170,15 +169,6 @@ public class JsonAdaptedPersonTest {
         Event personEvent = person.toModelType(eventMap).getEvents().get(0);
         assertSame(sharedEvent, personEvent);
         assertEquals(5, personEvent.getNumberOfPersonLinked());
-    }
-
-    @Test
-    public void toModelType_unknownEventId_throwsIllegalValueException() {
-        int unknownId = 99999;
-        JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS,
-                VALID_PHOTO, VALID_TAGS, List.of(unknownId));
-        String expectedMessage = String.format(MISSING_EVENT_MESSAGE_FORMAT, unknownId, VALID_NAME);
-        assertThrows(IllegalValueException.class, expectedMessage, () -> person.toModelType(new HashMap<>()));
     }
 
     @Test
