@@ -30,6 +30,7 @@ import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonInformation;
+import seedu.address.model.person.Photo;
 import seedu.address.testutil.PersonBuilder;
 
 public class AddCommandTest {
@@ -314,6 +315,11 @@ public class AddCommandTest {
         public boolean isPersonPinned(Person person) {
             throw new AssertionError("This method should not be called.");
         }
+
+        @Override
+        public boolean isPhotoShared(Photo photo, Person personToExclude) {
+            throw new AssertionError("This method should not be called.");
+        }
     }
 
     /**
@@ -355,6 +361,9 @@ public class AddCommandTest {
         @Override
         public void showAllPersons() {
         }
+
+        @Override
+        public void showAllPersonsPinnedFirst() {}
 
         @Override
         public ReadOnlyAddressBook getAddressBook() {

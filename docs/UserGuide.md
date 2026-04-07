@@ -20,7 +20,7 @@ Here is how NAB can **make student networking easier**:
 <!-- * Table of Contents -->
 <page-nav-print />
 
-
+---
 
 ## Navigating this User Guide
 
@@ -48,7 +48,7 @@ This **blue box** with the **code mark icon** provides you with **example comman
 
 <box type="important" icon=":fa-solid-exclamation-triangle:">
 
-This **red box** with the **exclaimation triangle icon** draws your attention to **warnings, important notes or limitations**
+This **red box** with the **exclamation triangle icon** draws your attention to **warnings, important notes or limitations**
 
 </box>
 
@@ -139,6 +139,7 @@ This feature allows you to use **arrow keys** while in the command box to naviga
 ### Copying a Contact's Information
 
 NAB allows you to copy a contact’s information, making it easier to reuse their details without typing them out manually.
+A double-click on a person's contact copies their information to your clipboard.
 
 This feature allows you to copy the displayed information of a contact for use outside NAB.
 
@@ -169,7 +170,7 @@ This feature closes the program and ends the current session.
 
 Format: `exit`
 
-## Contact Managements
+## Contact Management
 
 ### Parameters constraints & format
 
@@ -251,10 +252,7 @@ This `add` feature allows you to add a person to the address book.
 Format: `add n/NAME p/PHONE_NUMBER [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_PATH]`
 
 
-<div>
-<box type="info" icon=":fa-solid-code:">
-
-**EXAMPLES**
+<panel header=":fa-solid-code: **Examples**" type="info">
 
 - `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`<br>
   Adds a new contact named John Doe with a phone number, email, and address.
@@ -263,28 +261,23 @@ Format: `add n/NAME p/PHONE_NUMBER [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_P
   Adds a new contact named Betsy Crower with a phone number, email, address, and two tags: _friend_ and _criminal_.
 
 - `add n/Kim Chaewon p/67676969 pfp/C:\Users\User\Desktop\Photos\Le_sserafim.jpg`<br>
-  Adds a new contact named Kim Chaewon with phone and a profile photo.
+  Adds a new contact named Kim Chaewon with a phone number and a profile photo.
 
-</box>
+</panel>
 
-<box type="important" icon=":fa-solid-exclamation-triangle:">
-
-**IMPORTANT**
+<panel header=":fa-solid-exclamation-triangle: **Important**" type="danger">
 
 - `add` command with `pfp/` succeeds only if the image file exists, is readable, and is a supported image format.
 - Contact cannot be added if the added phone number is already registered in the address book.
 - Refer to the [user disambiguation](#user-disambiguation) section if you encounter the error: `Multiple matches identified!`
 
-</box>
+</panel>
 
-<box theme="success" icon=":fa-solid-lightbulb:">
+<panel header=":fa-solid-lightbulb: **Tip**" type="success">
 
-**TIP**  
-- Can associate 0 or more tags during the add process
+Can associate 0 or more tags during the add process.
 
-</box>
-
-</div>
+</panel>
 
 
 ### Listing all persons: `list`
@@ -299,12 +292,6 @@ Edits an existing person in the address book.
 
 Format: `edit n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... -- [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_PATH]`
 
-<box type="tip" seamless>
-
-**Tip:** If there are multiple contacts with the same `NAME`, utilize the other optional parameters to narrow down the updating of the correct contact. This can be done by supplying any of the following information just after `edit n/NAME`: Phone number, Email, Address or Tag.
-
-</box>
-
 * The segment before `--` identifies which contact to edit.
 * The segment after `--` specifies fields to be updated.
   * Updatable fields: `n/NAME`, `p/PHONE_NUMBER`, `e/EMAIL`, `a/ADDRESS`, `t/TAG`, `pfp/PHOTO_PATH`.
@@ -315,11 +302,27 @@ Format: `edit n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... -- [n/NAM
 * You can remove all the person’s tags by typing `t/` without specifying any tags after it.
 * Tags are case-insensitive.
 
-Examples:
-*  `edit n/John Doe -- p/91234567 e/johndoe@example.com` edits John Doe's phone and email.
-*  `edit n/John Doe p/98765432 -- n/Johnathan Doe t/teammate` uniquely identifies John Doe by phone, then updates name and tags.
-*  `edit n/Betsy Crower -- t/` clears all tags for Betsy Crower.
-*  `edit n/Alex Yeoh -- pfp/C:/Users/Alex/Pictures/profile.jpg` updates Alex Yeoh's profile picture.
+<panel header=":fa-solid-code: **Examples**" type="info">
+
+- `edit n/John Doe -- p/91234567 e/johndoe@example.com`<br>
+  Edits John Doe's phone and email.
+
+- `edit n/John Doe p/98765432 -- n/Johnathan Doe t/teammate`<br>
+  Uniquely identifies John Doe by phone number, then updates name and tags.
+
+- `edit n/Betsy Crower -- t/`<br>
+  Clears all tags for Betsy Crower.
+
+- `edit n/Alex Yeoh -- pfp/C:/Users/Alex/Pictures/profile.jpg`<br>
+  Updates Alex Yeoh's profile picture.
+
+</panel>
+
+<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger"> 
+
+- Refer to the [user disambiguation](#user-disambiguation) section if you encounter the error: `Multiple matches identified!`
+
+</panel>
 
 ### Finding a person: `find`
 
@@ -327,32 +330,53 @@ Finds persons who match the given contact information.
 
 Format: `find n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
-<box type="tip" seamless>
-
-**Tip:** If there are multiple contacts with the same `NAME`, utilize the other optional parameters to narrow down the
-search to a specific contact. This can be done by supplying any of the following information just after `find n/NAME`: Phone number, Email, Address or Tag.
-</box>
-
 * The search is case-insensitive. e.g. `hans` will match `Hans`.
 * Only full words will be matched e.g. `Han` will not match `Hans`.
 * Order of parameters does not matter.
 
-Examples:
-* `find n/John` returns contacts named `John`
-* `find n/John t/cs2106` returns contacts named `John` with tag `cs2106`
+<panel header=":fa-solid-code: **Examples**" type="info">
+
+- `find n/John`<br>
+  Returns contacts named John
+
+- `find n/John t/cs2106`<br>
+  Uniquely identifies a John Doe with a cs2106 tag
+
+- `find n/John t/cs2106 t/cs2109s t/cs2103`<br>
+  Uniquely identifies a John Doe with a cs2106, cs2109s and cs2103 tag
+
+</panel>
+
+<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger"> 
+
+- Refer to the [user disambiguation](#user-disambiguation) section if you encounter the error: `Multiple matches identified!`
+
+</panel>
 
 ### Filtering persons by context: `filter`
 
-Finds persons with the given tag(s).
+Filters persons with the given tag(s).
 
 Format: `filter t/TAG[, TAG]...`
 
 * The search is case-insensitive. e.g. `friend` will match `Friend` tag.
 * Only full words will be matched e.g. `frie` will not match `friend` tag.
 
-Examples:
-* `filter t/friends` finds all contacts that are tagged `friends`
-* `filter t/cs2103, cs2105, cs2109s` finds all contacts that have any of these tags.
+<panel header=":fa-solid-code: **Examples**" type="info">
+
+- `filter t/friends`<br>
+Filters all contacts to show only contacts that are tagged friends.
+
+- `filter t/cs2103, cs2105, cs2109s`<br>
+Filters all contacts to show only contacts that have any of these tags.
+
+</panel>
+
+<panel header=":fa-solid-lightbulb: **Tip**" type="success">
+
+Can associate 1 or more tags during the filter process.
+
+</panel>
 
 ### Pinning a person: `pin`
 
@@ -365,9 +389,21 @@ Format: `pin n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 * Only full words will be matched e.g. `Alex Yeo` will not match `Alex Yeoh`.
 * Order of parameters does not matter.
 
-Examples:
-* `pin n/John Doe` pins John Doe when the name uniquely identifies the contact.
-* `pin n/John Doe p/91234567` pins the matching John Doe contact by name and phone number.
+<panel header=":fa-solid-code: **Examples**" type="info">
+
+- `pin n/John Doe`<br>
+Pins John Doe when the name uniquely identifies the contact.
+
+- `pin n/John Doe p/91234567`<br>
+Pins the matching John Doe contact by name and phone number.
+
+</panel>
+
+<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger"> 
+
+- Refer to the [user disambiguation](#user-disambiguation) section if you encounter the error: `Multiple matches identified!`
+
+</panel>
 
 ### Unpinning a person: `unpin`
 
@@ -443,22 +479,26 @@ Creates a new event for a specified person.
 
 Format: `event add title/TITLE [desc/DESCRIPTION] start/START_DATE end/END_DATE to/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
-<box type="tip" seamless>
-
-**Tip:** If there are multiple contacts with the same `NAME`, utilize the other optional parameters to narrow down the
-creation of event for the correct contact. This can be done by supplying any of the
-following information just after `event ... to/NAME`: Phone number, Email, Address or Tag.
-
-</box>
-
 * The `NAME` is case-insensitive. e.g. `aLeX YeOH` will match `Alex Yeoh`.
 * Only full words will be matched e.g. `Alex Yeo` will not match `Alex Yeoh`.
 * Order of parameters does not matter.
-* The date time format for start/ and end/ is `YYYY-MM-DD HHmm` or `DD-MM-YYYY HHmm`.
+* The date time format for `start/` and `end/` is `YYYY-MM-DD HHmm` or `DD-MM-YYYY HHmm`.
 
-Examples:
-* `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 to/David Li` adds an event to David Li.
-* Suppose there are multiple `David Li`, an enriched search would be `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 to/David Li p/99272758`
+<panel header=":fa-solid-code: **Examples**" type="info">
+
+- `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 to/David Li`<br>
+  Adds an event titled "CS2109S Meeting" to David Li.
+
+- `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 to/David Li p/99272758`<br>
+  Adds an event to the David Li with phone number `99272758`, disambiguating between multiple contacts with the same name.
+
+</panel>
+
+<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
+
+Add optional parameters immediately after `to/NAME` to narrow down the match — Phone number, Email, Address, or Tag. See [User Disambiguation](#user-disambiguation) for details.
+
+</panel>
 
 ### View an event: `event view`
 
@@ -466,42 +506,51 @@ Views all events for a specified person.
 
 Format: `event view n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
-<box type="tip" seamless>
-
-**Tip:** If there are multiple contacts with the same `NAME`, utilize the other optional parameters to
-view the events of the correct contact. This can be done by supplying any of the
-following information just after `event view n/NAME`: Phone number, Email, Address or Tag.
-
-</box>
-
 * The `NAME` is case-insensitive. e.g. `aLeX YeOH` will match `Alex Yeoh`.
 * Only full words will be matched e.g. `Alex Yeo` will not match `Alex Yeoh`.
 
-Examples:
-* `event view n/Bernice Yu` views all events that Bernice Yu has.
-* Suppose there are multiple `Bernice Yu`, an enriched search would be `event view n/Bernice Yu e/berniceyu@example.com`
+<panel header=":fa-solid-code: **Examples**" type="info">
+
+- `event view n/Bernice Yu`<br>
+  Views all events for Bernice Yu.
+
+- `event view n/Bernice Yu e/berniceyu@example.com`<br>
+  Views events for the Bernice Yu with the given email, disambiguating between multiple contacts with the same name.
+
+</panel>
+
+<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
+
+Add optional parameters immediately after `n/NAME` to narrow down the match — Phone number, Email, Address, or Tag. See [User Disambiguation](#user-disambiguation) for details.
+
+</panel>
 
 ### Delete an event: `event delete`
 
 Deletes an event for a specified person.
 
 Format: `event delete title/TITLE start/START_DATE end/END_DATE n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
-<box type="tip" seamless>
-
-**Tip:** If there are multiple contacts with the same `NAME`, utilize the other optional parameters to narrow down the
-deletion of event for the correct contact. This can be done by supplying any of the
-following information just after `event ... n/NAME`: Phone number, Email, Address or Tag.
-
-</box>
 
 * The `NAME` is case-insensitive. e.g. `aLeX YeOH` will match `Alex Yeoh`.
 * Only full words will be matched e.g. `Alex Yeo` will not match `Alex Yeoh`.
 * Order of parameters does not matter.
-* The date time format for start/ and end/ is `YYYY-MM-DD HHmm` or `DD-MM-YYYY HHmm`.
+* The date time format for `start/` and `end/` is `YYYY-MM-DD HHmm` or `DD-MM-YYYY HHmm`.
 
-Examples:
-* `event delete title/Meeting start/2026-03-12 1100 end/2026-04-12 2359 n/David Li` deletes the event that titled Meeting which starts at 12 March 2026 1100 and ends at 12 April 2026 2359 assigned to David Li.
-* Suppose there are multiple `David Li`, an enriched search would be `event delete title/Meeting start/2026-03-12 1100 end/2026-04-12 2359 n/David Li p/99272758`
+<panel header=":fa-solid-code: **Examples**" type="info">
+
+- `event delete title/Meeting start/2026-03-12 1100 end/2026-04-12 2359 n/David Li`<br>
+  Deletes the event titled "Meeting" (12 Mar 2026 1100 – 12 Apr 2026 2359) assigned to David Li.
+
+- `event delete title/Meeting start/2026-03-12 1100 end/2026-04-12 2359 n/David Li p/99272758`<br>
+  Deletes the event for the David Li with phone number `99272758`, disambiguating between multiple contacts with the same name.
+
+</panel>
+
+<panel header=":fa-solid-exclamation-triangle: **Important: Disamiguating contacts with the same name**" type="danger">
+
+Add optional parameters immediately after `n/NAME` to narrow down the match — Phone number, Email, Address, or Tag. See [User Disambiguation](#user-disambiguation) for details.
+
+</panel>
 
 ## Data and Storage
 

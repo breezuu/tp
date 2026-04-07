@@ -29,7 +29,7 @@ public class DeleteCommand extends Command {
             + ": Deletes the person identified by their name.\n"
             + "Parameters: "
             + PREFIX_NAME + "NAME "
-            + "[" + PREFIX_PHONE + "PHONE] "
+            + "[" + PREFIX_PHONE + "PHONE_NUMBER] "
             + "[" + PREFIX_EMAIL + "EMAIL] "
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
             + "[" + PREFIX_TAG + "TAG]...\n"
@@ -64,6 +64,7 @@ public class DeleteCommand extends Command {
         } catch (IOException e) {
             throw new CommandException(Messages.MESSAGE_DELETE_PHOTO_FAIL + e.getMessage());
         }
+
         model.deletePerson(personToDelete);
         return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
     }
