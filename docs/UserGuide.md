@@ -93,6 +93,19 @@ This **green box** with a **lightbulb icon** highlights **helpful tips** for usi
 
 6. Refer to the [Features](#features) below for details of each command.
 
+<panel header=":fa-solid-book: **Understanding the GUI**" type="secondary" expanded>
+
+The labelled interface below highlights the main parts of NAB's GUI.
+
+![Labelled UI](images/Ui-guide.png)
+
+* **Command input box**: where you type commands.
+* **Command output box**: shows feedback after each command is executed.
+* **Person list panel**: displays the contacts currently shown.
+* **Event list panel**: displays events related to the current context, such as a selected or uniquely matched person.
+
+</panel>
+
 --------------------------------------------------------------------------------------------------------------------
 
 # Features
