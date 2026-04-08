@@ -8,9 +8,8 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Set;
 
+import seedu.address.commons.util.CommandUtil;
 import seedu.address.commons.util.PhotoStorageUtil;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
@@ -30,7 +29,7 @@ public class DeleteCommand extends Command {
             + ": Deletes the person identified by their name.\n"
             + "Parameters: "
             + PREFIX_NAME + "NAME "
-            + "[" + PREFIX_PHONE + "PHONE] "
+            + "[" + PREFIX_PHONE + "PHONE_NUMBER] "
             + "[" + PREFIX_EMAIL + "EMAIL] "
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
             + "[" + PREFIX_TAG + "TAG]...\n"
@@ -57,21 +56,7 @@ public class DeleteCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
-        List<Person> listOfPersonToDelete = model.findPersons(this.targetInfo);
-
-        // Scenario : No matching name
-        if (listOfPersonToDelete.isEmpty()) {
-            throw new CommandException(Messages.MESSAGE_NO_MATCH);
-        }
-
-        // Scenario : Multiple contact match name, duplicate handling, returns all matched contacts
-        if (listOfPersonToDelete.size() > 1) {
-            Set<Person> matchingPersons = Set.copyOf(listOfPersonToDelete);
-            model.showMatchingPersons(matchingPersons);
-            throw new CommandException(Messages.MESSAGE_MULTIPLE_MATCH);
-        }
-
-        Person personToDelete = listOfPersonToDelete.get(0);
+        Person personToDelete = CommandUtil.targetPerson(model, this.targetInfo);
         try {
             if (personToDelete.getPhoto().isPresent()) {
                 PhotoStorageUtil.deletePhoto(personToDelete.getPhoto().get());
@@ -79,8 +64,9 @@ public class DeleteCommand extends Command {
         } catch (IOException e) {
             throw new CommandException(Messages.MESSAGE_DELETE_PHOTO_FAIL + e.getMessage());
         }
+
         model.deletePerson(personToDelete);
-        model.updateFilteredEventList(event -> false);
+        model.showNoEvents();
         return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
     }
 

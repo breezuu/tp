@@ -28,6 +28,7 @@ import seedu.address.model.event.Title;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonInformation;
+import seedu.address.model.person.Photo;
 import seedu.address.testutil.PersonBuilder;
 
 public class DeleteEventCommandTest {
@@ -89,8 +90,7 @@ public class DeleteEventCommandTest {
         Event eventToDelete = eventOf("CS2103 Meeting", "Weekly", VALID_START, VALID_END);
         DeleteEventCommand command = new DeleteEventCommand(infoOf(VALID_NAME), eventToDelete);
 
-        assertThrows(CommandException.class, Messages.MESSAGE_NO_MATCH, () ->
-                command.execute(modelStub));
+        assertThrows(CommandException.class, Messages.MESSAGE_NO_MATCH, () -> command.execute(modelStub));
     }
 
     @Test
@@ -98,13 +98,12 @@ public class DeleteEventCommandTest {
         Person firstMatch = new PersonBuilder().withName(VALID_NAME).withPhone("90001111").build();
         Person secondMatch = new PersonBuilder().withName(VALID_NAME).withPhone("90002222").build();
 
-        ModelStubWithMultiplePersons modelStub =
-                new ModelStubWithMultiplePersons(List.of(firstMatch, secondMatch));
+        ModelStubWithMultiplePersons modelStub = new ModelStubWithMultiplePersons(
+                List.of(firstMatch, secondMatch));
         Event eventToDelete = eventOf("CS2103 Meeting", "Weekly", VALID_START, VALID_END);
         DeleteEventCommand command = new DeleteEventCommand(infoOf(VALID_NAME), eventToDelete);
 
-        assertThrows(CommandException.class, Messages.MESSAGE_MULTIPLE_MATCH, () ->
-                command.execute(modelStub));
+        assertThrows(CommandException.class, Messages.MESSAGE_MULTIPLE_MATCH, () -> command.execute(modelStub));
         assertTrue(modelStub.filteredPersonsUpdated);
         assertTrue(modelStub.filteredEventsUpdated);
     }
@@ -116,9 +115,9 @@ public class DeleteEventCommandTest {
         Event eventToDelete = eventOf("CS2103 Meeting", "Weekly", VALID_START, VALID_END);
         DeleteEventCommand command = new DeleteEventCommand(infoOf(VALID_NAME), eventToDelete);
 
-        String expectedMessage = String.format(DeleteEventCommand.MESSAGE_EVENT_NOT_FOUND, eventToDelete);
-        assertThrows(CommandException.class, expectedMessage, () ->
-                command.execute(modelStub));
+        String expectedMessage = String.format(DeleteEventCommand.MESSAGE_EVENT_NOT_FOUND,
+                eventToDelete);
+        assertThrows(CommandException.class, expectedMessage, () -> command.execute(modelStub));
     }
 
     @Test
@@ -131,9 +130,9 @@ public class DeleteEventCommandTest {
         ModelStubWithPerson modelStub = new ModelStubWithPerson(person, event);
         DeleteEventCommand command = new DeleteEventCommand(infoOf(VALID_NAME), differentTime);
 
-        String expectedMessage = String.format(DeleteEventCommand.MESSAGE_EVENT_NOT_FOUND, differentTime);
-        assertThrows(CommandException.class, expectedMessage, () ->
-                command.execute(modelStub));
+        String expectedMessage = String.format(DeleteEventCommand.MESSAGE_EVENT_NOT_FOUND,
+                differentTime);
+        assertThrows(CommandException.class, expectedMessage, () -> command.execute(modelStub));
     }
 
     @Test
@@ -166,91 +165,150 @@ public class DeleteEventCommandTest {
     // ==================== Model Stubs ====================
 
     private class ModelStub implements Model {
-        @Override public void setUserPrefs(ReadOnlyUserPrefs userPrefs) {
+        @Override
+        public void setUserPrefs(ReadOnlyUserPrefs userPrefs) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public ReadOnlyUserPrefs getUserPrefs() {
+
+        @Override
+        public ReadOnlyUserPrefs getUserPrefs() {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public GuiSettings getGuiSettings() {
+
+        @Override
+        public GuiSettings getGuiSettings() {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void setGuiSettings(GuiSettings guiSettings) {
+
+        @Override
+        public void setGuiSettings(GuiSettings guiSettings) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public Path getAddressBookFilePath() {
+
+        @Override
+        public Path getAddressBookFilePath() {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void setAddressBookFilePath(Path addressBookFilePath) {
+
+        @Override
+        public void setAddressBookFilePath(Path addressBookFilePath) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void setAddressBook(ReadOnlyAddressBook newData) {
+
+        @Override
+        public void setAddressBook(ReadOnlyAddressBook newData) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public ReadOnlyAddressBook getAddressBook() {
+
+        @Override
+        public ReadOnlyAddressBook getAddressBook() {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public boolean hasPerson(Person person) {
+
+        @Override
+        public boolean hasPerson(Person person) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void deletePerson(Person target) {
+
+        @Override
+        public void deletePerson(Person target) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void addPerson(Person person) {
+
+        @Override
+        public void addPerson(Person person) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void setPerson(Person target, Person editedPerson) {
+
+        @Override
+        public void setPerson(Person target, Person editedPerson) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public ObservableList<Person> getFilteredPersonList() {
+
+        @Override
+        public ObservableList<Person> getFilteredPersonList() {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void updateFilteredPersonList(Predicate<Person> predicate) {
+
+        @Override
+        public void updateFilteredPersonList(Predicate<Person> predicate) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void showAllPersons() {
+
+        @Override
+        public void showAllPersons() {
             throw new AssertionError("This method should not be called.");
         }
         @Override public void showAllPersonsPinnedFirst() {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void showPersons(Predicate<Person> predicate) {
+        @Override
+        public void showPersons(Predicate<Person> predicate) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void showMatchingPersons(java.util.Set<Person> persons) {
+
+        @Override
+        public void showMatchingPersons(java.util.Set<Person> persons) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void showEventsForPerson(Person person) {
+
+        @Override
+        public void showPerson(Person person) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public ObservableList<Event> getFilteredEventList() {
+
+        @Override
+        public void showEventsForPerson(Person person) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void updateFilteredEventList(Predicate<Event> predicate) {
+
+        @Override
+        public void showNoEvents() {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public List<Person> findPersons(PersonInformation info) {
+
+        @Override
+        public ObservableList<Event> getFilteredEventList() {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public boolean hasEvent(Event event) {
+
+        @Override
+        public List<Person> findPersons(PersonInformation info) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void addEvent(Event event) {
+
+        @Override
+        public boolean hasEvent(Event event) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void deleteEvent(Event target) {
+
+        @Override
+        public void addEvent(Event event) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void setEvent(Event target, Event editedEvent) {
+
+        @Override
+        public void deleteEvent(Event target) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public Event linkPersonToEvent(Event eventToAdd) {
+
+        @Override
+        public void setEvent(Event target, Event editedEvent) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public Event unlinkPersonFromEvent(Event eventToUnlink) {
+
+        @Override
+        public Event linkPersonToEvent(Event eventToAdd) {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public boolean hasOverlappingEvent(Event event) {
+
+        @Override
+        public Event unlinkPersonFromEvent(Event eventToUnlink) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public boolean hasOverlappingEvent(Event event) {
             throw new AssertionError("This method should not be called.");
         }
         @Override
@@ -265,6 +323,11 @@ public class DeleteEventCommandTest {
 
         @Override
         public boolean isPersonPinned(Person person) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public boolean isPhotoShared(Photo photo, Person personToExclude) {
             throw new AssertionError("This method should not be called.");
         }
     }
@@ -295,13 +358,12 @@ public class DeleteEventCommandTest {
         }
 
         @Override
-        public void updateFilteredPersonList(Predicate<Person> predicate) {}
+        public void updateFilteredPersonList(Predicate<Person> predicate) {
+        }
 
         @Override
-        public void updateFilteredEventList(Predicate<Event> predicate) {}
-
-        @Override
-        public void showEventsForPerson(Person person) {}
+        public void showEventsForPerson(Person person) {
+        }
 
         @Override
         public ReadOnlyAddressBook getAddressBook() {
@@ -337,10 +399,9 @@ public class DeleteEventCommandTest {
         }
 
         @Override
-        public void updateFilteredPersonList(Predicate<Person> predicate) {}
+        public void updateFilteredPersonList(Predicate<Person> predicate) {
+        }
 
-        @Override
-        public void updateFilteredEventList(Predicate<Event> predicate) {}
     }
 
     private class ModelStubWithMultiplePersons extends ModelStub {
@@ -368,9 +429,5 @@ public class DeleteEventCommandTest {
             filteredPersonsUpdated = true;
         }
 
-        @Override
-        public void updateFilteredEventList(Predicate<Event> predicate) {
-            filteredEventsUpdated = true;
-        }
     }
 }

@@ -38,7 +38,7 @@ public class AddTagCommand extends Command {
             + PREFIX_TAG_ASSIGN + "TAG_TO_ASSIGN ["
             + PREFIX_TAG_ASSIGN + "TAG_TO_ASSIGN]... "
             + PREFIX_NAME + "NAME "
-            + "[" + PREFIX_PHONE + "PHONE] "
+            + "[" + PREFIX_PHONE + "PHONE_NUMBER] "
             + "[" + PREFIX_EMAIL + "EMAIL] "
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
             + "[" + PREFIX_TAG + "TAG]... "
@@ -80,7 +80,7 @@ public class AddTagCommand extends Command {
         // Apply tags for each person
         applyTags(model, uniquePersons);
         // refresh the listing
-        model.showAllPersons();
+        model.showAllPersonsPinnedFirst();
 
         String tagNames = tagsToAssign.stream()
                 .map(t -> t.tagName)

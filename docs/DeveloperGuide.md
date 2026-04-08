@@ -144,14 +144,17 @@ The `Model` component,
 
 ### Storage component
 
-**API** : [`Storage.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/storage/Storage.java)
+**API** : [`Storage.java`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/storage/Storage.java)
 
-<puml src="diagrams/StorageClassDiagram.puml" width="550" />
+<puml src="diagrams/StorageClassDiagram.puml" width="700" />
 
 The `Storage` component,
 * can save both address book data and user preference data in JSON format, and read them back into corresponding objects.
-* inherits from both `AddressBookStorage` and `UserPrefStorage`, which means it can be treated as either one (if only the functionality of only one is needed).
-* depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`)
+* inherits from both `AddressBookStorage` and `UserPrefsStorage`, which means it can be treated as either one (if only the functionality of only one is needed).
+* depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`).
+* persists `Event` objects as a top-level list in the address book JSON, identified by a unique integer ID. Each `JsonAdaptedPerson` stores a list of event IDs as foreign keys, which are resolved back into `Event` objects during loading.
+* persists the pinned persons list separately within the address book JSON. During loading, pinned entries are resolved against the main persons list to ensure a single source of truth.
+* **Note:** CSV import/export (`import`/`export` commands) is handled at the `Logic` layer via `CsvUtil` in `Commons`, and is not part of the `Storage` component.
 
 ### Common classes
 
@@ -259,6 +262,69 @@ _{more aspects and alternatives to be added}_
 ### \[Proposed\] Data archiving
 
 _{Explain here how the data archiving feature will be implemented}_
+
+### Pin/Unpin contact feature
+
+#### Implementation
+
+The pin/unpin feature is implemented as `PinCommand` and `UnpinCommand`, both implementing `Command`. The feature spans the `Logic`, `Model`, `Storage`, and `UI` components.
+
+The following class diagram shows the main classes involved in the feature:
+
+<puml src="diagrams/PinClassDiagram.puml" alt="PinClassDiagram" width=75% />
+
+`PinCommandParser` and `UnpinCommandParser` each parse the user's input and construct their respective commands with a `PersonInformation` object as the matching criteria. `PinCommand#execute(Model)` resolves the target by finding all matching contacts, filtering out those already pinned, and applying shared disambiguation logic. `UnpinCommand#execute(Model)` mirrors this — it filters to only pinned matches and resolves from those. Both commands throw an error if no match or multiple matches remain.
+
+`AddressBook` maintains two lists: `persons` as the source of truth for all contacts, and `pinnedPersons` as an ordered list of pinned contacts. The insertion order of `pinnedPersons` defines the display order among pinned contacts. The UI reorders the displayed list by sorting against this pinned list, keeping pinned contacts at the top while preserving the relative order of unpinned contacts.
+
+Pinned state is persisted in the JSON save file and reconstructed on load. The UI reflects pin state via a pin indicator shown on each pinned contact's card.
+
+#### Usage scenario
+
+The following sequence diagram shows how a `pin` command flows through the `Logic` component. The `unpin` command follows the same flow, except it filters to only pinned matches and calls `model.unpinPerson(...)` instead.
+
+<puml src="diagrams/PinSequenceDiagram-Logic.puml" alt="PinSequenceDiagram-Logic" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `PinCommand` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline reaches the end of the diagram.
+
+</box>
+
+How the `pinPerson` call is handled inside the `Model` component is shown below:
+
+<puml src="diagrams/PinSequenceDiagram-Model.puml" alt="PinSequenceDiagram-Model" />
+
+The following activity diagram summarizes the command's match-resolution flow:
+
+<puml src="diagrams/PinActivityDiagram.puml" width="600" alt="PinActivityDiagram" />
+
+#### Design considerations
+
+**Aspect: How pinned contacts are represented**
+
+* **Alternative 1 (current choice):** Maintain a separate `pinnedPersons` list in `AddressBook`.
+  * Pros: Keeps pin ordering explicit and makes pinned-first sorting straightforward.
+  * Pros: Allows pin state to be persisted independently from the main display order.
+  * Cons: The model must preserve consistency between `persons` and `pinnedPersons`.
+
+* **Alternative 2:** Store a pinned flag inside each `Person`.
+  * Pros: Avoids maintaining a second list for pinned contacts.
+  * Cons: Pin order would need extra bookkeeping, and editing a person would mix contact data with UI ordering state.
+  * Cons: `isPinned` is not an intrinsic property of a person — it is a feature concern. Placing it on `Person` dilutes the class's responsibility by coupling contact data with application-level behaviour, violating the principle that a `Person` should model a real-world entity rather than a feature's state.
+
+**Aspect: How the displayed list is reordered**
+
+* **Alternative 1 (current choice):** Reorder the UI view using `sortedPersons` and `createPinnedComparator()`.
+  * Pros: Keeps the base `persons` list unchanged while still presenting pinned contacts first.
+  * Pros: Preserves the relative order of unpinned contacts.
+  * Cons: The ordering logic is split between stored pin state and a comparator in `ModelManager`.
+
+* **Alternative 2:** Physically move pinned contacts inside the main person list.
+  * Pros: The displayed order would directly match the underlying storage order.
+  * Cons: Reordering the main list couples display concerns to storage order and makes non-pin-related operations
+    harder to reason about.
+  * Cons: Unable to restore order if the pinned contact was unpinned.
 
 
 --------------------------------------------------------------------------------------------------------------------

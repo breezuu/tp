@@ -43,17 +43,17 @@ public class EditCommand extends Command {
             + "Existing values will be overwritten by the input values.\n"
             + "Format: "
             + COMMAND_WORD + " " + PREFIX_NAME + "NAME "
-            + "[" + PREFIX_PHONE + "PHONE] "
+            + "[" + PREFIX_PHONE + "PHONE_NUMBER] "
             + "[" + PREFIX_EMAIL + "EMAIL] "
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
             + "[" + PREFIX_TAG + "TAG]... "
             + "-- "
             + "[" + PREFIX_NAME + "NAME] "
-            + "[" + PREFIX_PHONE + "PHONE] "
+            + "[" + PREFIX_PHONE + "PHONE_NUMBER] "
             + "[" + PREFIX_EMAIL + "EMAIL] "
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
             + "[" + PREFIX_TAG + "TAG]... "
-            + "[" + PREFIX_PHOTO + "PHOTO]\n"
+            + "[" + PREFIX_PHOTO + "PHOTO_PATH]\n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_NAME + "John Doe "
             + PREFIX_PHONE + "91234567 -- "
             + PREFIX_EMAIL + "john.new@example.com "
@@ -89,7 +89,7 @@ public class EditCommand extends Command {
         Person personToEdit = CommandUtil.targetPerson(model, targetInfo);
         Person previewPerson = createEditedPerson(personToEdit, editPersonDescriptor);
 
-        //If edit is not the same, but phone number already exsist to another person
+        //If edit is not the same, but phone number already exist to another person
         if (!personToEdit.isSamePerson(previewPerson) && model.hasPerson(previewPerson)) {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
         }
@@ -106,11 +106,7 @@ public class EditCommand extends Command {
             if (personToEdit.getPhoto().isPresent()) {
                 Photo oldPhoto = personToEdit.getPhoto().get();
                 if (!oldPhoto.equals(newPhoto)) {
-                    try {
-                        PhotoStorageUtil.deletePhoto(oldPhoto);
-                    } catch (IOException e) {
-                        throw new CommandException(Messages.MESSAGE_DELETE_PHOTO_FAIL + e.getMessage());
-                    }
+                    CommandUtil.safelyDeletePhoto(model, personToEdit, oldPhoto);
                 }
             }
         }
@@ -123,7 +119,7 @@ public class EditCommand extends Command {
         }
 
         model.setPerson(personToEdit, editedPerson);
-        model.updateFilteredPersonList(p -> p.equals(editedPerson));
+        model.showPerson(editedPerson);
         return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson)));
     }
 

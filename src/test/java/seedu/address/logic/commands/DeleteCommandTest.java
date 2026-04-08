@@ -44,10 +44,10 @@ public class DeleteCommandTest {
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
                 Messages.format(personToDelete));
 
-        ModelManager expectedModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
-        Person expectedPersonToDelete = expectedModel.findPersons(createNameOnlyInfo(new Name("Carl Kurz"))).get(0);
+        ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        Person expectedPersonToDelete = expectedModel.findPersons(createNameOnlyInfo(personToDelete.getName())).get(0);
         expectedModel.deletePerson(expectedPersonToDelete);
-        expectedModel.updateFilteredEventList(event -> false);
+        expectedModel.showNoEvents();
 
         assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
     }
@@ -105,9 +105,9 @@ public class DeleteCommandTest {
                 Messages.format(firstMatch));
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        Person expectedFirstMatch = expectedModel.findPersons(info).get(0);
-        expectedModel.deletePerson(expectedFirstMatch);
-        expectedModel.updateFilteredEventList(event -> false);
+        Person expectedPersonToDelete = expectedModel.findPersons(info).get(0);
+        expectedModel.deletePerson(expectedPersonToDelete);
+        expectedModel.showNoEvents();
 
         assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
     }
@@ -138,7 +138,6 @@ public class DeleteCommandTest {
         CommandException thrown = assertThrows(CommandException.class, () -> deleteCommand2.execute(model));
         assertEquals(Messages.MESSAGE_MULTIPLE_MATCH, thrown.getMessage());
         model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
-        model.updateFilteredEventList(e -> true);
 
         // 1 result test:
         PersonInformation info3 = new PersonInformation(new Name("David Ng"), new Phone("90002222"),
@@ -147,16 +146,16 @@ public class DeleteCommandTest {
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
                 Messages.format(secondMatch));
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        Person expectedSecondMatch = expectedModel.findPersons(info3).get(0);
-        expectedModel.deletePerson(expectedSecondMatch);
-        expectedModel.updateFilteredEventList(event -> false);
+        Person expectedPersonToDelete = expectedModel.findPersons(info3).get(0);
+        expectedModel.deletePerson(expectedPersonToDelete);
+        expectedModel.showNoEvents();
         assertCommandSuccess(deleteCommand3, model, expectedMessage, expectedModel);
     }
 
     @Test
     public void execute_validName_clearsFilteredEventList() throws Exception {
-        Person personToDelete = model.findPersons(createNameOnlyInfo(new Name("Carl Kurz"))).get(0);
-        model.updateFilteredEventList(event -> true);
+        Person personToDelete = model.findPersons(createNameOnlyInfo(new Name("Alice Pauline"))).get(0);
+        model.showEventsForPerson(personToDelete);
         assertFalse(model.getFilteredEventList().isEmpty());
 
         DeleteCommand deleteCommand = new DeleteCommand(createNameOnlyInfo(personToDelete.getName()));

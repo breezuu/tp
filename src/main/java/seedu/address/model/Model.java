@@ -10,6 +10,7 @@ import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.event.Event;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonInformation;
+import seedu.address.model.person.Photo;
 
 /**
  * The API of the Model component.
@@ -112,6 +113,12 @@ public interface Model {
     void showMatchingPersons(Set<Person> persons);
 
     /**
+     * Filters the person list to show only {@code person}.
+     * Does not modify the event list.
+     */
+    void showPerson(Person person);
+
+    /**
      * Pins the given person for this application session.
      */
     void pinPerson(Person person);
@@ -163,10 +170,9 @@ public interface Model {
     ObservableList<Event> getFilteredEventList();
 
     /**
-     * Updates the filter of the filtered event list to filter by the given {@code predicate}.
-     * @throws NullPointerException if {@code predicate} is null.
+     * Filters the filtered event list to show no events.
      */
-    void updateFilteredEventList(Predicate<Event> predicate);
+    void showNoEvents();
 
     Event linkPersonToEvent(Event eventToAdd);
 
@@ -178,5 +184,9 @@ public interface Model {
      */
     void showEventsForPerson(Person person);
 
+    /**
+     * Returns true if the given photo is used by any person in the address book,
+     * excluding the specified person.
+     */
+    boolean isPhotoShared(Photo photo, Person personToExclude);
 }
-

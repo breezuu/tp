@@ -30,16 +30,15 @@ public class ListCommandTest {
 
     @Test
     public void execute_listIsNotFiltered_showsSameList() {
-        model.updateFilteredEventList(event -> true);
-        expectedModel.updateFilteredEventList(event -> false);
+        showPersonAtIndex(model, INDEX_FIRST_PERSON);
+        expectedModel.showNoEvents();
         assertCommandSuccess(new ListCommand(), model, ListCommand.MESSAGE_SUCCESS, expectedModel);
     }
 
     @Test
     public void execute_listIsFiltered_showsEverything() {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
-        model.updateFilteredEventList(event -> true);
-        expectedModel.updateFilteredEventList(event -> false);
+        expectedModel.showNoEvents();
         assertCommandSuccess(new ListCommand(), model, ListCommand.MESSAGE_SUCCESS, expectedModel);
     }
 
@@ -48,7 +47,7 @@ public class ListCommandTest {
         Person personToPin = model.getFilteredPersonList().get(2);
         model.pinPerson(personToPin);
         expectedModel.pinPerson(expectedModel.getFilteredPersonList().get(2));
-        expectedModel.updateFilteredEventList(event -> false);
+        expectedModel.showNoEvents();
 
         assertCommandSuccess(new ListCommand(), model, ListCommand.MESSAGE_SUCCESS, expectedModel);
         assertEquals(personToPin, model.getFilteredPersonList().get(0));
