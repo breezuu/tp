@@ -63,8 +63,6 @@ public class ImportCommand extends Command {
     public static final String MESSAGE_EMPTY_FILE = "The file %1$s is empty.";
     public static final String MESSAGE_SUCCESS_ROWS_ADDED_SKIPPED = "Successfully imported list from %1$s with "
             + "%2$d row(s) added, %3$d row(s) skipped.";
-    public static final String MESSAGE_MALFORM_CSV = "Import aborted: %1$s has either 0 lines "
-            + "or is completely malformed";
 
     private static final Logger logger = LogsCenter.getLogger(ImportCommand.class);
 
@@ -154,37 +152,44 @@ public class ImportCommand extends Command {
     }
 
     /**
-     * Iterates through the data rows of the CSV, parses each into a {@code Person},
-     * and adds them to the {@code Model} if they do not already exist.
-     * @param model The {@code Model} to be updated with new contacts.
+     * Parses all data rows of the CSV into {@code Person} objects, registers their
+     * events with the global model, then adds each person if they do not already exist.
+     * @param model The {@code Model} to be updated with new contacts and events.
      * @param lines The list of all lines (including header) from the CSV.
      * @return The count of successfully added rows.
      * @throws CommandException If an error is encountered while parsing or adding a {@code Person}.
      */
     private int processImportedLinesFromCsv(Model model, List<String> lines) throws CommandException {
         int added = 0;
-        int successfullyParsed = 0;
         Map<Integer, Event> eventMap = new HashMap<>();
 
+        // Pass 1: parse all rows. Events are collected into eventMap.
+        List<Person> parsedPersons = new ArrayList<>();
         for (int i = 1; i < lines.size(); i++) {
             Optional<Person> person = parseLineToPerson(lines.get(i), eventMap);
+            person.ifPresent(parsedPersons::add);
+        }
 
-            if (person.isPresent()) {
-                successfullyParsed++;
-                if (!model.hasPerson(person.get())) {
-                    model.addPerson(person.get());
-                    added++;
-                }
+        // Pass 2: register every unique parsed event with the global model.
+        for (Event event : eventMap.values()) {
+            if (!model.hasEvent(event) && !model.hasOverlappingEvent(event)) {
+                model.addEvent(event);
             }
         }
 
-        // If CSV is empty or completely malformed
-        if (!hasHeaderOnly(lines) && successfullyParsed == 0) {
-            throw new CommandException(String.format(MESSAGE_MALFORM_CSV, filename + FILENAME_SUFFIX));
+        // Pass 3: add persons. Their internal event lists already reference the
+        // same objects registered globally in pass 2.
+        for (Person person : parsedPersons) {
+            if (!model.hasPerson(person)) {
+                model.addPerson(person);
+                added++;
+            }
         }
 
         return added;
     }
+
+
 
     /**
      * Attempts to parse a CSV line into a {@code Person} object.

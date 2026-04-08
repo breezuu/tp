@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +27,10 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.event.Description;
 import seedu.address.model.event.Event;
+import seedu.address.model.event.TimeRange;
+import seedu.address.model.event.Title;
 import seedu.address.model.person.Person;
 import seedu.address.testutil.PersonBuilder;
 
@@ -240,23 +244,45 @@ public class ImportCommandTest {
     }
 
     @Test
-    public void execute_totalMalformedCsv_abortAndReports() throws Exception {
-        String testString = "\nValid,91234567,valid@u.nus.edu,Blk 123,,,aaa"
-                + "\nInvalid,abcd,invalid@u.nus.edu,Blk 123,,,";
+    public void execute_rowWithExistingGlobalEvent_skipsDuplicateGlobalEventAdd() throws Exception {
+        Event existingEvent = new Event(
+                new Title("Meeting"),
+                Optional.of(new Description("Kickoff")),
+                new TimeRange("2026-05-06 1000", "2026-05-06 1100")
+        );
+        model.addEvent(existingEvent);
+        int eventCountBeforeImport = model.getAddressBook().getEventList().size();
 
-        createCsvFile("malformed", header + testString);
+        createCsvFile("eventExists", header
+                + "\nEve,81234567,eve@u.nus.edu,Blk 321,,Meeting|Kickoff|2026-05-06 1000|2026-05-06 1100|1|500,");
 
-        ImportCommand addCommand = createTestCommand("add", "malformed");
-        CommandException addException = assertThrows(CommandException.class, () -> addCommand.execute(model));
-        assertEquals(String.format(ImportCommand.MESSAGE_MALFORM_CSV, "malformed" + FILENAME_SUFFIX),
-                addException.getMessage());
+        ImportCommand command = createTestCommand("add", "eventExists");
+        CommandResult result = command.execute(model);
 
-        ImportCommand overwriteCommand = createTestCommand("overwrite", "malformed");
-        CommandException overwriteException = assertThrows(
-                CommandException.class, () -> overwriteCommand.execute(model));
-        assertEquals(String.format(ImportCommand.MESSAGE_MALFORM_CSV, "malformed" + FILENAME_SUFFIX),
-                overwriteException.getMessage());
+        assertTrue(result.getFeedbackToUser().contains("1 row(s) added"));
+        assertEquals(eventCountBeforeImport, model.getAddressBook().getEventList().size());
     }
+
+    @Test
+    public void execute_rowWithOverlappingGlobalEvent_skipsOverlappingGlobalEventAdd() throws Exception {
+        Event existingEvent = new Event(
+                new Title("Meeting"),
+                Optional.of(new Description("Kickoff")),
+                new TimeRange("2026-05-06 1000", "2026-05-06 1100")
+        );
+        model.addEvent(existingEvent);
+        int eventCountBeforeImport = model.getAddressBook().getEventList().size();
+
+        createCsvFile("eventOverlap", header
+                + "\nEve,81234567,eve@u.nus.edu,Blk 321,,Consult|Discussion|2026-05-06 1000|2026-05-06 1100|1|501,");
+
+        ImportCommand command = createTestCommand("add", "eventOverlap");
+        CommandResult result = command.execute(model);
+
+        assertTrue(result.getFeedbackToUser().contains("1 row(s) added"));
+        assertEquals(eventCountBeforeImport, model.getAddressBook().getEventList().size());
+    }
+
 
     @Test
     public void execute_fileDoesNotExist_throwsCommandException() {
