@@ -659,6 +659,7 @@ AddressBook data is saved automatically as a JSON file `[JAR file location]/data
 <panel header=":fa-solid-exclamation-triangle: **Important**" type="danger">
 
 - If your changes to the data file make its format invalid, AddressBook will discard all data and start with an empty data file at the next run.  Hence, it is recommended to take a backup of the file before editing it.
+- If your changes to the data file make its data inconsistent, NAB will first attempt to repair it automatically. If the inconsistency cannot be resolved, NAB will clear the entire address book to maintain data integrity.
 - Furthermore, certain edits can cause the AddressBook to behave in unexpected ways (e.g. if a value entered is outside the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 
 </panel>

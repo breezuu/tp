@@ -266,4 +266,33 @@ public class DeleteCommandTest {
             PhotoStorageUtil.setImageDirectory(originalDir);
         }
     }
+
+    @Test
+    public void execute_sharedPhoto_deletesPersonButKeepsPhotoFile(@TempDir Path tempDir) throws Exception {
+        String originalDir = PhotoStorageUtil.getImageDirectory();
+        String tempDirPath = PhotoStorageUtil.formatPath(tempDir);
+        PhotoStorageUtil.setImageDirectory(tempDirPath);
+
+        try {
+            Path sharedPhotoFile = tempDir.resolve("shared.jpg");
+            Files.createFile(sharedPhotoFile);
+            String sharedPhotoPath = PhotoStorageUtil.formatPath(sharedPhotoFile);
+
+            Person firstPerson = new PersonBuilder().withName("Shared One").withPhone("81112222")
+                    .withPhoto(sharedPhotoPath).build();
+            Person secondPerson = new PersonBuilder().withName("Shared Two").withPhone("83334444")
+                    .withPhoto(sharedPhotoPath).build();
+            model.addPerson(firstPerson);
+            model.addPerson(secondPerson);
+
+            DeleteCommand deleteCommand = new DeleteCommand(createNameOnlyInfo(firstPerson.getName()));
+            deleteCommand.execute(model);
+
+            assertFalse(model.hasPerson(firstPerson));
+            assertTrue(model.hasPerson(secondPerson));
+            assertTrue(Files.exists(sharedPhotoFile));
+        } finally {
+            PhotoStorageUtil.setImageDirectory(originalDir);
+        }
+    }
 }

@@ -7,10 +7,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
-import java.io.IOException;
-
 import seedu.address.commons.util.CommandUtil;
-import seedu.address.commons.util.PhotoStorageUtil;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -57,12 +54,8 @@ public class DeleteCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
         Person personToDelete = CommandUtil.targetPerson(model, this.targetInfo);
-        try {
-            if (personToDelete.getPhoto().isPresent()) {
-                PhotoStorageUtil.deletePhoto(personToDelete.getPhoto().get());
-            }
-        } catch (IOException e) {
-            throw new CommandException(Messages.MESSAGE_DELETE_PHOTO_FAIL + e.getMessage());
+        if (personToDelete.getPhoto().isPresent()) {
+            CommandUtil.safelyDeletePhoto(model, personToDelete, personToDelete.getPhoto().get());
         }
 
         model.deletePerson(personToDelete);
