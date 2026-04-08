@@ -4,6 +4,7 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -65,12 +66,10 @@ public class EventCommandParserTest {
     @Test
     public void parse_deleteSubcommand_success() {
         PersonInformation expectedInfo = new PersonInformation(new Name("Amy Bee"), null, null, null, null);
-        Event expectedEvent = new Event(new Title("Complete feature list"), Optional.empty(),
-                new TimeRange("2026-02-21 1100", "2026-02-21 1500"));
-        DeleteEventCommand expectedCommand = new DeleteEventCommand(expectedInfo, expectedEvent);
+        LocalDateTime expectedStart = LocalDateTime.parse("2026-02-21 1100", TimeRange.DATE_TIME_FORMATTER);
+        DeleteEventCommand expectedCommand = new DeleteEventCommand(expectedInfo, expectedStart);
 
-        assertParseSuccess(parser, "delete title/Complete feature list start/2026-02-21 1100 "
-                + "end/2026-02-21 1500 n/Amy Bee", expectedCommand);
+        assertParseSuccess(parser, "delete start/2026-02-21 1100 n/Amy Bee", expectedCommand);
     }
 
     @Test

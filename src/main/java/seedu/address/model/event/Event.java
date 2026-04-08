@@ -1,7 +1,9 @@
 package seedu.address.model.event;
 
+import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -51,22 +53,37 @@ public class Event {
             timeRange.getEndTimeFormatted());
     }
 
+    /**
+     * Returns the title of this event.
+     */
     public Title getTitle() {
         return title;
     }
 
+    /**
+     * Returns the time range of this event.
+     */
     public TimeRange getTimeRange() {
         return timeRange;
     }
 
+    /**
+     * Returns the stable identifier for this event.
+     */
     public int getEventId() {
         return eventId;
     }
 
+    /**
+     * Returns the number of persons currently linked to this event.
+     */
     public int getNumberOfPersonLinked() {
         return numberOfPersonLinked;
     }
 
+    /**
+     * Returns the optional description of this event.
+     */
     public Optional<Description> getDescription() {
         return description;
     }
@@ -89,10 +106,16 @@ public class Event {
         numberOfPersonLinked -= 1;
     }
 
+    /**
+     * Returns the formatted start time of this event.
+     */
     public String getStartTimeFormatted() {
         return timeRange.getStartTimeFormatted();
     }
 
+    /**
+     * Returns the formatted end time of this event.
+     */
     public String getEndTimeFormatted() {
         return timeRange.getEndTimeFormatted();
     }
@@ -118,6 +141,17 @@ public class Event {
         return timeRange.isOverlapping(otherEvent.timeRange);
     }
 
+    /**
+     * Returns true if this event starts at {@code otherStartTime}.
+     */
+    public boolean hasSameStartTime(LocalDateTime otherStartTime) {
+        requireNonNull(otherStartTime);
+        return timeRange.hasSameStartTime(otherStartTime);
+    }
+
+    /**
+     * Returns a human-readable representation of this event.
+     */
     @Override
     public String toString() {
         String duration = "From " + timeRange;
@@ -142,6 +176,9 @@ public class Event {
         return false;
     }
 
+    /**
+     * Returns the hash code of this event.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(this.title, this.description, this.timeRange);

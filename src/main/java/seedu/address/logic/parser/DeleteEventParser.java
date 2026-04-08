@@ -4,23 +4,19 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_END;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_START;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_TITLE;
 
-import java.util.Optional;
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import seedu.address.logic.commands.DeleteEventCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.event.Description;
-import seedu.address.model.event.Event;
 import seedu.address.model.event.TimeRange;
-import seedu.address.model.event.Title;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
@@ -42,27 +38,29 @@ public class DeleteEventParser implements Parser<DeleteEventCommand> {
         requireNonNull(args);
 
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args,
-                PREFIX_TITLE, PREFIX_START, PREFIX_END, PREFIX_NAME,
-                PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS, PREFIX_TAG);
+                PREFIX_START, PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS, PREFIX_TAG);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_TITLE, PREFIX_START, PREFIX_END, PREFIX_NAME)
-                || !argMultimap.getPreamble().isEmpty()) {
+        if (!arePrefixesPresent(argMultimap, PREFIX_START, PREFIX_NAME) || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteEventCommand.MESSAGE_USAGE));
         }
 
         argMultimap.verifyNoDuplicatePrefixesFor(
-                PREFIX_TITLE, PREFIX_START, PREFIX_END, PREFIX_NAME,
-                PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS);
+                PREFIX_START, PREFIX_NAME, PREFIX_PHONE,
+                PREFIX_EMAIL, PREFIX_ADDRESS);
 
-        Event eventToDelete = createEvent(argMultimap);
+        String startTimeStr = argMultimap.getValue(PREFIX_START).get().trim();
+        if (!TimeRange.isValidDateTimeFormat(startTimeStr)) {
+            throw new ParseException(TimeRange.MESSAGE_INVALID_DATETIME_FORMAT);
+        }
+
         try {
+            LocalDateTime startTime = LocalDateTime.parse(startTimeStr, TimeRange.DATE_TIME_FORMATTER);
             PersonInformation targetInfo = createPersonInformation(argMultimap);
-            return new DeleteEventCommand(targetInfo, eventToDelete);
-        } catch (ParseException pe) {
+            return new DeleteEventCommand(targetInfo, startTime);
+        } catch (DateTimeException | ParseException pe) {
             throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                            DeleteEventCommand.MESSAGE_USAGE), pe);
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteEventCommand.MESSAGE_USAGE), pe);
         }
     }
 
@@ -80,26 +78,6 @@ public class DeleteEventParser implements Parser<DeleteEventCommand> {
                 : null;
         Set<Tag> tags = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
         return new PersonInformation(name, phone, email, address, tags);
-    }
-
-    private static Event createEvent(ArgumentMultimap argMultimap) throws ParseException {
-        String titleStr = argMultimap.getValue(PREFIX_TITLE).get().trim();
-        if (!Title.isValidTitle(titleStr)) {
-            throw new ParseException(Title.MESSAGE_CONSTRAINTS);
-        }
-        Title title = new Title(titleStr);
-        Optional<Description> description = Optional.empty();
-        String startTime = argMultimap.getValue(PREFIX_START).get().trim();
-        String endTime = argMultimap.getValue(PREFIX_END).get().trim();
-        if (!TimeRange.isValidDateTimeFormat(startTime) || !TimeRange.isValidDateTimeFormat(endTime)) {
-            throw new ParseException(TimeRange.MESSAGE_INVALID_DATETIME_FORMAT);
-        }
-        try {
-            TimeRange timeRange = new TimeRange(startTime, endTime);
-            return new Event(title, description, timeRange);
-        } catch (IllegalArgumentException e) {
-            throw new ParseException(TimeRange.MESSAGE_END_NOT_AFTER_START, e);
-        }
     }
 
     /**
