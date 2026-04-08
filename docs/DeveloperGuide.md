@@ -286,14 +286,16 @@ The interaction flow is as follows:
       * `CommandHistory` stores all previously entered commands in a list
   2. `CommandBox` executes the command through the existing Logic pipeline.
 
-<puml src="diagrams/CommandHistoryEnterSequenceDiagram.puml" width="200"/>
+<puml src="diagrams/CommandHistoryEnterSequenceDiagram.puml" width="250"/>
 
 * When user presses `Up`, `CommandBox` requests an older command from `CommandHistory` and updates the text field.
 * When user presses `Down`, `CommandBox` requests a newer command (or restored in-progress input) from
   `CommandHistory` and updates the text field.
 
-<puml src="diagrams/CommandHistoryUpSequenceDiagram.puml" width="200"/>
-<puml src="diagrams/CommandHistoryDownSequenceDiagram.puml" width="200"/>
+<div>
+  <puml src="diagrams/CommandHistoryUpSequenceDiagram.puml" width="250"/>
+  <puml src="diagrams/CommandHistoryDownSequenceDiagram.puml" width="250"/>
+</div>
 
 * Before navigating away, any currently input command by the user is saved as the latest command
 * When user manually edits a previous command, `CommandBox` syncs the current text to
