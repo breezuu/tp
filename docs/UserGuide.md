@@ -556,17 +556,17 @@ Format: `event delete start/START_DATE n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDR
 ### Exporting contacts: `export`
 Back up your NAB contacts in seconds so you can share, archive, or migrate your data anytime.
 
-This `export` feature allows you to write contacts from NAB into a CSV file.
+This `export` feature allows you to write contacts from NAB into 2 CSV files (`<FILENAME>_persons.csv` and `<FILENAME>_events.csv`).
 
 Format: `export t/EXPORT_TYPE f/FILENAME`
 
 <panel header=":fa-solid-code: **Examples**" type="info">
 
 - `export t/all f/save_file`<br>
-  Exports all contacts in NAB to `save_file.csv`.
+  Exports all contact information in NAB to `save_file_persons.csv` and `save_file_events.csv`.
 
 - `export t/current f/save_file`<br>
-  Exports only the currently displayed contacts to `save_file.csv`.
+  Exports only the currently displayed contact information to `save_file_persons.csv` and `save_file_events.csv`.
 
 </panel>
 
@@ -576,8 +576,8 @@ Format: `export t/EXPORT_TYPE f/FILENAME`
 - `EXPORT_TYPE` must be either:
     - `all` (export every contact in NAB), or
     - `current` (export only the contacts currently shown in the contact list).
-- Enter `FILENAME` without `.csv`, as NAB automatically appends the `.csv` extension for you.
-- The exported file is saved in the same directory as the current NAB data file.
+- Enter `FILENAME` without specifying the `_persons.csv` or `_events.csv` extension. NAB will automatically append it for you.
+- The exported files are saved in the same directory as the current NAB data file.
   - If a file with the same name already exists, it will be overwritten.
 - Order of parameters does not matter.
 
@@ -593,7 +593,7 @@ Use `export t/current ...` after `find` or `filter` to quickly export a specific
 ### Importing contacts: `import`
 Bring your contact data into NAB quickly when switching devices or restoring from a backup.
 
-This `import` feature allows you to load contacts from a CSV file into NAB.
+This `import` feature allows you to load contacts from 2 CSV files (`<FILENAME>_persons.csv` and `<FILENAME>_events.csv`) into NAB.
 
 Format: `import t/IMPORT_TYPE f/FILENAME`
 
@@ -601,20 +601,20 @@ Format: `import t/IMPORT_TYPE f/FILENAME`
 <panel header=":fa-solid-code: **Examples**" type="info">
 
 - `import t/overwrite f/save_file`<br>
-  Imports contacts from `save_file.csv` and replaces the current address book.
+  Imports contacts from `save_file_persons.csv` and event definitions from `save_file_events.csv`, replacing the existing data on the address book.
 
 - `import t/add f/save_file`<br>
-  Imports contacts from `save_file.csv` and adds them to the current address book.
+  Imports contacts from `save_file_persons.csv` and event definitions from `save_file_events.csv`, adding them to the current address book.
 
 </panel>
 
 <panel header=":fa-solid-exclamation-triangle: **Important**" type="danger">
 
 - `IMPORT_TYPE` must be either:
-    - `add` (adds imported contacts to the current address book), or
-    - `overwrite` (replaces the current address book with imported contacts).
-- Enter `FILENAME` without `.csv`, as NAB automatically looks for the file with the `.csv` extension.
-- The CSV file must be placed in the same directory as the current NAB data file.
+    - `add` (adds imported data to the current address book), or
+    - `overwrite` (replaces the current address book with imported data).
+- Enter `FILENAME` without specifying the `_persons.csv` or `_events.csv` extension, as NAB automatically looks for the 2 CSV files belonging to the specified `FILENAME`.
+- The CSV files must be placed in the same directory as the current NAB data file.
 - Contacts in the CSV file that already exist in NAB are skipped to avoid duplicates.
 - Rows with invalid or missing required fields are skipped.
 - Order of parameters does not matter.
