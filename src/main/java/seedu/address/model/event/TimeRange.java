@@ -62,18 +62,30 @@ public class TimeRange {
         }
     }
 
+    /**
+     * Returns the start time.
+     */
     public LocalDateTime getStartTime() {
         return startTime;
     }
 
+    /**
+     * Returns the end time.
+     */
     public LocalDateTime getEndTime() {
         return endTime;
     }
 
+    /**
+     * Returns the start time formatted using {@link #DATE_TIME_FORMATTER}.
+     */
     public String getStartTimeFormatted() {
         return startTime.format(DATE_TIME_FORMATTER);
     }
 
+    /**
+     * Returns the end time formatted using {@link #DATE_TIME_FORMATTER}.
+     */
     public String getEndTimeFormatted() {
         return endTime.format(DATE_TIME_FORMATTER);
     }
@@ -87,6 +99,17 @@ public class TimeRange {
         return startTime.isBefore(other.endTime) && other.startTime.isBefore(endTime);
     }
 
+    /**
+     * Returns true if this time range starts at {@code otherStartTime}.
+     */
+    public boolean hasSameStartTime(LocalDateTime otherStartTime) {
+        requireNonNull(otherStartTime);
+        return startTime.equals(otherStartTime);
+    }
+
+    /**
+     * Returns a human-readable representation of this time range.
+     */
     @Override
     public String toString() {
         return String.format("%s to %s", getStartTimeFormatted(), getEndTimeFormatted());
@@ -106,6 +129,9 @@ public class TimeRange {
         return false;
     }
 
+    /**
+     * Returns the hash code of this time range.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(startTime, endTime);

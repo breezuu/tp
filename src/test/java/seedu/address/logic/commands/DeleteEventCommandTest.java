@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -51,14 +52,17 @@ public class DeleteEventCommandTest {
         return new Event(new Title(title), description, new TimeRange(start, end));
     }
 
-    @Test
-    public void constructor_nullTargetInfo_throwsNullPointerException() {
-        Event event = eventOf("CS2103 Meeting", "Weekly", VALID_START, VALID_END);
-        assertThrows(NullPointerException.class, () -> new DeleteEventCommand(null, event));
+    private static LocalDateTime startOf(String start) {
+        return LocalDateTime.parse(start, TimeRange.DATE_TIME_FORMATTER);
     }
 
     @Test
-    public void constructor_nullEvent_throwsNullPointerException() {
+    public void constructor_nullTargetInfo_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new DeleteEventCommand(null, startOf(VALID_START)));
+    }
+
+    @Test
+    public void constructor_nullStart_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new DeleteEventCommand(infoOf(VALID_NAME), null));
     }
 
@@ -72,7 +76,7 @@ public class DeleteEventCommandTest {
         person.addEvent(otherEvent);
 
         ModelStubWithPerson modelStub = new ModelStubWithPerson(person, eventToDelete);
-        DeleteEventCommand command = new DeleteEventCommand(infoOf(VALID_NAME), eventToDelete);
+        DeleteEventCommand command = new DeleteEventCommand(infoOf(VALID_NAME), startOf(VALID_START));
 
         CommandResult result = command.execute(modelStub);
 
@@ -88,8 +92,7 @@ public class DeleteEventCommandTest {
     @Test
     public void execute_contactNotFound_throwsCommandException() {
         ModelStubWithNoPerson modelStub = new ModelStubWithNoPerson();
-        Event eventToDelete = eventOf("CS2103 Meeting", "Weekly", VALID_START, VALID_END);
-        DeleteEventCommand command = new DeleteEventCommand(infoOf(VALID_NAME), eventToDelete);
+        DeleteEventCommand command = new DeleteEventCommand(infoOf(VALID_NAME), startOf(VALID_START));
 
         assertThrows(CommandException.class, Messages.MESSAGE_NO_MATCH, () -> command.execute(modelStub));
     }
@@ -101,8 +104,7 @@ public class DeleteEventCommandTest {
 
         ModelStubWithMultiplePersons modelStub = new ModelStubWithMultiplePersons(
                 List.of(firstMatch, secondMatch));
-        Event eventToDelete = eventOf("CS2103 Meeting", "Weekly", VALID_START, VALID_END);
-        DeleteEventCommand command = new DeleteEventCommand(infoOf(VALID_NAME), eventToDelete);
+        DeleteEventCommand command = new DeleteEventCommand(infoOf(VALID_NAME), startOf(VALID_START));
 
         assertThrows(CommandException.class, Messages.MESSAGE_MULTIPLE_MATCH, () -> command.execute(modelStub));
         assertTrue(modelStub.filteredPersonsUpdated);
@@ -113,53 +115,33 @@ public class DeleteEventCommandTest {
     public void execute_eventNotFound_throwsCommandException() {
         Person person = new PersonBuilder().withName(VALID_NAME).build();
         ModelStubWithPerson modelStub = new ModelStubWithPerson(person, null);
-        Event eventToDelete = eventOf("CS2103 Meeting", "Weekly", VALID_START, VALID_END);
-        DeleteEventCommand command = new DeleteEventCommand(infoOf(VALID_NAME), eventToDelete);
+        DeleteEventCommand command = new DeleteEventCommand(infoOf(VALID_NAME), startOf(VALID_START));
 
-        String expectedMessage = String.format(DeleteEventCommand.MESSAGE_EVENT_NOT_FOUND,
-                eventToDelete);
-        assertThrows(CommandException.class, expectedMessage, () -> command.execute(modelStub));
-    }
-
-    @Test
-    public void execute_startMatchesEndDiffers_throwsCommandException() {
-        Event event = eventOf("CS2103 Meeting", "Weekly", VALID_START, VALID_END);
-        Event differentTime = eventOf("CS2103 Meeting", "Weekly", VALID_START, OTHER_END);
-        Person person = new PersonBuilder().withName(VALID_NAME).build();
-        person.addEvent(event);
-
-        ModelStubWithPerson modelStub = new ModelStubWithPerson(person, event);
-        DeleteEventCommand command = new DeleteEventCommand(infoOf(VALID_NAME), differentTime);
-
-        String expectedMessage = String.format(DeleteEventCommand.MESSAGE_EVENT_NOT_FOUND,
-                differentTime);
+        String expectedMessage = String.format(DeleteEventCommand.MESSAGE_EVENT_NOT_FOUND, VALID_START);
         assertThrows(CommandException.class, expectedMessage, () -> command.execute(modelStub));
     }
 
     @Test
     public void equals() {
         PersonInformation info = infoOf(VALID_NAME);
-        Event event = eventOf("CS2103 Meeting", "Weekly", VALID_START, VALID_END);
-        Event otherEvent = eventOf("Lunch", "Team", OTHER_START, OTHER_END);
-        DeleteEventCommand command = new DeleteEventCommand(info, event);
-        DeleteEventCommand commandCopy = new DeleteEventCommand(info, event);
-        DeleteEventCommand differentTime = new DeleteEventCommand(info, otherEvent);
-        DeleteEventCommand differentPerson = new DeleteEventCommand(infoOf("Bob Choo"), event);
+        DeleteEventCommand command = new DeleteEventCommand(info, startOf(VALID_START));
+        DeleteEventCommand commandCopy = new DeleteEventCommand(info, startOf(VALID_START));
+        DeleteEventCommand differentStart = new DeleteEventCommand(info, startOf(OTHER_START));
+        DeleteEventCommand differentPerson = new DeleteEventCommand(infoOf("Bob Choo"), startOf(VALID_START));
 
         assertTrue(command.equals(command));
         assertTrue(command.equals(commandCopy));
         assertFalse(command.equals(1));
         assertFalse(command.equals(null));
-        assertFalse(command.equals(differentTime));
+        assertFalse(command.equals(differentStart));
         assertFalse(command.equals(differentPerson));
     }
 
     @Test
     public void toStringMethod() {
         PersonInformation info = infoOf(VALID_NAME);
-        Event event = eventOf("CS2103 Meeting", "Weekly", VALID_START, VALID_END);
-        DeleteEventCommand command = new DeleteEventCommand(info, event);
-        String expected = String.format("Deleting Event: %s", event);
+        DeleteEventCommand command = new DeleteEventCommand(info, startOf(VALID_START));
+        String expected = String.format("Deleting Event for %s at start time %s", VALID_NAME, VALID_START);
         assertEquals(expected, command.toString());
     }
 
@@ -240,9 +222,12 @@ public class DeleteEventCommandTest {
         public void showAllPersons() {
             throw new AssertionError("This method should not be called.");
         }
-        @Override public void showAllPersonsPinnedFirst() {
+
+        @Override
+        public void showAllPersonsPinnedFirst() {
             throw new AssertionError("This method should not be called.");
         }
+
         @Override
         public void showPersons(Predicate<Person> predicate) {
             throw new AssertionError("This method should not be called.");
@@ -317,6 +302,7 @@ public class DeleteEventCommandTest {
         public boolean hasOverlappingEvent(Event event) {
             throw new AssertionError("This method should not be called.");
         }
+
         @Override
         public void pinPerson(Person person) {
             throw new AssertionError("This method should not be called.");
@@ -383,21 +369,6 @@ public class DeleteEventCommandTest {
             unlinkCalled = true;
             return this.eventToUnlink;
         }
-
-        @Override
-        public void pinPerson(Person person) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void unpinPerson(Person person) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public boolean isPersonPinned(Person person) {
-            throw new AssertionError("This method should not be called.");
-        }
     }
 
     private class ModelStubWithNoPerson extends ModelStub {
@@ -436,6 +407,5 @@ public class DeleteEventCommandTest {
         public void updateFilteredPersonList(Predicate<Person> predicate) {
             filteredPersonsUpdated = true;
         }
-
     }
 }

@@ -133,6 +133,13 @@ public class PersonInformationTest {
         assertTrue(info.equals(info));
     }
 
+    @Test
+    public void toString_returnsName() {
+        PersonInformation info = buildInfo("Delwyn", "91234567", "delwyn@example.com",
+                "1, Clementi Ave 3", Set.of("CS2103"));
+        assertEquals("Delwyn", info.toString());
+    }
+
     private static PersonInformation buildInfo(String name, String phone, String email, String address,
                                                Set<String> tags) {
         Set<Tag> tagSet = tags.stream().map(Tag::new).collect(java.util.stream.Collectors.toSet());

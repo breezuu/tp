@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -75,9 +76,22 @@ public class EventTest {
     }
 
     @Test
+    public void isSameEvent_sameObject_returnsTrue() {
+        Event event = new Event(TITLE_MEETING, Optional.of(DESC_A), timeRange1());
+        assertTrue(event.isSameEvent(event));
+    }
+
+    @Test
     public void isSameEvent_differentIdentity_returnsFalse() {
         Event eventA = new Event(TITLE_MEETING, Optional.of(DESC_A), timeRange1());
         Event eventB = new Event(TITLE_REVIEW, Optional.of(DESC_A), timeRange1());
+        assertFalse(eventA.isSameEvent(eventB));
+    }
+
+    @Test
+    public void isSameEvent_sameTitleDifferentTime_returnsFalse() {
+        Event eventA = new Event(TITLE_MEETING, Optional.of(DESC_A), timeRange1());
+        Event eventB = new Event(TITLE_MEETING, Optional.of(DESC_A), timeRange2());
         assertFalse(eventA.isSameEvent(eventB));
     }
 
@@ -98,6 +112,13 @@ public class EventTest {
     public void equals_differentTimeRange_returnsFalse() {
         Event eventA = new Event(TITLE_MEETING, Optional.of(DESC_A), timeRange1());
         Event eventB = new Event(TITLE_MEETING, Optional.of(DESC_A), timeRange2());
+        assertFalse(eventA.equals(eventB));
+    }
+
+    @Test
+    public void equals_differentTitle_returnsFalse() {
+        Event eventA = new Event(TITLE_MEETING, Optional.of(DESC_A), timeRange1());
+        Event eventB = new Event(TITLE_REVIEW, Optional.of(DESC_A), timeRange1());
         assertFalse(eventA.equals(eventB));
     }
 
@@ -135,5 +156,41 @@ public class EventTest {
         Event event = new Event(TITLE_MEETING, Optional.empty(), timeRange1());
         assertEquals("2026-03-25 0900", event.getStartTimeFormatted());
         assertEquals("2026-03-25 1000", event.getEndTimeFormatted());
+    }
+
+    @Test
+    public void getEventId_returnsDeterministicHash() {
+        Event event = new Event(TITLE_MEETING, Optional.empty(), timeRange1());
+        Event sameIdentityEvent = new Event(TITLE_MEETING, Optional.of(DESC_A), timeRange1());
+        assertEquals(sameIdentityEvent.getEventId(), event.getEventId());
+    }
+
+    @Test
+    public void isClashingWith_overlappingAndNonOverlapping() {
+        Event event = new Event(TITLE_MEETING, Optional.empty(), timeRange1());
+        Event overlapping = new Event(TITLE_REVIEW, Optional.empty(),
+                new TimeRange("2026-03-25 0930", "2026-03-25 1030"));
+        Event nonOverlapping = new Event(TITLE_REVIEW, Optional.empty(),
+                new TimeRange("2026-03-25 1000", "2026-03-25 1100"));
+        assertTrue(event.isClashingWith(overlapping));
+        assertFalse(event.isClashingWith(nonOverlapping));
+    }
+
+    @Test
+    public void hasSameStartTime_sameStart_returnsTrue() {
+        Event event = new Event(TITLE_MEETING, Optional.empty(), timeRange1());
+        assertTrue(event.hasSameStartTime(LocalDateTime.parse("2026-03-25T09:00")));
+    }
+
+    @Test
+    public void hasSameStartTime_differentStart_returnsFalse() {
+        Event event = new Event(TITLE_MEETING, Optional.empty(), timeRange1());
+        assertFalse(event.hasSameStartTime(LocalDateTime.parse("2026-03-25T10:00")));
+    }
+
+    @Test
+    public void hasSameStartTime_null_throwsNullPointerException() {
+        Event event = new Event(TITLE_MEETING, Optional.empty(), timeRange1());
+        assertThrows(NullPointerException.class, () -> event.hasSameStartTime(null));
     }
 }

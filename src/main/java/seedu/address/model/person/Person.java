@@ -2,6 +2,7 @@ package seedu.address.model.person;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -64,42 +65,72 @@ public class Person {
         this.photo = photo;
     }
 
+    /**
+     * Returns the person's name.
+     */
     public Name getName() {
         return name;
     }
 
+    /**
+     * Returns the person's phone number.
+     */
     public Phone getPhone() {
         return phone;
     }
 
+    /**
+     * Returns the person's optional email.
+     */
     public Optional<Email> getEmail() {
         return email;
     }
 
+    /**
+     * Returns the person's optional address.
+     */
     public Optional<Address> getAddress() {
         return address;
     }
 
+    /**
+     * Returns the person's optional photo.
+     */
     public Optional<Photo> getPhoto() {
         return photo;
     }
 
+    /**
+     * Returns the person's name as a raw string.
+     */
     public String getNameString() {
         return name.fullName;
     }
 
+    /**
+     * Returns the person's phone as a raw string.
+     */
     public String getPhoneString() {
         return phone.value;
     }
 
+    /**
+     * Returns the person's email as an optional raw string.
+     */
     public Optional<String> getEmailString() {
         return this.email.map(e -> e.value);
     }
 
+    /**
+     * Returns the person's address as an optional raw string.
+     */
     public Optional<String> getAddressString() {
         return this.address.map(a -> a.value);
     }
 
+    /**
+     * Returns the person's photo path as an optional string.
+     */
     public Optional<String> getPhotoPath() {
         return photo.map(Photo::getPath);
     }
@@ -166,6 +197,15 @@ public class Person {
         events.removeIf(e -> e.isSameEvent(event));
     }
 
+    /**
+     * Returns the first event whose start time matches {@code startTime}, or {@code null} if none exists.
+     */
+    public Event findEventByStartTime(LocalDateTime startTime) {
+        return events.stream()
+                .filter(event -> event.hasSameStartTime(startTime))
+                .findFirst()
+                .orElse(null);
+    }
 
     /**
      * Returns true if both persons have the same name.
@@ -199,12 +239,18 @@ public class Person {
         return false;
     }
 
+    /**
+     * Returns the hash code of this person.
+     */
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
         return Objects.hash(name, phone, email, address, tags, photo);
     }
 
+    /**
+     * Returns a human-readable representation of this person.
+     */
     @Override
     public String toString() {
         return new ToStringBuilder(this)

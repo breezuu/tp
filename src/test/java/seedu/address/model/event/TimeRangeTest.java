@@ -45,9 +45,22 @@ public class TimeRangeTest {
     }
 
     @Test
+    public void equals_sameObject_returnsTrue() {
+        TimeRange a = new TimeRange("2026-03-25 0900", "2026-03-25 1000");
+        assertTrue(a.equals(a));
+    }
+
+    @Test
     public void equals_differentRange_returnsFalse() {
         TimeRange a = new TimeRange("2026-03-25 0900", "2026-03-25 1000");
         TimeRange b = new TimeRange("2026-03-26 0900", "2026-03-26 1000");
+        assertFalse(a.equals(b));
+    }
+
+    @Test
+    public void equals_sameStartDifferentEnd_returnsFalse() {
+        TimeRange a = new TimeRange("2026-03-25 0900", "2026-03-25 1000");
+        TimeRange b = new TimeRange("2026-03-25 0900", "2026-03-25 1100");
         assertFalse(a.equals(b));
     }
 
@@ -77,6 +90,32 @@ public class TimeRangeTest {
         TimeRange a = new TimeRange("2026-03-25 0900", "2026-03-25 1000");
         TimeRange b = new TimeRange("2026-03-25 1000", "2026-03-25 1100");
         assertFalse(a.isOverlapping(b));
+    }
+
+    @Test
+    public void isOverlapping_firstConditionFalse_returnsFalse() {
+        TimeRange a = new TimeRange("2026-03-25 1100", "2026-03-25 1200");
+        TimeRange b = new TimeRange("2026-03-25 0900", "2026-03-25 1000");
+        assertFalse(a.isOverlapping(b));
+    }
+
+    @Test
+    public void hasSameStartTime_sameStart_returnsTrue() {
+        TimeRange range = new TimeRange("2026-03-25 0900", "2026-03-25 1000");
+        assertTrue(range.hasSameStartTime(range.getStartTime()));
+    }
+
+    @Test
+    public void hasSameStartTime_differentStart_returnsFalse() {
+        TimeRange range = new TimeRange("2026-03-25 0900", "2026-03-25 1000");
+        TimeRange other = new TimeRange("2026-03-26 0900", "2026-03-26 1000");
+        assertFalse(range.hasSameStartTime(other.getStartTime()));
+    }
+
+    @Test
+    public void hasSameStartTime_null_throwsNullPointerException() {
+        TimeRange range = new TimeRange("2026-03-25 0900", "2026-03-25 1000");
+        assertThrows(NullPointerException.class, () -> range.hasSameStartTime(null));
     }
 
     @Test

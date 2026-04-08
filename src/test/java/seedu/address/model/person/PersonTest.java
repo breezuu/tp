@@ -14,6 +14,7 @@ import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BOB;
 import static seedu.address.testutil.TypicalPersons.CARL;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -148,6 +149,28 @@ public class PersonTest {
     }
 
     @Test
+    public void findEventByStartTime_eventPresent_returnsEvent() {
+        Person person = new PersonBuilder().build();
+        Event event = new Event(new Title("Meeting"), Optional.empty(),
+                new TimeRange("2026-03-25 0900", "2026-03-25 1000"));
+        person.addEvent(event);
+
+        Event found = person.findEventByStartTime(LocalDateTime.parse("2026-03-25T09:00"));
+        assertEquals(event, found);
+    }
+
+    @Test
+    public void findEventByStartTime_eventAbsent_returnsNull() {
+        Person person = new PersonBuilder().build();
+        Event event = new Event(new Title("Meeting"), Optional.empty(),
+                new TimeRange("2026-03-25 0900", "2026-03-25 1000"));
+        person.addEvent(event);
+
+        Event found = person.findEventByStartTime(LocalDateTime.parse("2026-03-25T11:00"));
+        assertEquals(null, found);
+    }
+
+    @Test
     public void toStringMethod() {
         String expected = Person.class.getCanonicalName() + "{name=" + ALICE.getName() + ", phone=" + ALICE.getPhone()
                 + ", email=" + ALICE.getEmail().map(email -> email.toString()).orElse("")
@@ -155,6 +178,18 @@ public class PersonTest {
                 + ", tags=" + ALICE.getTags() + ", events=" + ALICE.getEvents()
                 + ", photo=" + ALICE.getPhoto().map(Object::toString).orElse("") + "}";
         assertEquals(expected, ALICE.toString());
+    }
+
+    @Test
+    public void toStringMethod_withPhoto() {
+        Person personWithPhoto = new PersonBuilder(ALICE).withPhoto(VALID_PHOTO).build();
+        String expected = Person.class.getCanonicalName() + "{name=" + personWithPhoto.getName()
+                + ", phone=" + personWithPhoto.getPhone()
+                + ", email=" + personWithPhoto.getEmail().map(email -> email.toString()).orElse("")
+                + ", address=" + personWithPhoto.getAddress().map(addr -> addr.toString()).orElse("")
+                + ", tags=" + personWithPhoto.getTags() + ", events=" + personWithPhoto.getEvents()
+                + ", photo=" + personWithPhoto.getPhoto().map(Object::toString).orElse("") + "}";
+        assertEquals(expected, personWithPhoto.toString());
     }
 
     @Test
