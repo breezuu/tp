@@ -321,7 +321,8 @@ Format: `edit n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... -- [n/NAM
 
 <panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
 
-- Refer to the [user disambiguation](#user-disambiguation) section if you encounter the error: `Multiple matches identified!`
+- If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
+- See [User Disambiguation](#user-disambiguation) for details.
 
 </panel>
 
@@ -346,7 +347,8 @@ Format: `find n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 <panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
 
-- Refer to the [user disambiguation](#user-disambiguation) section if you encounter the error: `Multiple matches identified!`
+- If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
+- See [User Disambiguation](#user-disambiguation) for details.
 
 </panel>
 
@@ -392,7 +394,8 @@ Pins the matching John Doe contact by name and phone number.
 
 <panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
 
-- Refer to the [user disambiguation](#user-disambiguation) section if you encounter the error: `Multiple matches identified!`
+- If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
+- See [User Disambiguation](#user-disambiguation) for details.
 
 </panel>
 
@@ -491,7 +494,8 @@ Format: `event add title/TITLE [desc/DESCRIPTION] start/START_DATE end/END_DATE 
 
 <panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
 
-Add optional parameters immediately after `n/NAME` to narrow down the match — Phone number, Email, Address, or Tag. See [User Disambiguation](#user-disambiguation) for details.
+- If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
+- See [User Disambiguation](#user-disambiguation) for details.
 
 </panel>
 
@@ -518,7 +522,8 @@ Format: `event view n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 <panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
 
-Add optional parameters immediately after `n/NAME` to narrow down the match — Phone number, Email, Address, or Tag. See [User Disambiguation](#user-disambiguation) for details.
+- If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
+- See [User Disambiguation](#user-disambiguation) for details.
 
 </panel>
 
@@ -541,7 +546,8 @@ Format: `event delete start/START_DATE n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDR
 
 <panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
 
-Add optional parameters immediately after `n/NAME` to narrow down the match — Phone number, Email, Address, or Tag. See [User Disambiguation](#user-disambiguation) for details.
+- If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
+- See [User Disambiguation](#user-disambiguation) for details.
 
 </panel>
 
