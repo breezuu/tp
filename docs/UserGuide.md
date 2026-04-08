@@ -9,10 +9,10 @@
 ___All your NUS connections, right at your fingertips___
 
 NUS Address Book (NAB) is a desktop application built for **NUS students** to manage contacts across multiple modules, project groups, and CCAs with ease.
-It is **optimized for use** via a Command Line Interface (CLI) while still having the benefits of a **Graphical User Interface (GUI)**. 
+It is **optimized for use** via a Command Line Interface (CLI) while still having the benefits of a **Graphical User Interface (GUI)**.
 If you can type fast, NAB can help you organize and retrieve context-specific contacts and track events faster than traditional GUI apps.
 
-Here is how NAB can **make student networking easier**: 
+Here is how NAB can **make student networking easier**:
 - Store and edit contact cards for your friends
 - Helps track events tied to contacts
 - Make bulk organisation easier with tags
@@ -218,8 +218,8 @@ Commands in NAB identify a contact by name. If two or more contacts share the sa
 NAB cannot determine which one you meant, and will display the following error:
 <box type="important" icon=":fa-solid-exclamation-triangle:">
 
-**ERROR MESSAGE**  
-`Multiple matches identified! Please provide more information to narrow down the contact.`  
+**ERROR MESSAGE**
+`Multiple matches identified! Please provide more information to narrow down the contact.`
 This error means your command matched more than one contact. No changes have been made —
 retry the command with additional details to uniquely identify the contact you want.
 
@@ -248,17 +248,17 @@ decide which parameter to add for disambiguation.
 
 </box>
 
-Here is what NAB looks like when you **disambiguate duplicates:**  
+Here is what NAB looks like when you **disambiguate duplicates:**
 
 
 ![disambiguation.png](images/disambiguation.png)
 </panel>
 
 
-<br> 
+<br>
 
-### Adding a person: `add`  
-Build your NUS network instantly with NAB by contacts of the people you meet across modules, project groups, and CCAs.    
+### Adding a person: `add`
+Build your NUS network instantly with NAB by contacts of the people you meet across modules, project groups, and CCAs.
 
 This `add` feature allows you to add a person to the address book.
 
@@ -331,7 +331,7 @@ Format: `edit n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... -- [n/NAM
 
 </panel>
 
-<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger"> 
+<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
 
 - Refer to the [user disambiguation](#user-disambiguation) section if you encounter the error: `Multiple matches identified!`
 
@@ -360,7 +360,7 @@ Format: `find n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 </panel>
 
-<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger"> 
+<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
 
 - Refer to the [user disambiguation](#user-disambiguation) section if you encounter the error: `Multiple matches identified!`
 
@@ -412,7 +412,7 @@ Pins the matching John Doe contact by name and phone number.
 
 </panel>
 
-<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger"> 
+<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
 
 - Refer to the [user disambiguation](#user-disambiguation) section if you encounter the error: `Multiple matches identified!`
 
