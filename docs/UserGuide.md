@@ -14,7 +14,7 @@ If you can type fast, NAB can help you organize and retrieve context-specific co
 
 Here is how NAB can **make student networking easier**:
 - Store and edit contact cards for your friends
-- Helps track events tied to contacts
+- Track events tied to contacts
 - Make bulk organisation easier with tags
 
 <!-- * Table of Contents -->
@@ -110,33 +110,15 @@ The labelled interface below highlights the main parts of NAB's GUI.
 
 # Features
 
+## Quick utilities
+
 <box type="info" seamless>
 
-**Notes about the command format:**<br>
-
-* Words in `UPPER_CASE` are the parameters to be supplied by the user.<br>
-  e.g. in `add n/NAME`, `NAME` is a parameter which can be used as `add n/John Doe`.
-
-* Items in square brackets are optional.<br>
-  e.g `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.
-
-* Items with `...` after them can be used multiple times including zero times.<br>
-  e.g. `[t/TAG]...` can be used as ` ` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.
-
-* Parameters can be in any order.<br>
-  e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
-
-* Extraneous parameters for commands that do not take in parameters (such as `help`, `list`, `exit` and `clear`) will be ignored.<br>
-  e.g. if the command specifies `help 123`, it will be interpreted as `help`.
-
-* Tags are case-insensitive. t/Friends and t/friends are treated as 1 unique tag. Multiple use of the same tags with different case sensitivity should not be used.
-e.g `find n/John Doe t/Friends t/friends`
-
+**Notes about the command format in Quick Utilities:**
+* Extraneous parameters for commands that do not take in parameters (such as `help`, `list`, `exit` and `clear`) will be ignored.
+    * e.g. if the command specifies `help 123`, it will be interpreted as `help`.<br><br>
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
-
 </box>
-
-## Quick utilities
 
 ### Navigating command history
 
@@ -191,25 +173,33 @@ Before examining the individual commands for managing contacts, please refer to 
 
 <panel header=":fa-solid-book: **Parameters Requirements and Constraints**" type="secondary" expanded no-close>
 
-| Parameter | Format | Example |
-|-----------|--------|---------|
-| `n/NAME` | • Must contain only alphabetic characters and spaces.<br>• Cannot be blank or start with a space (the first character must be a letter). | `n/John Doe` |
-| `p/PHONE_NUMBER` | • Must contain strictly numbers.<br>• Must be between 7 and 15 digits long. | `p/98765432` |
+| Parameter | Format                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Example |
+|-----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
+| `n/NAME` | • Must contain only alphabetic characters and spaces.<br>• Cannot be blank or start with a space (the first character must be a letter).                                                                                                                                                                                                                                                                                                                                                                                                  | `n/John Doe` |
+| `p/PHONE_NUMBER` | • Must contain strictly numbers.<br>• Must be between 7 and 15 digits long.                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `p/98765432` |
 | `e/EMAIL` | • Must be of the standard format: `local-part@domain`.<br>• **Local-part:** Can only contain alphanumeric characters and the special characters `+`, `_`, `.`, and `-`. It cannot start or end with a special character.<br>• **Domain:** Made up of domain labels separated by periods (`.`).<br>&nbsp;&nbsp;◦ Must end with a domain label at least 2 characters long.<br>&nbsp;&nbsp;◦ Each label must start and end with alphanumeric characters.<br>&nbsp;&nbsp;◦ Labels can contain hyphens (`-`), but no other special characters. | `e/johnd@example.com` |
-| `a/ADDRESS` | • Can contain alphanumeric characters, spaces, and the following special characters: `#`, `_`, `,` (comma), and `-` (hyphen).<br>• Cannot be blank or consist only of spaces (must start with an alphanumeric or allowed special character). | `a/John street, block 123, #01-01` |
-| `t/TAG` | • Can contain letters, digits, spaces, hyphens (`-`), and underscores (`_`).<br>• Must start with an alphanumeric character (a letter or digit).<br>• Must be between 1 and 20 characters long. | `t/friend` |
-| `pfp/PHOTO_PATH` | • File path must end with a valid image extension: `.png`, `.jpg`, or `.jpeg` (case-insensitive).<br>• Can be absolute (e.g., `C:/Users/Alex/Pictures/me.jpg`) or relative to the app folder (e.g., `images/me.png`).<br>• The specified file must exist on your computer. | `pfp/images/me.png` |
+| `a/ADDRESS` | • Can contain alphanumeric characters, spaces, and the following special characters: `#`, `_`, `,` (comma), and `-` (hyphen).<br>• Cannot be blank or consist only of spaces (must start with an alphanumeric or allowed special character).                                                                                                                                                                                                                                                                                              | `a/John street, block 123, #01-01` |
+| `t/TAG` | • Can contain letters, digits, spaces, hyphens (`-`), and underscores (`_`).<br>• Must start with an alphanumeric character (a letter or digit).<br>• Must be between 1 and 20 characters long.                                                                                                                                                                                                                                                                                                                                           | `t/friend` |
+| `pfp/PHOTO_PATH` | • File path must end with a valid image extension: `.png`, `.jpg`, or `.jpeg` (case-insensitive).<br>• Can be absolute (e.g., `C:/Users/Alex/Pictures/me.jpg`) or relative to the app folder (e.g., `images/me.png`).<br>• The specified file must exist on your computer; NAB will copy it into the `data/images/` directory                                                                                                                                                                                                               | `pfp/images/me.png` |
 
 </panel>
 
 <box type="info" seamless>
 
-**Managing Profile Pictures**
-
-When using the `pfp/PHOTO_PATH` parameter in commands like `add` and `edit`, please note:
-* Accepted file extensions are `.png`, `.jpg`, and `.jpeg`.
-* `PHOTO_PATH` can be absolute (e.g., `C:/Users/Alex/Pictures/me.jpg`) or relative to the app folder (e.g., `images/me.png`).
-* The specified file must exist on your computer; NAB will copy it into the `data/images/` directory.
+**Notes about the command format in Contact Management:**
+* Words in `UPPER_CASE` are the parameters to be supplied by the user.
+    * e.g. in `add n/NAME`, `NAME` is a parameter which can be used as `add n/John Doe`.<br><br>
+* Items in square brackets are **optional**.
+    * e.g. `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.<br><br>
+* Items with `...` after them can be used multiple times including zero times.
+    * e.g. `[t/TAG]...` can be used as ` ` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.<br><br>
+* Parameters can be in any order. (except [Assigning tag(s) to person(s)](#assigning-tag-s-to-person-s-tag))
+    * e.g. if the command format specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.<br><br>
+* `NAME` and `TAG` are case-insensitive. 
+    * `t/Friends` and `t/friends` are treated as 1 unique tag. 
+    * `n/aLeX YeOH` will match `Alex Yeoh`.<br><br>
+* Only full words will be matched 
+    * e.g. `Han` will not match `Hans`.
 </box>
 
 ### User Disambiguation
@@ -218,8 +208,8 @@ Commands in NAB identify a contact by name. If two or more contacts share the sa
 NAB cannot determine which one you meant, and will display the following error:
 <box type="important" icon=":fa-solid-exclamation-triangle:">
 
-**ERROR MESSAGE**
-`Multiple matches identified! Please provide more information to narrow down the contact.`
+**ERROR MESSAGE**  
+`Multiple matches identified! Please provide more arguments.`  
 This error means your command matched more than one contact. No changes have been made —
 retry the command with additional details to uniquely identify the contact you want.
 
@@ -227,8 +217,7 @@ retry the command with additional details to uniquely identify the contact you w
 
 <panel header=":fa-solid-book: **Disambiguate with Optional Parameters**" type="secondary" expanded no-close>
 
-Add one or more optional parameters **immediately after `n/NAME`** (or after `to/NAME` for `event add`)
-to narrow the match down to a single contact.
+Add one or more optional parameters **immediately after `n/NAME`** to narrow the match down to a single contact.
 
 | Parameter | Prefix | Example               |
 |-----------|--------|-----------------------|
@@ -313,7 +302,6 @@ Format: `edit n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... -- [n/NAM
 * To add tags, you can specify new tags by typing `t/TAG` in the updated field.
 * To delete a specific tag, type an existing tag in the updated field.
 * You can remove all the person’s tags by typing `t/` without specifying any tags after it.
-* Tags are case-insensitive.
 
 <panel header=":fa-solid-code: **Examples**" type="info">
 
@@ -343,10 +331,6 @@ Finds persons who match the given contact information.
 
 Format: `find n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
-* The search is case-insensitive. e.g. `hans` will match `Hans`.
-* Only full words will be matched e.g. `Han` will not match `Hans`.
-* Order of parameters does not matter.
-
 <panel header=":fa-solid-code: **Examples**" type="info">
 
 - `find n/John`<br>
@@ -372,9 +356,6 @@ Filters persons with the given tag(s).
 
 Format: `filter t/TAG[, TAG]...`
 
-* The search is case-insensitive. e.g. `friend` will match `Friend` tag.
-* Only full words will be matched e.g. `frie` will not match `friend` tag.
-
 <panel header=":fa-solid-code: **Examples**" type="info">
 
 - `filter t/friends`<br>
@@ -398,9 +379,6 @@ Pins the person identified by their name.
 Format: `pin n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 * Pinned persons are shown first when the `list` command is used.
-* The `NAME` is case-insensitive. e.g. `aLeX YeOH` will match `Alex Yeoh`.
-* Only full words will be matched e.g. `Alex Yeo` will not match `Alex Yeoh`.
-* Order of parameters does not matter.
 
 <panel header=":fa-solid-code: **Examples**" type="info">
 
@@ -424,9 +402,6 @@ Unpins the person identified by their name.
 
 Format: `unpin n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
-* The `NAME` is case-insensitive. e.g. `aLeX YeOH` will match `Alex Yeoh`.
-* Only full words will be matched e.g. `Alex Yeo` will not match `Alex Yeoh`.
-* Order of parameters does not matter.
 
 Examples:
 * `unpin n/John Doe` unpins John Doe when the name uniquely identifies the contact.
@@ -470,10 +445,6 @@ deletion of the correct contact. This can be done by supplying any of the
 following information just after `delete n/NAME`: Phone number, Email, Address or Tag.
 </box>
 
-* The `NAME` is case-insensitive. e.g. `aLeX YeOH` will match `Alex Yeoh`.
-* Only full words will be matched e.g. `Alex Yeo` will not match `Alex Yeoh`.
-* Order of parameters does not matter.
-
 Examples:
 * `delete n/Alex Yeoh` deletes the contact with a matching name.
 * Suppose there are multiple `Alex Yeoh`, an enriched search would be `delete n/Alex Yeoh t/cs2103 t/cs2105`
@@ -484,43 +455,56 @@ Clears all entries from the address book.
 
 Format: `clear`
 
-## Event Managements
+## Event Management
+
+### Parameters constraints & format
+
+Before examining individual event commands, refer to this section for event-related parameter rules.
+For shared contact-identification parameters used in event commands (`n/`, `p/`, `e/`, `a/`, `t/`),
+the same constraints in [Contact Management: Parameters constraints & format](#parameters-constraints-and-amp-format) apply.
+
+<panel header=":fa-solid-book: **Parameters Requirements and Constraints**" type="secondary" expanded no-close>
+
+| Parameter | Format                                                                                                                                                                      | Example |
+|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
+| `title/TITLE` | • Must be 1 to 50 characters.<br>• Must contain only alphanumeric characters and single spaces between words.<br>• No leading/trailing spaces and no consecutive spaces.    | `title/CS2109S Meeting` |
+| `desc/DESCRIPTION` | • Must be 1 to 1000 characters.<br> • Must contain only alphanumeric characters and single spaces between words.<br> • No leading/trailing spaces and no consecutive spaces. | `desc/Final discussion on problem set 1` |
+| `start/START_DATE` | • Must follow `YYYY-MM-DD HHmm` in 24-hour format.                                                                                                                          | `start/2026-03-25 0900` |
+| `end/END_DATE` | • Must follow `YYYY-MM-DD HHmm` in 24-hour format.<br> • Must be strictly after `START_DATE` provided.                                                                      | `end/2026-03-25 1000` |
+</panel>
 
 ### Adding an event: `event add`
 
 Creates a new event for a specified person.
 
-Format: `event add title/TITLE [desc/DESCRIPTION] start/START_DATE end/END_DATE to/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
-
-* The `NAME` is case-insensitive. e.g. `aLeX YeOH` will match `Alex Yeoh`.
-* Only full words will be matched e.g. `Alex Yeo` will not match `Alex Yeoh`.
-* Order of parameters does not matter.
-* The date time format for `start/` and `end/` is `YYYY-MM-DD HHmm` or `DD-MM-YYYY HHmm`.
+Format: `event add title/TITLE [desc/DESCRIPTION] start/START_DATE end/END_DATE n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 <panel header=":fa-solid-code: **Examples**" type="info">
 
-- `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 to/David Li`<br>
+- `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 n/David Li`<br>
   Adds an event titled "CS2109S Meeting" to David Li.
 
-- `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 to/David Li p/99272758`<br>
+- `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 n/David Li p/99272758`<br>
   Adds an event to the David Li with phone number `99272758`, disambiguating between multiple contacts with the same name.
 
 </panel>
 
 <panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
 
-Add optional parameters immediately after `to/NAME` to narrow down the match — Phone number, Email, Address, or Tag. See [User Disambiguation](#user-disambiguation) for details.
+Add optional parameters immediately after `n/NAME` to narrow down the match — Phone number, Email, Address, or Tag. See [User Disambiguation](#user-disambiguation) for details.
 
 </panel>
 
 ### View an event: `event view`
 
 Views all events for a specified person.
+<div style="text-align: center;">
+  <img src="images/event_view.png" style="width: 700px;">
+</div>
+<br>
 
 Format: `event view n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
-* The `NAME` is case-insensitive. e.g. `aLeX YeOH` will match `Alex Yeoh`.
-* Only full words will be matched e.g. `Alex Yeo` will not match `Alex Yeoh`.
 
 <panel header=":fa-solid-code: **Examples**" type="info">
 
@@ -542,24 +526,20 @@ Add optional parameters immediately after `n/NAME` to narrow down the match — 
 
 Deletes an event for a specified person.
 
-Format: `event delete title/TITLE start/START_DATE end/END_DATE n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
+Format: `event delete start/START_DATE n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
-* The `NAME` is case-insensitive. e.g. `aLeX YeOH` will match `Alex Yeoh`.
-* Only full words will be matched e.g. `Alex Yeo` will not match `Alex Yeoh`.
-* Order of parameters does not matter.
-* The date time format for `start/` and `end/` is `YYYY-MM-DD HHmm` or `DD-MM-YYYY HHmm`.
 
 <panel header=":fa-solid-code: **Examples**" type="info">
 
-- `event delete title/Meeting start/2026-03-12 1100 end/2026-04-12 2359 n/David Li`<br>
-  Deletes the event titled "Meeting" (12 Mar 2026 1100 – 12 Apr 2026 2359) assigned to David Li.
+- `event delete start/2026-03-12 1100 n/David Li`<br>
+  Deletes the event only if David Li has an assigned event that starts at `2026-03-12 1100`.
 
-- `event delete title/Meeting start/2026-03-12 1100 end/2026-04-12 2359 n/David Li p/99272758`<br>
-  Deletes the event for the David Li with phone number `99272758`, disambiguating between multiple contacts with the same name.
+- `event delete start/2026-03-12 1100 n/David Li p/99272758`<br>
+  Deletes the event only if the David Li with phone number `99272758` has an assigned event that starts at `2026-03-12 1100`, disambiguating between multiple contacts with the same name.
 
 </panel>
 
-<panel header=":fa-solid-exclamation-triangle: **Important: Disamiguating contacts with the same name**" type="danger">
+<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
 
 Add optional parameters immediately after `n/NAME` to narrow down the match — Phone number, Email, Address, or Tag. See [User Disambiguation](#user-disambiguation) for details.
 
@@ -683,13 +663,13 @@ AddressBook data is saved automatically as a JSON file `[JAR file location]/data
 ## Command summary
 
 Action     | Format, Examples
------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------|---------------------------------------------------------------------f-------------------------------------------------------------------------------------------------
 **Add**    | `add n/NAME p/PHONE_NUMBER [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_PATH]` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague pfp/images/james.jpg`
 **Clear**  | `clear`
 **Delete** | `delete n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `delete n/Alex Yeoh t/cs2103 t/cs2105`
 **Edit**   | `edit n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... -- [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_PATH]`<br> e.g.,`edit n/James Lee e/jameslee@example.com -- t/CS2100 pfp/images/james.jpg`
-**Event Add** | `event add title/TITLE [desc/DESCRIPTION] start/START_DATE end/END_DATE to/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 to/David Li`
-**Event Delete** | `event delete title/TITLE start/START_DATE end/END_DATE n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `event delete title/Meeting start/2026-03-12 1100 end/2026-04-12 2359 n/David Li`
+**Event Add** | `event add title/TITLE [desc/DESCRIPTION] start/START_DATE end/END_DATE n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 n/David Li`
+**Event Delete** | `event delete start/START_DATE n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `event delete start/2026-03-12 1100 n/David Li`
 **Event View** | `event view n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `event view n/Bernice Yu`
 **Exit**   | `exit`
 **Filter** | `filter t/TAG[, TAG]...`<br> e.g., `filter t/friends`
