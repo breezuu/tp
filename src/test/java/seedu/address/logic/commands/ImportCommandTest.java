@@ -172,6 +172,120 @@ public class ImportCommandTest {
     }
 
     @Test
+    public void execute_importPinnedAndLegacyRows_restoresPinnedStateAndAcceptsOldFormat() throws Exception {
+        Model modelWithPins = new ModelManager();
+
+        Person pinnedPerson = new PersonBuilder()
+                .withName("Pinned Alice")
+                .withPhone("12345678")
+                .withEmail("alice@u.nus.edu")
+                .withAddress("Blk 123")
+                .withTags()
+                .withEvents()
+                .withoutPhoto()
+                .build();
+        Person legacyPerson = new PersonBuilder()
+                .withName("Legacy Bob")
+                .withPhone("87654321")
+                .withEmail("bob@u.nus.edu")
+                .withAddress("Blk 456")
+                .withTags()
+                .withEvents()
+                .withoutPhoto()
+                .build();
+
+        createCsvFile("pinnedAndLegacy",
+                "Name,Phone,Email,Address,Tags,Events,Photo,Pinned\n"
+                        + "Pinned Alice,12345678,alice@u.nus.edu,Blk 123,,,,true\n"
+                        + "Legacy Bob,87654321,bob@u.nus.edu,Blk 456,,,");
+
+        ImportCommand command = createTestCommand("overwrite", "pinnedAndLegacy");
+        CommandResult result = command.execute(modelWithPins);
+
+        assertTrue(result.getFeedbackToUser().contains("2 row(s) added"));
+        assertTrue(modelWithPins.hasPerson(pinnedPerson));
+        assertTrue(modelWithPins.hasPerson(legacyPerson));
+        assertTrue(modelWithPins.isPersonPinned(pinnedPerson));
+        assertFalse(modelWithPins.isPersonPinned(legacyPerson));
+    }
+
+    @Test
+    public void execute_importPinnedFalseRow_doesNotPinPerson() throws Exception {
+        Model modelWithPins = new ModelManager();
+
+        Person person = new PersonBuilder()
+                .withName("Unpinned User")
+                .withPhone("92345678")
+                .withEmail("unpinned@u.nus.edu")
+                .withAddress("Blk 789")
+                .withTags()
+                .withEvents()
+                .withoutPhoto()
+                .build();
+
+        createCsvFile("pinnedFalse",
+                "Name,Phone,Email,Address,Tags,Events,Photo,Pinned\n"
+                        + "Unpinned User,92345678,unpinned@u.nus.edu,Blk 789,,,,false");
+
+        ImportCommand command = createTestCommand("overwrite", "pinnedFalse");
+        CommandResult result = command.execute(modelWithPins);
+
+        assertTrue(result.getFeedbackToUser().contains("1 row(s) added"));
+        assertTrue(modelWithPins.hasPerson(person));
+        assertFalse(modelWithPins.isPersonPinned(person));
+    }
+
+    @Test
+    public void execute_importInvalidPinnedValue_treatsAsUnpinned() throws Exception {
+        Model modelWithPins = new ModelManager();
+
+        Person person = new PersonBuilder()
+                .withName("Invalid Pin")
+                .withPhone("93456789")
+                .withEmail("invalidpin@u.nus.edu")
+                .withAddress("Blk 111")
+                .withTags()
+                .withEvents()
+                .withoutPhoto()
+                .build();
+
+        createCsvFile("invalidPinnedValue",
+                "Name,Phone,Email,Address,Tags,Events,Photo,Pinned\n"
+                        + "Invalid Pin,93456789,invalidpin@u.nus.edu,Blk 111,,,,yes");
+
+        ImportCommand command = createTestCommand("overwrite", "invalidPinnedValue");
+        command.execute(modelWithPins);
+
+        assertTrue(modelWithPins.hasPerson(person));
+        assertFalse(modelWithPins.isPersonPinned(person));
+    }
+
+    @Test
+    public void execute_importUpperCaseTruePinnedValue_pinsPerson() throws Exception {
+        Model modelWithPins = new ModelManager();
+
+        Person person = new PersonBuilder()
+                .withName("Case True")
+                .withPhone("94567890")
+                .withEmail("casetrue@u.nus.edu")
+                .withAddress("Blk 222")
+                .withTags()
+                .withEvents()
+                .withoutPhoto()
+                .build();
+
+        createCsvFile("uppercaseTrue",
+                "Name,Phone,Email,Address,Tags,Events,Photo,Pinned\n"
+                        + "Case True,94567890,casetrue@u.nus.edu,Blk 222,,,,TRUE");
+
+        ImportCommand command = createTestCommand("overwrite", "uppercaseTrue");
+        command.execute(modelWithPins);
+
+        assertTrue(modelWithPins.hasPerson(person));
+        assertTrue(modelWithPins.isPersonPinned(person));
+    }
+
+    @Test
     public void execute_fileNotFound_throwsCommandException() {
         ImportCommand command = createTestCommand("add", "invalid_file");
 

@@ -44,6 +44,7 @@ public class ExportCommand extends Command {
     private static final String TAG_COLUMN_HEADER = "Tags";
     private static final String EVENT_COLUMN_HEADER = "Events";
     private static final String PHOTO_COLUMN_HEADER = "Photo";
+    private static final String PINNED_COLUMN_HEADER = "Pinned";
 
     private final String exportType;
     private final String filename;
@@ -77,7 +78,7 @@ public class ExportCommand extends Command {
 
         Path exportPath = getExportPath(model);
 
-        exportDataToCsv(exportPath, exportedList);
+        exportDataToCsv(exportPath, exportedList, model);
 
         return new CommandResult(String.format(MESSAGE_SUCCESS,
                 filename + FILENAME_SUFFIX));
@@ -91,11 +92,11 @@ public class ExportCommand extends Command {
      * @param exportedList The list of {@code Person} objects to be serialized.
      * @throws CommandException If an {@code IOException} occurs during file creation or writing.
      */
-    public void exportDataToCsv(Path exportPath, List<Person> exportedList) throws CommandException {
+    public void exportDataToCsv(Path exportPath, List<Person> exportedList, Model model) throws CommandException {
         try {
             FileUtil.createParentDirsOfFile(exportPath);
 
-            String csvData = convertToCsv(exportedList);
+            String csvData = convertToCsv(exportedList, model);
 
             FileUtil.writeToFile(exportPath, csvData);
         } catch (IOException e) {
@@ -135,7 +136,7 @@ public class ExportCommand extends Command {
      * @param exportedList The list of {@code Person} objects to convert.
      * @return A formatted CSV string representing the entire contact list.
      */
-    public String convertToCsv(List<Person> exportedList) {
+    public String convertToCsv(List<Person> exportedList, Model model) {
         StringBuilder csvBuilder = new StringBuilder();
 
         csvBuilder.append(NAME_COLUMN_HEADER).append(",")
@@ -144,10 +145,11 @@ public class ExportCommand extends Command {
                 .append(ADDRESS_COLUMN_HEADER).append(",")
                 .append(TAG_COLUMN_HEADER).append(",")
                 .append(EVENT_COLUMN_HEADER).append(",")
-                .append(PHOTO_COLUMN_HEADER).append("\n");
+                .append(PHOTO_COLUMN_HEADER).append(",")
+                .append(PINNED_COLUMN_HEADER).append("\n");
 
         for (Person p : exportedList) {
-            csvBuilder.append(formatPersonToRow(p)).append("\n");
+            csvBuilder.append(formatPersonToRow(p, model)).append("\n");
         }
 
         return csvBuilder.toString();
@@ -160,15 +162,16 @@ public class ExportCommand extends Command {
      * @param p The {@code Person} object to format.
      * @return A comma-separated string representing the person's data.
      */
-    public String formatPersonToRow(Person p) {
-        return String.format("%s,%s,%s,%s,%s,%s,%s",
+    public String formatPersonToRow(Person p, Model model) {
+        return String.format("%s,%s,%s,%s,%s,%s,%s,%s",
                 p.getName().fullName,
                 p.getPhone().value,
                 sanitizeAndWrapValue(getEmailValue(p)),
                 sanitizeAndWrapValue(getAddressValue(p)),
                 sanitizeAndWrapValue(formatTags(p)),
                 sanitizeAndWrapValue(formatEvents(p)),
-                sanitizeAndWrapValue(getPhotoValue())
+                sanitizeAndWrapValue(getPhotoValue()),
+                sanitizeAndWrapValue(String.valueOf(model.isPersonPinned(p)))
         );
     }
 

@@ -6,12 +6,14 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.commons.util.CsvUtil.splitCsvLine;
+import static seedu.address.commons.util.CsvUtil.unwrapValue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.ImportCommand.FILENAME_SUFFIX;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,6 +61,28 @@ public class ExportCommandTest {
     }
 
     @Test
+    public void execute_exportAll_headerHasExpectedColumnsInOrder() throws Exception {
+        ExportCommand exportCommand = new ExportCommand("all", testFileName);
+        String expectedMessage = String.format(ExportCommand.MESSAGE_SUCCESS, testFileName + ".csv");
+
+        assertCommandSuccess(exportCommand, model, expectedMessage, expectedModel);
+
+        Path path = model.getAddressBookFilePath().getParent().resolve(testFileName + ".csv");
+        List<String> lines = Files.readAllLines(path);
+        String[] headerColumns = splitCsvLine(lines.get(0));
+
+        assertEquals(8, headerColumns.length);
+        assertEquals("Name", headerColumns[0]);
+        assertEquals("Phone", headerColumns[1]);
+        assertEquals("Email", headerColumns[2]);
+        assertEquals("Address", headerColumns[3]);
+        assertEquals("Tags", headerColumns[4]);
+        assertEquals("Events", headerColumns[5]);
+        assertEquals("Photo", headerColumns[6]);
+        assertEquals("Pinned", headerColumns[7]);
+    }
+
+    @Test
     public void execute_exportCurrent_success() {
         model.updateFilteredPersonList(p -> p.getName().fullName.contains("Alice"));
         expectedModel.updateFilteredPersonList(p -> p.getName().fullName.contains("Alice"));
@@ -67,6 +91,117 @@ public class ExportCommandTest {
         String expectedMessage = String.format(ExportCommand.MESSAGE_SUCCESS, testFileName + ".csv");
 
         assertCommandSuccess(exportCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_exportPinnedPerson_writesPinnedColumn() throws Exception {
+        Person pinnedPerson = new PersonBuilder()
+                .withName("Pinned Person")
+                .withPhone("91234567")
+                .withEmail("pinned@example.com")
+                .withAddress("Blk 123")
+                .withTags("friends")
+                .withoutPhoto()
+                .build();
+
+        Model modelWithPinnedPerson = new ModelManager();
+        Model expectedModelWithPinnedPerson = new ModelManager();
+        modelWithPinnedPerson.addPerson(pinnedPerson);
+        expectedModelWithPinnedPerson.addPerson(pinnedPerson);
+        modelWithPinnedPerson.pinPerson(pinnedPerson);
+        expectedModelWithPinnedPerson.pinPerson(pinnedPerson);
+
+        Path sharedFilePath = testFolder.resolve(testFileName + ".csv");
+        ExportCommand exportCommand = new ExportCommand("all", testFileName) {
+            @Override
+            protected Path getExportPath(Model model) {
+                return sharedFilePath;
+            }
+        };
+
+        String expectedMessage = String.format(ExportCommand.MESSAGE_SUCCESS, testFileName + ".csv");
+        assertCommandSuccess(exportCommand, modelWithPinnedPerson, expectedMessage, expectedModelWithPinnedPerson);
+
+        List<String> lines = Files.readAllLines(sharedFilePath);
+        String[] headerColumns = splitCsvLine(lines.get(0));
+        String[] rowColumns = splitCsvLine(lines.get(1));
+
+        assertEquals(8, headerColumns.length);
+        assertEquals("Pinned", headerColumns[7]);
+        assertEquals(8, rowColumns.length);
+        assertEquals("Pinned Person", rowColumns[0]);
+        assertEquals("true", unwrapValue(rowColumns[7]));
+    }
+
+    @Test
+    public void execute_exportUnpinnedPerson_writesFalseInPinnedColumn() throws Exception {
+        Person unpinnedPerson = new PersonBuilder()
+                .withName("Unpinned Person")
+                .withPhone("92345678")
+                .withEmail("unpinned@example.com")
+                .withAddress("Blk 456")
+                .withTags("colleague")
+                .withoutPhoto()
+                .build();
+
+        Model modelWithUnpinnedPerson = new ModelManager();
+        modelWithUnpinnedPerson.addPerson(unpinnedPerson);
+
+        Path sharedFilePath = testFolder.resolve("exportUnpinned.csv");
+        ExportCommand exportCommand = new ExportCommand("all", "exportUnpinned") {
+            @Override
+            protected Path getExportPath(Model model) {
+                return sharedFilePath;
+            }
+        };
+
+        exportCommand.execute(modelWithUnpinnedPerson);
+
+        List<String> lines = Files.readAllLines(sharedFilePath);
+        String[] rowColumns = splitCsvLine(lines.get(1));
+        assertEquals("Unpinned Person", rowColumns[0]);
+        assertEquals("false", unwrapValue(rowColumns[7]));
+    }
+
+    @Test
+    public void execute_exportCurrent_onlyFilteredPinnedPersonWritten() throws Exception {
+        Person pinnedCurrent = new PersonBuilder()
+                .withName("Current Pinned")
+                .withPhone("93456789")
+                .withEmail("current@example.com")
+                .withAddress("Blk 100")
+                .withoutPhoto()
+                .build();
+        Person unfilteredPerson = new PersonBuilder()
+                .withName("Other Person")
+                .withPhone("94567890")
+                .withEmail("other@example.com")
+                .withAddress("Blk 200")
+                .withoutPhoto()
+                .build();
+
+        Model modelWithMixedPersons = new ModelManager();
+        modelWithMixedPersons.addPerson(pinnedCurrent);
+        modelWithMixedPersons.addPerson(unfilteredPerson);
+        modelWithMixedPersons.pinPerson(pinnedCurrent);
+        modelWithMixedPersons.updateFilteredPersonList(p -> p.getName().fullName.equals("Current Pinned"));
+
+        Path sharedFilePath = testFolder.resolve("exportCurrentPinned.csv");
+        ExportCommand exportCommand = new ExportCommand("current", "exportCurrentPinned") {
+            @Override
+            protected Path getExportPath(Model model) {
+                return sharedFilePath;
+            }
+        };
+
+        exportCommand.execute(modelWithMixedPersons);
+
+        List<String> lines = Files.readAllLines(sharedFilePath);
+        assertEquals(2, lines.size()); // header + only one filtered row
+
+        String[] rowColumns = splitCsvLine(lines.get(1));
+        assertEquals("Current Pinned", rowColumns[0]);
+        assertEquals("true", unwrapValue(rowColumns[7]));
     }
 
     @Test

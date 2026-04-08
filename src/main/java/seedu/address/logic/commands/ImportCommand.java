@@ -164,9 +164,9 @@ public class ImportCommand extends Command {
         Map<Integer, Event> eventMap = new HashMap<>();
 
         // Pass 1: parse all rows. Events are collected into eventMap.
-        List<Person> parsedPersons = new ArrayList<>();
+        List<ParsedPerson> parsedPersons = new ArrayList<>();
         for (int i = 1; i < lines.size(); i++) {
-            Optional<Person> person = parseLineToPerson(lines.get(i), eventMap);
+            Optional<ParsedPerson> person = parseLineToPerson(lines.get(i), eventMap);
             person.ifPresent(parsedPersons::add);
         }
 
@@ -179,9 +179,13 @@ public class ImportCommand extends Command {
 
         // Pass 3: add persons. Their internal event lists already reference the
         // same objects registered globally in pass 2.
-        for (Person person : parsedPersons) {
+        for (ParsedPerson parsedPerson : parsedPersons) {
+            Person person = parsedPerson.person;
             if (!model.hasPerson(person)) {
                 model.addPerson(person);
+                if (parsedPerson.isPinned) {
+                    model.pinPerson(person);
+                }
                 added++;
             }
         }
@@ -198,7 +202,7 @@ public class ImportCommand extends Command {
      * @return An {@code Optional} containing the {@code Person} if parsing was successful,
      *         otherwise an empty {@code Optional}.
      */
-    private Optional<Person> parseLineToPerson(String line, Map<Integer, Event> eventMap) {
+    private Optional<ParsedPerson> parseLineToPerson(String line, Map<Integer, Event> eventMap) {
         try {
             return Optional.of(createPersonFromCsvRow(line, eventMap));
         } catch (IllegalArgumentException e) {
@@ -213,14 +217,16 @@ public class ImportCommand extends Command {
      * @param row A single comma-separated string from the CSV file.
      * @return A {@code Person} object populated with the data from the row.
      */
-    private Person createPersonFromCsvRow(String row, Map<Integer, Event> eventMap) {
+    private ParsedPerson createPersonFromCsvRow(String row, Map<Integer, Event> eventMap) {
         String[] columns = CsvUtil.splitCsvLine(row);
         validateColumnCount(columns);
 
         Person person = populatePersonInfo(columns);
         populateEventInfo(person, unwrapValue(columns[5]), eventMap);
 
-        return person;
+        boolean isPinned = columns.length >= 8 && Boolean.parseBoolean(unwrapValue(columns[7]));
+
+        return new ParsedPerson(person, isPinned);
     }
 
     /**
@@ -269,6 +275,19 @@ public class ImportCommand extends Command {
     private void populateEventInfo(Person p, String eventString, Map<Integer, Event> eventMap) {
         List<Event> events = parseEvents(eventString, eventMap);
         events.forEach(p::addEvent);
+    }
+
+    /**
+     * Helper container for a parsed person and their pinned status.
+     */
+    private static class ParsedPerson {
+        private final Person person;
+        private final boolean isPinned;
+
+        ParsedPerson(Person person, boolean isPinned) {
+            this.person = person;
+            this.isPinned = isPinned;
+        }
     }
 
     /**
