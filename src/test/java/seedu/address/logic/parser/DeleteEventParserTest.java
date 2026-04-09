@@ -5,6 +5,7 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 import static seedu.address.model.event.TimeRange.MESSAGE_INVALID_DATETIME_FORMAT;
+import static seedu.address.model.event.TimeRange.MESSAGE_INVALID_DATE_VALUE;
 
 import java.time.LocalDateTime;
 
@@ -130,6 +131,6 @@ public class DeleteEventParserTest {
     @Test
     public void parse_nonExistentDate_failure() {
         assertParseFailure(parser, " n/" + VALID_NAME + " start/2026-02-30 0900",
-                MESSAGE_INVALID_DATETIME_FORMAT);
+                MESSAGE_INVALID_DATE_VALUE);
     }
 }
