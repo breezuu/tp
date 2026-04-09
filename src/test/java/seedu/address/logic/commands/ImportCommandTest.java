@@ -759,17 +759,6 @@ public class ImportCommandTest {
 
     @Test
     public void execute_distinctEventPayloads_generateDistinctComputedIdsAndLinkSuccessfully() throws Exception {
-        int computedMeetingEventId = new Event(
-                new Title("Meeting"),
-                Optional.of(new Description("Kickoff")),
-                new TimeRange("2026-05-06 1000", "2026-05-06 1100"),
-                0).getEventId();
-        int computedLunchEventId = new Event(
-                new Title("Lunch"),
-                Optional.empty(),
-                new TimeRange("2026-05-06 1200", "2026-05-06 1300"),
-                0).getEventId();
-
         String eventsData = eventsHeader + "\n"
                 + "111,Meeting,Kickoff,2026-05-06 1000,2026-05-06 1100\n"
                 + "222,Lunch,,2026-05-06 1200,2026-05-06 1300";

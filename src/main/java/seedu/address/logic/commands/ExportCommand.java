@@ -41,7 +41,6 @@ public class ExportCommand extends Command {
             + PREFIX_TYPE + "all "
             + PREFIX_FILENAME + "myContacts";
 
-    private static final String FILENAME_SUFFIX = ".csv";
     private static final String PERSONS_FILENAME_SUFFIX = "_persons.csv";
     private static final String EVENTS_FILENAME_SUFFIX = "_events.csv";
 

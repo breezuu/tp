@@ -49,8 +49,6 @@ public class ImportCommand extends Command {
     public static final String MESSAGE_EVENT_CLASH_IN_IMPORT =
             "Import failed: the import file contains clashing events.";
 
-    public static final String FILENAME_SUFFIX = ".csv";
-
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Imports a list of contacts from a CSV formatted file.\n"
             + "Parameters: "
