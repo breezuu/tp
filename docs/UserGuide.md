@@ -405,10 +405,22 @@ Unpins the person identified by their name.
 
 Format: `unpin n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
+<panel header=":fa-solid-code: **Examples**" type="info">
 
-Examples:
-* `unpin n/John Doe` unpins John Doe when the name uniquely identifies the contact.
-* `unpin n/John Doe p/91234567` unpins the matching John Doe contact by name and phone number.
+- `unpin n/John Doe`<br>
+Unpins John Doe when the name uniquely identifies the contact.
+
+- `unpin n/John Doe p/91234567`<br>
+Unpins the matching John Doe contact by name and phone number.
+
+</panel>
+
+<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
+
+- If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
+- See [User Disambiguation](#user-disambiguation) for details.
+
+</panel>
 
 ### Assigning tag(s) to person(s): `tag`
 
@@ -693,7 +705,7 @@ AddressBook data is saved automatically as a JSON file `[JAR file location]/data
 ## Command summary
 
 Action     | Format, Examples
------------|---------------------------------------------------------------------f-------------------------------------------------------------------------------------------------
+-----------|------
 **Add**    | `add n/NAME p/PHONE_NUMBER [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_PATH]` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague pfp/images/james.jpg`
 **Clear**  | `clear`
 **Delete** | `delete n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `delete n/Alex Yeoh t/cs2103 t/cs2105`
