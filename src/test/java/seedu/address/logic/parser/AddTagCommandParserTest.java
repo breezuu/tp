@@ -71,6 +71,29 @@ public class AddTagCommandParserTest {
     }
 
     @Test
+    public void parse_missingAssignTagsWithoutLeadingWhitespace_failure() {
+        String input = PREFIX_NAME + "Alice";
+        assertParseFailure(parser, input,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        "Missing tag(s) to assign. Provide at least one 'label/' value before the target person(s).\n"
+                                + AddTagCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_missingPrefixes_failure() {
+        String input = "alice";
+        assertParseFailure(parser, input,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddTagCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_bothPrefixesPresentWithoutSeparator_failure() {
+        String input = PREFIX_TAG_ASSIGN + "CS2103" + PREFIX_NAME + "Alice";
+        assertParseFailure(parser, input,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddTagCommand.MESSAGE_USAGE));
+    }
+
+    @Test
     public void parse_nonEmptyTagSectionPreamble_failure() {
         String input = " nonsense " + PREFIX_TAG_ASSIGN + "CS2103 " + PREFIX_NAME + "Alice";
         assertParseFailure(parser, input,
