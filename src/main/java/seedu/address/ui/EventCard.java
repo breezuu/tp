@@ -33,19 +33,19 @@ public class EventCard extends UiPart<Region> {
     public EventCard(Event event) {
         super(FXML);
         this.event = event;
-        title.setText("Title (/title): " + event.getTitle());
+        title.setText("Title: " + event.getTitle());
         title.setStyle("-fx-font-weight: bold;");
 
         String descText = event.getDescription()
                 .map(Description::toString)
-                .map(d -> "Description (/desc): " + d)
+                .map(d -> "Description: " + d)
                 .orElse("");
         description.setText(descText);
         description.setStyle("-fx-font-style: italic;");
         boolean hasDescription = event.getDescription().isPresent();
         description.setVisible(hasDescription);
         description.setManaged(hasDescription);
-        from.setText("Start (/start): " + event.getStartTimeFormatted());
-        to.setText("End (/end): " + event.getEndTimeFormatted());
+        from.setText("Start: " + event.getStartTimeFormatted());
+        to.setText("End: " + event.getEndTimeFormatted());
     }
 }
