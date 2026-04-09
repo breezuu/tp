@@ -182,7 +182,7 @@ public class Person {
     }
 
     /**
-     * Returns an immutable Event List
+     * Returns an Event List
      */
     public List<Event> getEvents() {
         return this.events;

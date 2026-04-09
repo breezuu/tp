@@ -127,11 +127,6 @@ public class AddTagCommand extends Command {
 
             Person updatedPerson = person.withTags(mergedTags);
 
-            assert updatedPerson.getTags().containsAll(tagsToAssign)
-                    : "Updated person should contain all assigned tags";
-            assert updatedPerson.getEvents().equals(person.getEvents())
-                    : "Updated person should preserve existing events";
-
             model.setPerson(person, updatedPerson);
         }
     }

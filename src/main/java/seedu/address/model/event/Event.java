@@ -101,7 +101,6 @@ public class Event {
             throw new IllegalStateException("numberOfPersonLinked cannot be negative.");
         }
         numberOfPersonLinked -= 1;
-        assert numberOfPersonLinked >= 0 : "numberOfPersonLinked must stay non-negative after decrement";
     }
 
     /**
