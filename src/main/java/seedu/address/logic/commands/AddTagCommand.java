@@ -125,7 +125,7 @@ public class AddTagCommand extends Command {
             Set<Tag> mergedTags = new HashSet<>(person.getTags());
             mergedTags.addAll(tagsToAssign);
 
-            Person updatedPerson = person.withTags(mergedTags);
+        Person updatedPerson = person.copyWithTags(mergedTags);
 
             model.setPerson(person, updatedPerson);
         }

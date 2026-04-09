@@ -73,7 +73,7 @@ public class AddEventCommand extends Command {
         }
 
         // Update person's event list
-        Person editedPerson = personToEdit.withAddedEvent(eventToLink);
+        Person editedPerson = personToEdit.copyWithAddedEvent(eventToLink);
         model.setPerson(personToEdit, editedPerson);
         logger.info("AddEvent: person updated " + personToEdit.getName()
                 + ", total events=" + editedPerson.getEvents().size());

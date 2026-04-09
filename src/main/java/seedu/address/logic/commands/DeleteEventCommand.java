@@ -65,7 +65,7 @@ public class DeleteEventCommand extends Command {
         logger.info("DeleteEvent: unlinking event " + eventToDelete + " from " + personToEdit.getName()
                 + ", remaining links=" + eventToUnlink.getNumberOfPersonLinked());
 
-        Person editedPerson = personToEdit.withRemovedEvent(eventToUnlink);
+        Person editedPerson = personToEdit.copyWithRemovedEvent(eventToUnlink);
         model.setPerson(personToEdit, editedPerson);
         logger.info("DeleteEvent: person updated " + personToEdit.getName()
                 + ", total events=" + editedPerson.getEvents().size());

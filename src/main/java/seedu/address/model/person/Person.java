@@ -201,7 +201,7 @@ public class Person {
     /**
      * Returns a copy of this person with the specified tags and existing events preserved.
      */
-    public Person withTags(Set<Tag> newTags) {
+    public Person copyWithTags(Set<Tag> newTags) {
         requireNonNull(newTags);
         Person updatedPerson = new Person(name, phone, email, address, newTags, photo);
         for (Event event : events) {
@@ -213,7 +213,7 @@ public class Person {
     /**
      * Returns a copy of this person with the specified event added.
      */
-    public Person withAddedEvent(Event eventToAdd) {
+    public Person copyWithAddedEvent(Event eventToAdd) {
         requireNonNull(eventToAdd);
         Person updatedPerson = new Person(this);
         updatedPerson.addEvent(eventToAdd);
@@ -237,7 +237,7 @@ public class Person {
     /**
      * Returns a copy of this person with the specified event removed.
      */
-    public Person withRemovedEvent(Event eventToRemove) {
+    public Person copyWithRemovedEvent(Event eventToRemove) {
         requireNonNull(eventToRemove);
         Person updatedPerson = new Person(this);
         updatedPerson.removeEvent(eventToRemove);
