@@ -878,7 +878,7 @@ testers are expected to do more *exploratory* testing.
 
 1. Adding an event to a person using unique name match
 
-   1. Prerequisites: Ensure there is a person named `David Li` in the contact list.
+   1. Prerequisites: Ensure there is a person named `David Li` in the contact list and no conflicting events.
    2. Test case: `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 n/David Li`<br>
       Expected: Event is added successfully and linked to `David Li`. A success message is shown in the result display.
 
