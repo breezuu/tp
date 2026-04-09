@@ -78,6 +78,12 @@ public class UiManager implements Ui {
      * Shows an error alert dialog with {@code title} and error message, {@code e},
      * and exits the application after the user has closed the alert dialog.
      */
+    @Override
+    public void showDataLoadingError(String message) {
+        showAlertDialogAndWait(Alert.AlertType.WARNING, "Data Loading Error",
+                "Your data file could not be loaded. Starting with an empty address book.", message);
+    }
+
     private void showFatalErrorDialogAndShutdown(String title, Throwable e) {
         logger.severe(title + " " + e.getMessage() + StringUtil.getDetails(e));
         showAlertDialogAndWait(Alert.AlertType.ERROR, title, e.getMessage(), e.toString());

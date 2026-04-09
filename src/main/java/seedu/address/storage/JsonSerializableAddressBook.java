@@ -34,6 +34,8 @@ class JsonSerializableAddressBook {
             "Dropping orphaned event with no linked persons: %s";
     public static final String MESSAGE_DUPLICATE_EVENT_ID =
             "Duplicate eventId %d found during load — skipping second entry.";
+    public static final String MESSAGE_MISSING_EVENT_ID =
+            "Event '%s' is missing eventId field — skipping.";
     private static final Logger logger = LogsCenter.getLogger(JsonSerializableAddressBook.class);
 
     private final List<JsonAdaptedPerson> persons = new ArrayList<>();
@@ -79,10 +81,19 @@ class JsonSerializableAddressBook {
 
         Map<Integer, Event> eventMap = new HashMap<>();
         for (JsonAdaptedEvent jsonAdaptedEvent : events) {
+            if (jsonAdaptedEvent.getEventId() == null) {
+                Event event = jsonAdaptedEvent.toModelType();
+                logger.warning(String.format(MESSAGE_MISSING_EVENT_ID, event.getTitle()));
+                continue;
+            }
             Event event = jsonAdaptedEvent.toModelType();
             if (eventMap.containsKey(event.getEventId())) {
                 logger.warning(String.format(MESSAGE_DUPLICATE_EVENT_ID, event.getEventId()));
                 continue;
+            }
+            boolean isOverlapping = eventMap.values().stream().anyMatch(event::isClashingWith);
+            if (isOverlapping) {
+                throw new IllegalValueException(MESSAGE_CLASHING_EVENT);
             }
             eventMap.put(event.getEventId(), event);
         }
@@ -121,7 +132,9 @@ class JsonSerializableAddressBook {
 
         List<Person> pinnedPersons = new ArrayList<>();
         for (JsonAdaptedPerson jsonAdaptedPinnedPerson : pinned) {
-            Person pinnedPerson = jsonAdaptedPinnedPerson.toModelType(eventMap);
+            // Pass empty map — pinned entries are used only for identity matching,
+            // not as a source of event data. The resolved person from loadedPersons is used instead.
+            Person pinnedPerson = jsonAdaptedPinnedPerson.toModelType(Map.of());
             if (pinnedPersons.stream().anyMatch(pinnedPerson::isSamePerson)) {
                 throw new IllegalValueException(MESSAGE_DUPLICATE_PINNED_PERSON);
             }

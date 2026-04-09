@@ -23,7 +23,7 @@ class JsonAdaptedEvent {
     private final String startTime;
     private final String endTime;
     private final int numberOfPersonLinked;
-    private final int eventId; // Used as the authoritative key for person-event mapping during loading
+    private final Integer eventId; // Used as the authoritative key for person-event mapping during loading
 
     /**
      * Constructs a {@code JsonAdaptedEvent} with the given event details.
@@ -34,13 +34,13 @@ class JsonAdaptedEvent {
                             @JsonProperty("startTime") String startTime,
                             @JsonProperty("endTime") String endTime,
                             @JsonProperty("numberOfPersonLinked") int numberOfPersonLinked,
-                            @JsonProperty("eventId") int eventId) {
+                            @JsonProperty("eventId") Integer eventId) {
         this.title = title;
         this.description = description;
         this.startTime = startTime;
         this.endTime = endTime;
         this.numberOfPersonLinked = numberOfPersonLinked;
-        this.eventId = eventId; // Used only for mapping
+        this.eventId = eventId;
     }
 
     /**
@@ -53,6 +53,13 @@ class JsonAdaptedEvent {
         endTime = source.getEndTimeFormatted();
         numberOfPersonLinked = source.getNumberOfPersonLinked();
         eventId = source.getEventId(); // Used only for mapping
+    }
+
+    /**
+     * Returns the saved eventId, or null if absent from the JSON.
+     */
+    public Integer getEventId() {
+        return eventId;
     }
 
     /**
@@ -90,6 +97,6 @@ class JsonAdaptedEvent {
             throw new IllegalValueException(TimeRange.MESSAGE_CONSTRAINTS);
         }
 
-        return new Event(modelTitle, modelDescription, modelTimeRange, 0, eventId);
+        return new Event(modelTitle, modelDescription, modelTimeRange, 0, eventId != null ? eventId : 0);
     }
 }

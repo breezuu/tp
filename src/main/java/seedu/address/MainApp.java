@@ -46,6 +46,7 @@ public class MainApp extends Application {
     protected Storage storage;
     protected Model model;
     protected Config config;
+    protected String dataLoadingError;
 
     @Override
     public void init() throws Exception {
@@ -88,6 +89,7 @@ public class MainApp extends Application {
         } catch (DataLoadingException e) {
             logger.warning("Data file at " + storage.getAddressBookFilePath() + " could not be loaded."
                     + " Will be starting with an empty AddressBook.");
+            dataLoadingError = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
             initialData = new AddressBook();
         }
 
@@ -173,6 +175,9 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) {
         logger.info("Starting AddressBook " + MainApp.VERSION);
         ui.start(primaryStage);
+        if (dataLoadingError != null) {
+            ui.showDataLoadingError(dataLoadingError);
+        }
     }
 
     @Override

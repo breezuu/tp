@@ -10,4 +10,7 @@ public interface Ui {
     /** Starts the UI (and the App).  */
     void start(Stage primaryStage);
 
+    /** Shows a data loading error popup to the user. */
+    void showDataLoadingError(String message);
+
 }

@@ -29,6 +29,8 @@ import seedu.address.model.tag.Tag;
 class JsonAdaptedPerson {
     public static final String MISSING_FIELD_MESSAGE_FORMAT = "Person's %s field is missing!";
     public static final String MISSING_EVENT_MESSAGE_FORMAT = "Event ID %d referenced by person '%s' not found.";
+    public static final String DUPLICATE_EVENT_ID_MESSAGE_FORMAT =
+            "Duplicate event ID %d in person '%s' — skipping second reference.";
     private static final Logger logger = LogsCenter.getLogger(JsonAdaptedPerson.class);
 
     private final String name;
@@ -139,7 +141,12 @@ class JsonAdaptedPerson {
 
         Person person = new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelPhoto);
 
+        Set<Integer> seenEventIds = new HashSet<>();
         for (int eventId : eventIds) {
+            if (!seenEventIds.add(eventId)) {
+                logger.warning(String.format(DUPLICATE_EVENT_ID_MESSAGE_FORMAT, eventId, name));
+                continue;
+            }
             Event event = eventMap.get(eventId);
             if (event == null) {
                 logger.warning(String.format(MISSING_EVENT_MESSAGE_FORMAT, eventId, name));
