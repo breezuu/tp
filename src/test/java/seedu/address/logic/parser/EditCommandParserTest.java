@@ -33,7 +33,10 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -41,6 +44,7 @@ import org.junit.jupiter.api.Test;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
+import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
@@ -338,5 +342,17 @@ public class EditCommandParserTest {
         // duplicate target tags are rejected directly
         userInput = TARGET_IDENTIFIER_BENSON + TAG_DESC_HUSBAND + " t/HUSBAND" + DELIMITER + PHONE_DESC_AMY.trim();
         assertParseFailure(parser, userInput, ParserUtil.MESSAGE_DUPLICATE_TAGS);
+    }
+
+    @Test
+    public void parseUpdateSegment_noEditableFields_throwsParseException() throws Exception {
+        Method parseUpdateSegment = EditCommandParser.class.getDeclaredMethod("parseUpdateSegment", String.class);
+        parseUpdateSegment.setAccessible(true);
+
+        InvocationTargetException thrown = assertThrows(InvocationTargetException.class,
+                () -> parseUpdateSegment.invoke(parser, "   "));
+
+        ParseException cause = (ParseException) thrown.getCause();
+        org.junit.jupiter.api.Assertions.assertEquals(EditCommand.MESSAGE_NOT_EDITED, cause.getMessage());
     }
 }
