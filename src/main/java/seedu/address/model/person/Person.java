@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.event.Event;
@@ -309,6 +310,24 @@ public class Person {
                 .add("events", events)
                 .add("photo", photo.isPresent() ? photo.get().getPath() : "")
                 .toString();
+    }
+
+    /**
+     * Returns a clipboard formatted string representation of this person.
+     */
+    public String toClipboardString() {
+        // Mandatory Fields
+        String name = "Name: " + getNameString();
+        String phoneNumber = "Phone: " + getPhoneString();
+
+        // Optional Fields
+        String tag = getTagsString();
+        String address = getAddressString().map(e -> "Address: " + e).orElse("");
+        String email = getEmailString().map(e -> "Email: " + e).orElse("");
+
+        return Stream.of(name, phoneNumber, tag, address, email)
+                .filter(field -> !field.isEmpty())
+                .collect(Collectors.joining("\n"));
     }
 
 }

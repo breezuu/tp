@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -190,20 +188,7 @@ public class PersonCard extends UiPart<Region> {
     private void copyPersonCard() {
         final Clipboard clipboard = Clipboard.getSystemClipboard();
         final ClipboardContent personInformation = new ClipboardContent();
-        // Mandatory Fields
-        String name = "Name: " + person.getNameString();
-        String phoneNumber = "Phone: " + person.getPhoneString();
-
-        // Optional Fields
-        String tag = person.getTagsString();
-        String address = person.getAddressString().map(e -> "Address: " + e).orElse("");
-        String email = person.getEmailString().map(e -> "Email: " + e).orElse("");
-
-        // Copy Operation
-        String textToCopy = Stream.of(name, phoneNumber, tag, address, email)
-                .filter(field -> !field.isEmpty())
-                .collect(Collectors.joining("\n"));
-        personInformation.putString(textToCopy);
+        personInformation.putString(person.toClipboardString());
         clipboard.setContent(personInformation);
     }
 }
