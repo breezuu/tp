@@ -58,7 +58,7 @@ public class EditCommandParser implements Parser<EditCommand> {
         if (updateSegment.isEmpty()) {
             throw new ParseException(EditCommand.MESSAGE_NOT_EDITED);
         }
-        
+
         PersonInformation targetInfo = parseTargetSegment(targetSegment);
         EditPersonDescriptor editPersonDescriptor = parseUpdateSegment(updateSegment);
         return new EditCommand(targetInfo, editPersonDescriptor);
