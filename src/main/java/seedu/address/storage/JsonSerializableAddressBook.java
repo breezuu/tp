@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
@@ -28,6 +30,9 @@ class JsonSerializableAddressBook {
     public static final String MESSAGE_DUPLICATE_PINNED_PERSON = "Pinned list contains duplicate person(s).";
     public static final String MESSAGE_PINNED_PERSON_NOT_IN_PERSONS =
             "Pinned list contains person(s) not present in persons list.";
+    public static final String MESSAGE_ORPHANED_EVENT =
+            "Dropping orphaned event with no linked persons: %s";
+    private static final Logger logger = LogsCenter.getLogger(JsonSerializableAddressBook.class);
 
     private final List<JsonAdaptedPerson> persons = new ArrayList<>();
     private final List<JsonAdaptedEvent> events = new ArrayList<>();
@@ -78,13 +83,36 @@ class JsonSerializableAddressBook {
             }
             eventMap.put(event.getEventId(), event);
         }
-        addressBook.setEvents(new ArrayList<>(eventMap.values()));
 
+        List<Person> loadedPersons = new ArrayList<>();
         for (JsonAdaptedPerson jsonAdaptedPerson : persons) {
             Person person = jsonAdaptedPerson.toModelType(eventMap);
-            if (addressBook.hasPerson(person)) {
+            boolean isDuplicate = loadedPersons.stream().anyMatch(person::isSamePerson);
+            if (isDuplicate) {
                 throw new IllegalValueException(MESSAGE_DUPLICATE_PERSON);
             }
+            loadedPersons.add(person);
+        }
+
+        // Rebuild numberOfPersonLinked from actual person-event references,
+        // ignoring the saved counter which may be stale or tampered with.
+        for (Person person : loadedPersons) {
+            for (Event event : person.getEvents()) {
+                event.incrementNumberOfPersonLinked();
+            }
+        }
+
+        // Discard orphaned events (not referenced by any person) before adding persons.
+        eventMap.values().removeIf(event -> {
+            if (event.getNumberOfPersonLinked() == 0) {
+                logger.warning(String.format(MESSAGE_ORPHANED_EVENT, event.getTitle()));
+                return true;
+            }
+            return false;
+        });
+        addressBook.setEvents(new ArrayList<>(eventMap.values()));
+
+        for (Person person : loadedPersons) {
             addressBook.addPerson(person);
         }
 

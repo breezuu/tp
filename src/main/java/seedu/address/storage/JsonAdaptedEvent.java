@@ -90,6 +90,6 @@ class JsonAdaptedEvent {
             throw new IllegalValueException(TimeRange.MESSAGE_CONSTRAINTS);
         }
 
-        return new Event(modelTitle, modelDescription, modelTimeRange, numberOfPersonLinked);
+        return new Event(modelTitle, modelDescription, modelTimeRange, 0);
     }
 }
