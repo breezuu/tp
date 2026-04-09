@@ -299,15 +299,15 @@ The interaction flow is as follows:
       * `CommandHistory` stores all previously entered commands in a list
   2. `CommandBox` executes the command through the existing Logic pipeline.
 
-<puml src="diagrams/CommandHistoryEnterSequenceDiagram.puml" width="250"/>
+<puml src="diagrams/CommandHistoryEnterSequenceDiagram.puml" width="500"/>
 
 * When user presses `Up`, `CommandBox` requests an older command from `CommandHistory` and updates the text field.
 * When user presses `Down`, `CommandBox` requests a newer command (or restored in-progress input) from
   `CommandHistory` and updates the text field.
 
 <div>
-  <puml src="diagrams/CommandHistoryUpSequenceDiagram.puml" width="250"/>
-  <puml src="diagrams/CommandHistoryDownSequenceDiagram.puml" width="250"/>
+  <puml src="diagrams/CommandHistoryUpSequenceDiagram.puml" width="350"/>
+  <puml src="diagrams/CommandHistoryDownSequenceDiagram.puml" width="350"/>
 </div>
 
 * Before navigating away, any currently input command by the user is saved as the latest command
@@ -595,7 +595,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 (For all use cases below, the **System** is the `NAB` and the **Actor** is the `user`, unless specified otherwise)
 
-<panel header="**UC1 - Add Contact**" type="light">
+<box type="info" seamless>
+
+**UC1 - Add Contact**
+
 
 **Use case:** `UC1` - Add Contact<br>
 **Guarantee:** New contact is successfully saved in the system.<br>
@@ -617,9 +620,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   * 2b2. User enters the correct contact information.
   * Steps 2b1 - 2b2 are repeated until all contact information are valid entries.
   <br> *Use case continues from step 3.*
-</panel>
+</box>
 
-<panel header="**UC2 - Find Contact**" type="light">
+<box type="info" seamless>
+
+**UC2 - Find Contact**
+
 
 **Use case:** `UC2` - Find Contact<br>
 **MSS**
@@ -641,9 +647,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * 4b. NAB finds no available contacts matching the keyword provided.
     * 4b1. NAB informs the user that no matches were found.
       <br> *Use case ends.*
-</panel>
+</box>
 
-<panel header="**UC3 - Delete Contact**" type="light">
+<box type="info" seamless>
+
+**UC3 - Delete Contact**
+
 
 **Use case:** `UC3` - Delete Contact<br>
 **MSS**
@@ -664,9 +673,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * 3b. NAB finds no available contacts that match the name provided.
     * 3b1. NAB informs the user that no matches were found.
       <br> *Use case ends.*
-</panel>
+</box>
 
-<panel header="**UC4 - Adding an Event for a Contact**" type="light">
+<box type="info" seamless>
+
+**UC4 - Adding an Event for a Contact**
+
 
 **Use case:** `UC4` - Adding an Event for a Contact<br>
 **Preconditions:** Contact that the event will be tagged to already exists in NAB.<br>
@@ -685,9 +697,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * 2b. NAB is unable to find the specified contact.
     * 2b1. NAB informs the user that the contact does not exist.
     <br> *Use case ends.*
-</panel>
+</box>
 
-<panel header="**UC5 - View Event**" type="light">
+<box type="info" seamless>
+
+**UC5 - View Event**
+
 
 **Use case:** `UC5` - View Event<br>
 **MSS**
@@ -712,9 +727,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * 4a. NAB finds no events associated with the contact.
     * 4a1. NAB informs the user that there are no events associated with the contact.
     <br> *Use case ends.*
-</panel>
+</box>
 
-<panel header="**UC6 - Filter Contact by Tag**" type="light">
+<box type="info" seamless>
+
+**UC6 - Filter Contact by Tag**
+
 
 **Use case:** `UC6` - Filter Contact by Tag<br>
 **MSS**
@@ -733,9 +751,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * 4a. NAB finds no available contacts matching the tag(s) provided.
     * 4a1. NAB informs the user that no matches were found.
     <br> *Use case ends.*
-</panel>
+</box>
 
-<panel header="**UC7 - Export Contacts**" type="light">
+<box type="info" seamless>
+
+**UC7 - Export Contacts**
+
 
 **Use case:** `UC7` - Export Contacts<br>
 **MSS**
@@ -748,9 +769,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * 2a. NAB is unable to save the file to the user’s file directory.
     * 2a1. NAB informs the user of the error.
     <br> *Use case ends.*
-</panel>
+</box>
 
-<panel header="**UC8 - Import Contacts**" type="light">
+<box type="info" seamless>
+
+**UC8 - Import Contacts**
+
 
 **Use case:** `UC8` - Import Contacts<br>
 **Preconditions:** Only contact information from a specified file format can be imported<br>
@@ -770,7 +794,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 1b3. NAB skips the contact information with the existing contact number and
       continues reading the rest of the file.
     <br> *Use case ends.*
-</panel>
+</box>
 
 *{More to be added}*
 

@@ -93,7 +93,10 @@ This **green box** with a **lightbulb icon** highlights **helpful tips** for usi
 
 6. Refer to the [Features](#features) below for details of each command.
 
-<panel header=":fa-solid-book: **Understanding the GUI**" type="secondary" expanded>
+<box type="info" seamless>
+
+**Understanding the GUI**
+
 
 The labelled interface below highlights the main parts of NAB's GUI.
 
@@ -104,7 +107,7 @@ The labelled interface below highlights the main parts of NAB's GUI.
 * **Person list panel**: displays the contacts currently shown.
 * **Event list panel**: displays events related to the current context, such as a selected or uniquely matched person.
 
-</panel>
+</box>
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -171,7 +174,10 @@ Format: `exit`
 
 Before examining the individual commands for managing contacts, please refer to the formatting requirements and constraints for each parameter. Unless stated otherwise, ensure all inputs adhere to the rules stated in this section
 
-<panel header=":fa-solid-book: **Parameters Requirements and Constraints**" type="secondary" expanded no-close>
+<box type="info" seamless>
+
+**Parameters Requirements and Constraints**
+
 
 | Parameter | Format                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Example |
 |-----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
@@ -182,7 +188,7 @@ Before examining the individual commands for managing contacts, please refer to 
 | `t/TAG` | • Can contain letters, digits, spaces, hyphens (`-`), and underscores (`_`).<br>• Must start with an alphanumeric character (a letter or digit).<br>• Must be between 1 and 20 characters long.                                                                                                                                                                                                                                                                                                                                           | `t/friend` |
 | `pfp/PHOTO_PATH` | • File path must end with a valid image extension: `.png`, `.jpg`, or `.jpeg` (case-insensitive).<br>• Can be absolute (e.g., `C:/Users/Alex/Pictures/me.jpg`) or relative to the app folder (e.g., `images/me.png`).<br>• The specified file must exist on your computer; NAB will copy it into the `data/images/` directory<br>• File path cannot be referencing any subfolder/files residing in NAB's `data/images/` folder.                                                                                                                                                                                                             | `pfp/images/me.png` |
 
-</panel>
+</box>
 
 <box type="info" seamless>
 
@@ -215,7 +221,10 @@ retry the command with additional details to uniquely identify the contact you w
 
 </box>
 
-<panel header=":fa-solid-book: **Disambiguate with Optional Parameters**" type="secondary" expanded no-close>
+<box type="info" seamless>
+
+**Disambiguate with Optional Parameters**
+
 
 Add one or more optional parameters **immediately after `n/NAME`** to narrow the match down to a single contact.
 
@@ -241,7 +250,7 @@ Here is what NAB looks like when you **disambiguate duplicates:**
 
 
 ![disambiguation.png](images/disambiguation.png)
-</panel>
+</box>
 
 
 <br>
@@ -254,7 +263,10 @@ This `add` feature allows you to add a person to the address book.
 Format: `add n/NAME p/PHONE_NUMBER [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_PATH]`
 
 
-<panel header=":fa-solid-code: **Examples**" type="info">
+<box type="info">
+
+**Examples**
+
 
 - `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`<br>
   Adds a new contact named John Doe with a phone number, email, and address.
@@ -265,21 +277,27 @@ Format: `add n/NAME p/PHONE_NUMBER [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_P
 - `add n/Kim Chaewon p/67676969 pfp/C:\Users\User\Desktop\Photos\Le_sserafim.jpg`<br>
   Adds a new contact named Kim Chaewon with a phone number and a profile photo.
 
-</panel>
+</box>
 
-<panel header=":fa-solid-exclamation-triangle: **Important**" type="danger">
+<box type="important">
+
+**Important**
+
 
 - `add` command with `pfp/` succeeds only if the image file exists, is readable, and is a supported image format.
 - Contact cannot be added if the added phone number is already registered in the address book.
 - Refer to the [user disambiguation](#user-disambiguation) section if you encounter the error: `Multiple matches identified!`
 
-</panel>
+</box>
 
-<panel header=":fa-solid-lightbulb: **Tip**" type="success">
+<box theme="success">
+
+**Tip**
+
 
 Can associate 0 or more tags during the add process.
 
-</panel>
+</box>
 
 
 ### Listing all persons: `list`
@@ -303,7 +321,10 @@ Format: `edit n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... -- [n/NAM
 * To delete a specific tag, type an existing tag in the updated field.
 * You can remove all the person’s tags by typing `t/` without specifying any tags after it.
 
-<panel header=":fa-solid-code: **Examples**" type="info">
+<box type="info">
+
+**Examples**
+
 
 - `edit n/John Doe -- p/91234567 e/johndoe@example.com`<br>
   Edits John Doe's phone and email.
@@ -317,14 +338,17 @@ Format: `edit n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... -- [n/NAM
 - `edit n/Alex Yeoh -- pfp/C:/Users/Alex/Pictures/profile.jpg`<br>
   Updates Alex Yeoh's profile picture.
 
-</panel>
+</box>
 
-<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
+<box type="important">
+
+Disambiguating contacts with the same name**
+
 
 - If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
 - See [User Disambiguation](#user-disambiguation) for details.
 
-</panel>
+</box>
 
 ### Finding a person: `find`
 
@@ -332,7 +356,14 @@ Finds persons who match the given contact information.
 
 Format: `find n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
-<panel header=":fa-solid-code: **Examples**" type="info">
+<div style="text-align: center;">
+  <img src="images/find_command.png" style="width: 80%;">
+</div>
+
+<box type="info">
+
+**Examples**
+
 
 - `find n/John`<br>
   Returns contacts named John
@@ -343,14 +374,17 @@ Format: `find n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 - `find n/John t/cs2106 t/cs2109s t/cs2103`<br>
   Uniquely identifies a John Doe with a cs2106, cs2109s and cs2103 tag
 
-</panel>
+</box>
 
-<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
+<box type="important">
+
+Disambiguating contacts with the same name**
+
 
 - If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
 - See [User Disambiguation](#user-disambiguation) for details.
 
-</panel>
+</box>
 
 ### Filtering persons by context: `filter`
 
@@ -358,7 +392,14 @@ Filters persons with the given tag(s).
 
 Format: `filter t/TAG[, TAG]...`
 
-<panel header=":fa-solid-code: **Examples**" type="info">
+<div style="text-align: center;">
+  <img src="images/filter_command.png" style="width: 80%;">
+</div>
+
+<box type="info">
+
+**Examples**
+
 
 - `filter t/friends`<br>
 Filters all contacts to show only contacts that are tagged friends.
@@ -366,13 +407,16 @@ Filters all contacts to show only contacts that are tagged friends.
 - `filter t/cs2103, cs2105, cs2109s`<br>
 Filters all contacts to show only contacts that have any of these tags.
 
-</panel>
+</box>
 
-<panel header=":fa-solid-lightbulb: **Tip**" type="success">
+<box theme="success">
+
+**Tip**
+
 
 Can associate 1 or more tags during the filter process.
 
-</panel>
+</box>
 
 ### Pinning a person: `pin`
 
@@ -380,9 +424,16 @@ Pins the person identified by their name.
 
 Format: `pin n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
+<div style="text-align: center;">
+  <img src="images/pin_command.png" style="width: 80%;">
+</div>
+
 * Pinned persons are shown first in the full list and in filtered tag views.
 
-<panel header=":fa-solid-code: **Examples**" type="info">
+<box type="info">
+
+**Examples**
+
 
 - `pin n/John Doe`<br>
 Pins John Doe when the name uniquely identifies the contact.
@@ -390,14 +441,17 @@ Pins John Doe when the name uniquely identifies the contact.
 - `pin n/John Doe p/91234567`<br>
 Pins the matching John Doe contact by name and phone number.
 
-</panel>
+</box>
 
-<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
+<box type="important">
+
+Disambiguating contacts with the same name**
+
 
 - If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
 - See [User Disambiguation](#user-disambiguation) for details.
 
-</panel>
+</box>
 
 ### Unpinning a person: `unpin`
 
@@ -405,7 +459,10 @@ Unpins the person identified by their name.
 
 Format: `unpin n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
-<panel header=":fa-solid-code: **Examples**" type="info">
+<box type="info">
+
+**Examples**
+
 
 - `unpin n/John Doe`<br>
 Unpins John Doe when the name uniquely identifies the contact.
@@ -413,20 +470,27 @@ Unpins John Doe when the name uniquely identifies the contact.
 - `unpin n/John Doe p/91234567`<br>
 Unpins the matching John Doe contact by name and phone number.
 
-</panel>
+</box>
 
-<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
+<box type="important">
+
+Disambiguating contacts with the same name**
+
 
 - If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
 - See [User Disambiguation](#user-disambiguation) for details.
 
-</panel>
+</box>
 
 ### Assigning tag(s) to person(s): `tag`
 
 Assigns one or more tags to one or more contacts in one command.
 
 Format: `tag label/TAG_TO_ASSIGN [label/TAG_TO_ASSIGN]... n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... [n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...]...`
+
+<div style="text-align: center;">
+  <img src="images/tag_command.png" style="width: 80%;">
+</div>
 
 * Start by listing the tag(s) using `label/...`; these tags are applied to **every** specified contact.
 * After the tags, add one or more contact segments, each starting with `n/NAME`.
@@ -435,7 +499,10 @@ Format: `tag label/TAG_TO_ASSIGN [label/TAG_TO_ASSIGN]... n/NAME [p/PHONE_NUMBER
 * If a tag does not exist yet, NAB creates it automatically.
 * If a person segment matches multiple contacts, NAB shows those matches and asks for a more specific command.
 
-<panel header=":fa-solid-code: **Examples**" type="info">
+<box type="info">
+
+**Examples**
+
 
 - `tag label/CS2103 n/John Doe`<br>
 Assigns 1 tag (`CS2103`) to 1 user (`John Doe`).
@@ -449,21 +516,27 @@ Assigns 1 tag (`CS2103`) to 2 users (`John Doe` and `Betsy Crower`).
 - `tag label/CS2103 label/CS2030S n/John Doe p/91234567 n/Betsy Crower e/betsycrower@example.com`<br>
 Assigns 2 tags (`CS2103`, `CS2030S`) to 2 users (`John Doe` and `Betsy Crower`) using additional fields to disambiguate both users.
 
-</panel>
+</box>
 
-<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
+<box type="important">
+
+Disambiguating contacts with the same name**
+
 
 - If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
 - See [User Disambiguation](#user-disambiguation) for details.
 
-</panel>
+</box>
 
-<panel header=":fa-solid-lightbulb: **Tip**" type="success">
+<box theme="success">
+
+**Tip**
+
 
 - Can associate 1 or more tags during the tagging process.
 - Can associate 1 or more persons during the tagging process.
 
-</panel>
+</box>
 
 ### Deleting a person: `delete`
 
@@ -471,7 +544,10 @@ Deletes the specified person from the address book.
 
 Format: `delete n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
-<panel header=":fa-solid-code: **Examples**" type="info">
+<box type="info">
+
+**Examples**
+
 
 - `delete n/John Doe`<br>
 Deletes John Doe when the name uniquely identifies the contact.
@@ -479,14 +555,17 @@ Deletes John Doe when the name uniquely identifies the contact.
 - `delete n/John Doe p/91234567`<br>
 Deletes the matching John Doe contact by name and phone number.
 
-</panel>
+</box>
 
-<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
+<box type="important">
+
+Disambiguating contacts with the same name**
+
 
 - If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
 - See [User Disambiguation](#user-disambiguation) for details.
 
-</panel>
+</box>
 
 ### Clearing all entries: `clear`
 
@@ -502,7 +581,10 @@ Before examining individual event commands, refer to this section for event-rela
 For shared contact-identification parameters used in event commands (`n/`, `p/`, `e/`, `a/`, `t/`),
 the same constraints in [Contact Management: Parameters constraints & format](#parameters-constraints-and-amp-format) apply.
 
-<panel header=":fa-solid-book: **Parameters Requirements and Constraints**" type="secondary" expanded no-close>
+<box type="info" seamless>
+
+**Parameters Requirements and Constraints**
+
 
 | Parameter | Format                                                                                                                                                                      | Example |
 |-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
@@ -510,7 +592,7 @@ the same constraints in [Contact Management: Parameters constraints & format](#p
 | `desc/DESCRIPTION` | • Must be 1 to 1000 characters.<br> • Must contain only alphanumeric characters and single spaces between words.<br> • No leading/trailing spaces and no consecutive spaces. | `desc/Final discussion on problem set 1` |
 | `start/START_DATE` | • Must follow `YYYY-MM-DD HHmm` in 24-hour format.                                                                                                                          | `start/2026-03-25 0900` |
 | `end/END_DATE` | • Must follow `YYYY-MM-DD HHmm` in 24-hour format.<br> • Must be strictly after `START_DATE` provided.                                                                      | `end/2026-03-25 1000` |
-</panel>
+</box>
 
 ### Adding an event: `event add`
 
@@ -518,7 +600,14 @@ Creates a new event for a specified person.
 
 Format: `event add title/TITLE [desc/DESCRIPTION] start/START_DATE end/END_DATE n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
-<panel header=":fa-solid-code: **Examples**" type="info">
+<div style="text-align: center;">
+  <img src="images/event_add.png" style="width: 80%;">
+</div>
+
+<box type="info">
+
+**Examples**
+
 
 - `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 n/David Li`<br>
   Adds an event titled "CS2109S Meeting" to David Li.
@@ -526,9 +615,12 @@ Format: `event add title/TITLE [desc/DESCRIPTION] start/START_DATE end/END_DATE 
 - `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 n/David Li p/99272758`<br>
   Adds an event to the David Li with phone number `99272758`, disambiguating between multiple contacts with the same name.
 
-</panel>
+</box>
 
-<panel header=":fa-solid-exclamation-triangle: **Important: Event uniqueness and time clashes**" type="danger">
+<box type="important">
+
+Event uniqueness and time clashes**
+
 
 - NAB treats the event list as **your schedule** (user point of view).
 - Time clashes are checked **globally** across the event list, not per contact.
@@ -536,27 +628,33 @@ Format: `event add title/TITLE [desc/DESCRIPTION] start/START_DATE end/END_DATE 
 - Overlap means the 2 ranges share actual time in common. Back-to-back events are allowed (for example, one ends at `1000` and another starts at `1000`).
 - If a clash is found, NAB shows: `This event clashes with an existing event in the calendar.`
 
-</panel>
+</box>
 
-<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
+<box type="important">
+
+Disambiguating contacts with the same name**
+
 
 - If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
 - See [User Disambiguation](#user-disambiguation) for details.
 
-</panel>
+</box>
 
 ### View an event: `event view`
 
 Views all events for a specified person.
 <div style="text-align: center;">
-  <img src="images/event_view.png" style="width: 700px;">
+  <img src="images/event_view.png" style="width: 560px;">
 </div>
 <br>
 
 Format: `event view n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 
-<panel header=":fa-solid-code: **Examples**" type="info">
+<box type="info">
+
+**Examples**
+
 
 - `event view n/Bernice Yu`<br>
   Views all events for Bernice Yu.
@@ -564,14 +662,17 @@ Format: `event view n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 - `event view n/Bernice Yu e/berniceyu@example.com`<br>
   Views events for the Bernice Yu with the given email, disambiguating between multiple contacts with the same name.
 
-</panel>
+</box>
 
-<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
+<box type="important">
+
+Disambiguating contacts with the same name**
+
 
 - If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
 - See [User Disambiguation](#user-disambiguation) for details.
 
-</panel>
+</box>
 
 ### Delete an event: `event delete`
 
@@ -579,8 +680,15 @@ Deletes an event for a specified person.
 
 Format: `event delete start/START_DATE n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
+<div style="text-align: center;">
+  <img src="images/event_delete.png" style="width: 80%;">
+</div>
 
-<panel header=":fa-solid-code: **Examples**" type="info">
+
+<box type="info">
+
+**Examples**
+
 
 - `event delete start/2026-03-12 1100 n/David Li`<br>
   Deletes the event only if David Li has an assigned event that starts at `2026-03-12 1100`.
@@ -588,14 +696,17 @@ Format: `event delete start/START_DATE n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDR
 - `event delete start/2026-03-12 1100 n/David Li p/99272758`<br>
   Deletes the event only if the David Li with phone number `99272758` has an assigned event that starts at `2026-03-12 1100`, disambiguating between multiple contacts with the same name.
 
-</panel>
+</box>
 
-<panel header=":fa-solid-exclamation-triangle: **Important: Disambiguating contacts with the same name**" type="danger">
+<box type="important">
+
+Disambiguating contacts with the same name**
+
 
 - If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
 - See [User Disambiguation](#user-disambiguation) for details.
 
-</panel>
+</box>
 
 ## Data and Storage
 
@@ -606,7 +717,10 @@ This `export` feature allows you to write contacts from NAB into 2 CSV files (`<
 
 Format: `export t/EXPORT_TYPE f/FILENAME`
 
-<panel header=":fa-solid-code: **Examples**" type="info">
+<box type="info">
+
+**Examples**
+
 
 - `export t/all f/save_file`<br>
   Exports all contact information in NAB to `save_file_persons.csv` and `save_file_events.csv`.
@@ -614,10 +728,13 @@ Format: `export t/EXPORT_TYPE f/FILENAME`
 - `export t/current f/save_file`<br>
   Exports only the currently displayed contact information to `save_file_persons.csv` and `save_file_events.csv`.
 
-</panel>
+</box>
 
 
-<panel header=":fa-solid-exclamation-triangle: **Important**" type="danger">
+<box type="important">
+
+**Important**
+
 
 - `EXPORT_TYPE` must be either:
     - `all` (export every contact in NAB), or
@@ -627,13 +744,16 @@ Format: `export t/EXPORT_TYPE f/FILENAME`
   - If a file with the same name already exists, it will be overwritten.
 - Order of parameters does not matter.
 
-</panel>
+</box>
 
-<panel header=":fa-solid-lightbulb: **Tip**" type="success">
+<box theme="success">
+
+**Tip**
+
 
 Use `export t/current ...` after `find` or `filter` to quickly export a specific subset of contacts.
 
-</panel>
+</box>
 
 
 ### Importing contacts: `import`
@@ -644,7 +764,10 @@ This `import` feature allows you to load contacts from 2 CSV files (`<FILENAME>_
 Format: `import t/IMPORT_TYPE f/FILENAME`
 
 
-<panel header=":fa-solid-code: **Examples**" type="info">
+<box type="info">
+
+**Examples**
+
 
 - `import t/overwrite f/save_file`<br>
   Imports contacts from `save_file_persons.csv` and event definitions from `save_file_events.csv`, replacing the existing data on the address book.
@@ -652,9 +775,12 @@ Format: `import t/IMPORT_TYPE f/FILENAME`
 - `import t/add f/save_file`<br>
   Imports contacts from `save_file_persons.csv` and event definitions from `save_file_events.csv`, adding them to the current address book.
 
-</panel>
+</box>
 
-<panel header=":fa-solid-exclamation-triangle: **Important**" type="danger">
+<box type="important">
+
+**Important**
+
 
 - `IMPORT_TYPE` must be either:
     - `add` (adds imported data to the current address book), or
@@ -665,36 +791,45 @@ Format: `import t/IMPORT_TYPE f/FILENAME`
 - Rows with invalid or missing required fields are skipped.
 - Order of parameters does not matter.
 
-</panel>
+</box>
 
-<panel header=":fa-solid-lightbulb: **Tip**" type="success">
+<box theme="success">
+
+**Tip**
+
 
 If you are unsure, run `import t/add ...` first to avoid accidental data loss. Use `import t/overwrite ...` only when you want a full replacement.
 
-</panel>
+</box>
 
 
 ### Saving the data
 Focus on managing your contacts! NAB does the heavy lifting by saving your data automatically in the background.
 
-<panel header=":fa-solid-lightbulb: **Tip**" type="success">
+<box theme="success">
+
+**Tip**
+
 
 - There is no manual save command in NAB.
 - If a command succeeds, your latest data is already persistent in the data file.
 
-</panel>
+</box>
 
 ### Editing the data file
 
 AddressBook data is saved automatically as a JSON file `[JAR file location]/data/addressbook.json`. Advanced users are welcome to update data directly by editing that data file.
 
-<panel header=":fa-solid-exclamation-triangle: **Important**" type="danger">
+<box type="important">
+
+**Important**
+
 
 - If your changes to the data file make its format invalid, AddressBook will discard all data and start with an empty data file at the next run.  Hence, it is recommended to take a backup of the file before editing it.
 - If your changes to the data file make its data inconsistent, NAB will first attempt to repair it automatically. If the inconsistency cannot be resolved, NAB will clear the entire address book to maintain data integrity.
 - Furthermore, certain edits can cause the AddressBook to behave in unexpected ways (e.g. if a value entered is outside the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 
-</panel>
+</box>
 
 --------------------------------------------------------------------------------------------------------------------
 
