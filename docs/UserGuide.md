@@ -381,6 +381,7 @@ Pins the person identified by their name.
 Format: `pin n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 * Pinned persons are shown first when the `list` command is used.
+* The pin symbol may not render on certain OSes (e.g. Ubuntu (Linux)).
 
 <panel header=":fa-solid-code: **Examples**" type="info">
 
