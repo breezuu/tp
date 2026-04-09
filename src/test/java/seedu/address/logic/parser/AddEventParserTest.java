@@ -180,7 +180,7 @@ public class AddEventParserTest {
     public void parse_nonExistentDate_failure() {
         assertParseFailure(parser,
                 " title/Meeting start/2026-02-30 0900 end/2026-02-30 1000 n/" + VALID_NAME,
-                MESSAGE_INVALID_DATETIME_FORMAT);
+                TimeRange.MESSAGE_INVALID_DATE_VALUE);
     }
 
     @Test

@@ -74,14 +74,11 @@ public class AddEventParser implements Parser<AddEventCommand> {
                 : Optional.empty();
         String startDateTime = argMultimap.getValue(PREFIX_START).get().trim();
         String endDateTime = argMultimap.getValue(PREFIX_END).get().trim();
-        if (!TimeRange.isValidDateTimeFormat(startDateTime) || !TimeRange.isValidDateTimeFormat(endDateTime)) {
-            throw new ParseException(TimeRange.MESSAGE_INVALID_DATETIME_FORMAT);
-        }
         try {
             TimeRange timeRange = new TimeRange(startDateTime, endDateTime);
             return new Event(title, description, timeRange);
         } catch (IllegalArgumentException e) {
-            throw new ParseException(TimeRange.MESSAGE_END_NOT_AFTER_START, e);
+            throw new ParseException(e.getMessage(), e);
         }
     }
 }
