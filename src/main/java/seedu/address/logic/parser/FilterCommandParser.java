@@ -30,14 +30,15 @@ public class FilterCommandParser implements Parser<FilterCommand> {
             throw new ParseException("Please provide all tags after a single 't/' prefix, separated by commas.");
         }
 
-        // Check for the presence of the tag prefix 't/' and throw an exception if unnecessary info is typed
-        if (!arePrefixesPresent(argMultimap, PREFIX_TAG) || !argMultimap.getPreamble().isEmpty()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
+        // Check for the presence of the tag prefix 't/'
+        if (!arePrefixesPresent(argMultimap, PREFIX_TAG)) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                    "Missing required tag prefix 't/'.\n" + FilterCommand.MESSAGE_USAGE));
         }
 
-        if (argMultimap.getValue(PREFIX_TAG).isEmpty()) {
-            throw new ParseException("Error: Missing tag prefix 't/'.\n"
-                    + "Fix: Use the format 'filter t/TAG_NAME'.");
+        // throw an exception if unnecessary info is typed
+        if (!argMultimap.getPreamble().isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
         }
 
         String allTags = argMultimap.getValue(PREFIX_TAG).get();

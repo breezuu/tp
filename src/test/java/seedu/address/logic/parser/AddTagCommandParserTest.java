@@ -56,12 +56,39 @@ public class AddTagCommandParserTest {
     public void parse_missingPersons_failure() {
         String input = " " + PREFIX_TAG_ASSIGN + "CS2103";
         assertParseFailure(parser, input,
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddTagCommand.MESSAGE_USAGE));
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        "Missing target person(s). Provide at least one person starting with 'n/'.\n"
+                                + AddTagCommand.MESSAGE_USAGE));
     }
 
     @Test
     public void parse_missingAssignTags_failure() {
         String input = " " + PREFIX_NAME + "Alice";
+        assertParseFailure(parser, input,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        "Missing tag(s) to assign. Provide at least one 'label/' value before the target person(s).\n"
+                                + AddTagCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_missingAssignTagsWithoutLeadingWhitespace_failure() {
+        String input = PREFIX_NAME + "Alice";
+        assertParseFailure(parser, input,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        "Missing tag(s) to assign. Provide at least one 'label/' value before the target person(s).\n"
+                                + AddTagCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_missingPrefixes_failure() {
+        String input = "alice";
+        assertParseFailure(parser, input,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddTagCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_bothPrefixesPresentWithoutSeparator_failure() {
+        String input = PREFIX_TAG_ASSIGN + "CS2103" + PREFIX_NAME + "Alice";
         assertParseFailure(parser, input,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddTagCommand.MESSAGE_USAGE));
     }
@@ -70,7 +97,9 @@ public class AddTagCommandParserTest {
     public void parse_nonEmptyTagSectionPreamble_failure() {
         String input = " nonsense " + PREFIX_TAG_ASSIGN + "CS2103 " + PREFIX_NAME + "Alice";
         assertParseFailure(parser, input,
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddTagCommand.MESSAGE_USAGE));
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        "Invalid tag assignment section. Use only 'label/' prefixes before the target person(s).\n"
+                                + AddTagCommand.MESSAGE_USAGE));
     }
 
     @Test
@@ -78,13 +107,17 @@ public class AddTagCommandParserTest {
         String input = " " + PREFIX_TAG_ASSIGN + "CS2103 " + PREFIX_TAG_ASSIGN + "CS2103 "
                 + PREFIX_NAME + "Alice";
         assertParseFailure(parser, input,
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddTagCommand.MESSAGE_USAGE));
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        "Duplicate tag specified in the command: CS2103\n"
+                                + AddTagCommand.MESSAGE_USAGE));
     }
 
     @Test
     public void parse_invalidPersonSection_failure() {
         String input = " " + PREFIX_TAG_ASSIGN + "CS2103 " + PREFIX_NAME + "Alice " + PREFIX_PHONE + "invalid";
         assertParseFailure(parser, input,
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddTagCommand.MESSAGE_USAGE));
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        "Phone numbers must be at least 7 digits and at-most 15 digits long.\n"
+                                + AddTagCommand.MESSAGE_USAGE));
     }
 }

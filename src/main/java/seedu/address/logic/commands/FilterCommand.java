@@ -14,6 +14,7 @@ import seedu.address.model.person.TagContainsKeywordsPredicate;
 public class FilterCommand extends Command {
 
     public static final String COMMAND_WORD = "filter";
+    public static final String MESSAGE_NO_PERSONS_WITH_TAGS = "No contacts found with any of these tags: %1$s.";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Finds all persons who match any of "
             + "the specified tags (case-insensitive) and displays them as a list with index numbers.\n"
@@ -32,7 +33,8 @@ public class FilterCommand extends Command {
         model.showPersons(predicate);
 
         if (model.getFilteredPersonList().isEmpty()) {
-            return new CommandResult(String.format(Messages.MESSAGE_NO_PERSONS));
+            return new CommandResult(String.format(MESSAGE_NO_PERSONS_WITH_TAGS,
+                    predicate.formatKeywordsForDisplay()));
         }
 
         if (model.getFilteredPersonList().size() == 1) {

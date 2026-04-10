@@ -3,7 +3,6 @@ package seedu.address.logic.commands;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static seedu.address.logic.Messages.MESSAGE_NO_PERSONS;
 import static seedu.address.logic.Messages.MESSAGE_ONE_PERSON_LISTED_OVERVIEW;
 import static seedu.address.logic.Messages.MESSAGE_PERSONS_LISTED_OVERVIEW;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
@@ -32,7 +31,21 @@ public class FilterCommandTest {
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.showPersons(predicate);
 
-        assertCommandSuccess(command, model, MESSAGE_NO_PERSONS, expectedModel);
+        String expectedMessage = String.format(FilterCommand.MESSAGE_NO_PERSONS_WITH_TAGS, "nonexistenttag");
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertTrue(model.getFilteredPersonList().isEmpty());
+    }
+
+    @Test
+    public void execute_multipleMissingTags_returnsSpecificNoPersonsMessage() {
+        TagContainsKeywordsPredicate predicate = new TagContainsKeywordsPredicate(List.of("alpha", "beta"));
+        FilterCommand command = new FilterCommand(predicate);
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.showPersons(predicate);
+
+        String expectedMessage = String.format(FilterCommand.MESSAGE_NO_PERSONS_WITH_TAGS, "alpha, beta");
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertTrue(model.getFilteredPersonList().isEmpty());
     }
 

@@ -3,8 +3,11 @@ package seedu.address.logic.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.ParserUtil.MESSAGE_INVALID_INDEX;
 import static seedu.address.logic.parser.ParserUtil.MESSAGE_INVALID_PERSONS_FORMAT;
+import static seedu.address.logic.parser.ParserUtil.MESSAGE_MISSING_NAME_PREFIX_IN_PERSONS;
+import static seedu.address.logic.parser.ParserUtil.MESSAGE_UNEXPECTED_PREAMBLE_IN_PERSONS;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
@@ -19,6 +22,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
@@ -253,25 +257,25 @@ public class ParserUtilTest {
 
     @Test
     public void parsePersons_noNamePrefix_failure() {
-        assertThrows(ParseException.class, MESSAGE_INVALID_PERSONS_FORMAT, () ->
+        assertThrows(ParseException.class, MESSAGE_MISSING_NAME_PREFIX_IN_PERSONS, () ->
                 ParserUtil.parsePersons(" n"));
     }
 
     @Test
     public void parsePersons_preambleBeforeFirstName_failure() {
-        assertThrows(ParseException.class, MESSAGE_INVALID_PERSONS_FORMAT, () ->
+        assertThrows(ParseException.class, MESSAGE_UNEXPECTED_PREAMBLE_IN_PERSONS, () ->
                 ParserUtil.parsePersons(" preamble n/Alice"));
     }
 
     @Test
     public void parsePersons_invalidPersonSegment_failure() {
-        assertThrows(ParseException.class, MESSAGE_INVALID_PERSONS_FORMAT, () ->
+        assertThrows(ParseException.class, Phone.MESSAGE_CONSTRAINTS, () ->
                 ParserUtil.parsePersons(" n/Alice p/not-a-phone"));
     }
 
     @Test
     public void parsePersons_duplicateSingleValuedField_failure() {
-        assertThrows(ParseException.class, MESSAGE_INVALID_PERSONS_FORMAT, () ->
+        assertThrows(ParseException.class, Messages.getErrorMessageForDuplicatePrefixes(PREFIX_PHONE), () ->
                 ParserUtil.parsePersons(" n/Alice p/81234567 p/91234567"));
     }
 
@@ -295,7 +299,7 @@ public class ParserUtilTest {
         InvocationTargetException ex = assertThrows(InvocationTargetException.class, () ->
                 parseEachPerson.invoke(null, " abc", invalidNamePositions));
         assertTrue(ex.getCause() instanceof ParseException);
-        assertEquals(MESSAGE_INVALID_PERSONS_FORMAT, ex.getCause().getMessage());
+        assertEquals(MESSAGE_MISSING_NAME_PREFIX_IN_PERSONS, ex.getCause().getMessage());
     }
 
 }

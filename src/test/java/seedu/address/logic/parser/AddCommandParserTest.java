@@ -71,10 +71,10 @@ public class AddCommandParserTest {
     @Test
     public void parse_duplicateTags_failure() {
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + TAG_DESC_FRIEND + TAG_DESC_FRIEND,
-                ParserUtil.MESSAGE_DUPLICATE_TAGS);
+                String.format("%s: %s", ParserUtil.MESSAGE_DUPLICATE_TAGS, VALID_TAG_FRIEND));
 
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + TAG_DESC_FRIEND + " t/FRIEND",
-                ParserUtil.MESSAGE_DUPLICATE_TAGS);
+                String.format("%s: %s", ParserUtil.MESSAGE_DUPLICATE_TAGS, "FRIEND"));
     }
 
     @Test
@@ -212,7 +212,8 @@ public class AddCommandParserTest {
 
         // invalid tag
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                + INVALID_TAG_DESC + VALID_TAG_FRIEND, Tag.MESSAGE_CONSTRAINTS);
+                + INVALID_TAG_DESC + VALID_TAG_FRIEND,
+                String.format("Invalid tag: %s.\n%s", "hubby*friend", Tag.MESSAGE_CONSTRAINTS));
 
         // two invalid values, only first invalid value reported
         assertParseFailure(parser, INVALID_NAME_DESC + PHONE_DESC_BOB + EMAIL_DESC_BOB + INVALID_ADDRESS_DESC,

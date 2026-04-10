@@ -31,8 +31,12 @@ import seedu.address.model.tag.Tag;
 public class ParserUtil {
 
     public static final String MESSAGE_INVALID_INDEX = "Index is not a non-zero unsigned integer.";
-    public static final String MESSAGE_DUPLICATE_TAGS = "Duplicate tags found in command.";
+    public static final String MESSAGE_DUPLICATE_TAGS = "Duplicate tag specified in the command";
     public static final String MESSAGE_INVALID_PERSONS_FORMAT = "Invalid persons format.";
+    public static final String MESSAGE_MISSING_NAME_PREFIX_IN_PERSONS =
+            "Each target person must start with 'n/'.";
+    public static final String MESSAGE_UNEXPECTED_PREAMBLE_IN_PERSONS =
+            "Unexpected text before the first target person. Each target person must start with 'n/'.";
 
     /**
      * Returns true if none of the specified prefixes contain empty {@code Optional} values
@@ -125,7 +129,8 @@ public class ParserUtil {
         requireNonNull(tag);
         String trimmedTag = tag.trim();
         if (!Tag.isValidTagName(trimmedTag)) {
-            throw new ParseException(Tag.MESSAGE_CONSTRAINTS);
+            throw new ParseException(String.format("Invalid tag: %s.\n%s",
+                    trimmedTag, Tag.MESSAGE_CONSTRAINTS));
         }
         return new Tag(trimmedTag);
     }
@@ -139,7 +144,7 @@ public class ParserUtil {
         for (String tagName : tags) {
             Tag parsedTag = parseTag(tagName);
             if (!tagSet.add(parsedTag)) {
-                throw new ParseException(MESSAGE_DUPLICATE_TAGS);
+                throw new ParseException(String.format("%s: %s", MESSAGE_DUPLICATE_TAGS, parsedTag.tagName));
             }
         }
         return tagSet;
@@ -171,30 +176,31 @@ public class ParserUtil {
      * @throws ParseException if the section is malformed or any segment is invalid
      */
     public static List<PersonInformation> parsePersons(String personsSection) throws ParseException {
-        try {
-            // Finding all position of `n/`
-            List<Integer> nPositions = new ArrayList<>();
-            int searchFrom = 0;
-            while (true) {
-                int pos = personsSection.indexOf(" n/", searchFrom);
-                if (pos == -1) {
-                    break;
-                }
-                nPositions.add(pos);
-                searchFrom = pos + 1;
-            }
-            // Reject preamble: any non-whitespace text before the first n/
-            if (nPositions.isEmpty()) {
-                throw new ParseException(MESSAGE_INVALID_PERSONS_FORMAT);
-            }
-            String preamble = personsSection.substring(0, nPositions.get(0)).trim();
-            if (!preamble.isEmpty()) {
-                throw new ParseException(MESSAGE_INVALID_PERSONS_FORMAT);
-            }
-            return parseEachPerson(personsSection, nPositions);
-        } catch (ParseException pe) {
-            throw new ParseException(MESSAGE_INVALID_PERSONS_FORMAT);
+        List<Integer> nPositions = getNamePrefixesPosition(personsSection);
+        if (nPositions.isEmpty()) {
+            throw new ParseException(MESSAGE_MISSING_NAME_PREFIX_IN_PERSONS);
         }
+
+        String preamble = personsSection.substring(0, nPositions.get(0)).trim();
+        if (!preamble.isEmpty()) {
+            throw new ParseException(MESSAGE_UNEXPECTED_PREAMBLE_IN_PERSONS);
+        }
+
+        return parseEachPerson(personsSection, nPositions);
+    }
+
+    private static List<Integer> getNamePrefixesPosition(String personsSection) {
+        List<Integer> nPositions = new ArrayList<>();
+        int searchFrom = 0;
+        while (true) {
+            int pos = personsSection.indexOf(" n/", searchFrom);
+            if (pos == -1) {
+                break;
+            }
+            nPositions.add(pos);
+            searchFrom = pos + 1;
+        }
+        return nPositions;
     }
 
     /**
@@ -220,7 +226,7 @@ public class ParserUtil {
             segMap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS);
 
             if (segMap.getValue(PREFIX_NAME).isEmpty()) {
-                throw new ParseException(MESSAGE_INVALID_PERSONS_FORMAT);
+                throw new ParseException(MESSAGE_MISSING_NAME_PREFIX_IN_PERSONS);
             }
 
             targets.add(new PersonInformationParser().parse(segMap));

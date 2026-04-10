@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.util.CommandUtil;
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
@@ -51,6 +52,12 @@ public class AddTagCommand extends Command {
             + PREFIX_NAME + "Joe";
 
     public static final String MESSAGE_TAG_SUCCESS = "Tagged %1$d person(s) with [%2$s]: %3$s";
+    public static final String MESSAGE_NO_MATCH_FOR_TARGET =
+            "No matching contact found for target: %1$s.";
+    public static final String MESSAGE_MULTIPLE_MATCHES_FOR_TARGET =
+            "Multiple matching contacts found for target: %1$s. Please provide more details.";
+    public static final String MESSAGE_DUPLICATE_TARGET_PERSON =
+            "The same contact cannot be specified more than once in a single tag command: %1$s.";
 
     private static final Logger logger = LogsCenter.getLogger(AddTagCommand.class);
 
@@ -101,19 +108,37 @@ public class AddTagCommand extends Command {
 
     /**
      * Resolves all configured target descriptors into concrete {@link Person} objects.
-     * Duplicate resolved persons are removed while preserving encounter order.
      */
     private List<Person> resolvePersons(Model model) throws CommandException {
         List<Person> resolvedPersons = new ArrayList<>();
+        Set<Person> seenPersons = new HashSet<>();
         for (PersonInformation targetInfo : targets) {
-            Person person = CommandUtil.targetPerson(model, targetInfo);
+            Person person;
+            person = getPerson(model, targetInfo);
+            if (!seenPersons.add(person)) {
+                throw new CommandException(String.format(MESSAGE_DUPLICATE_TARGET_PERSON,
+                        person.getNameString()));
+            }
             resolvedPersons.add(person);
         }
+        return resolvedPersons;
+    }
 
-        // De-duplicate in case the same person was specified more than once
-        return resolvedPersons.stream()
-                .filter(new HashSet<>()::add)
-                .collect(Collectors.toList());
+    private Person getPerson(Model model, PersonInformation targetInfo) throws CommandException {
+        Person person;
+        try {
+            person = CommandUtil.targetPerson(model, targetInfo);
+        } catch (CommandException e) {
+            String targetSummary = formatTargetSummary(targetInfo);
+            if (Messages.MESSAGE_NO_MATCH.equals(e.getMessage())) {
+                throw new CommandException(String.format(MESSAGE_NO_MATCH_FOR_TARGET, targetSummary), e);
+            }
+            if (Messages.MESSAGE_MULTIPLE_MATCH.equals(e.getMessage())) {
+                throw new CommandException(String.format(MESSAGE_MULTIPLE_MATCHES_FOR_TARGET, targetSummary), e);
+            }
+            throw e;
+        }
+        return person;
     }
 
     /**
@@ -129,6 +154,22 @@ public class AddTagCommand extends Command {
 
             model.setPerson(person, updatedPerson);
         }
+    }
+
+    private String formatTargetSummary(PersonInformation targetInfo) {
+        List<String> parts = new ArrayList<>();
+        parts.add("name=" + targetInfo.getName());
+        targetInfo.getPhone().ifPresent(phone -> parts.add("phone=" + phone));
+        targetInfo.getEmail().ifPresent(email -> parts.add("email=" + email));
+        targetInfo.getAddress().ifPresent(address -> parts.add("address=" + address));
+        if (!targetInfo.getTags().isEmpty()) {
+            String tagSummary = targetInfo.getTags().stream()
+                    .map(tag -> tag.tagName)
+                    .sorted()
+                    .collect(Collectors.joining(", "));
+            parts.add("tags=" + tagSummary);
+        }
+        return String.join(", ", parts);
     }
 
 

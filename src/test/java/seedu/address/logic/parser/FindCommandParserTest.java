@@ -47,7 +47,7 @@ public class FindCommandParserTest {
     @Test
     public void parse_duplicateTags_failure() {
         assertParseFailure(parser, " " + PREFIX_NAME + "Alex Tan " + PREFIX_TAG + "cs2030s " + PREFIX_TAG + "cs2030s",
-                ParserUtil.MESSAGE_DUPLICATE_TAGS);
+                String.format("%s: %s", ParserUtil.MESSAGE_DUPLICATE_TAGS, "cs2030s"));
     }
 
     @Test

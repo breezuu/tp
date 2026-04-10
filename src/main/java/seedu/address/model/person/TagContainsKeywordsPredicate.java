@@ -15,6 +15,10 @@ public class TagContainsKeywordsPredicate implements Predicate<Person> {
         this.keywords = keywords;
     }
 
+    public String formatKeywordsForDisplay() {
+        return String.join(", ", keywords);
+    }
+
     @Override
     public boolean test(Person person) {
         return keywords.stream()

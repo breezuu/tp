@@ -157,7 +157,7 @@ public class EditCommandParserTest {
         assertParseFailure(parser, TARGET_IDENTIFIER_AMY + DELIMITER + INVALID_ADDRESS_DESC.trim(),
             Address.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, TARGET_IDENTIFIER_AMY + DELIMITER + INVALID_TAG_DESC.trim(),
-            Tag.MESSAGE_CONSTRAINTS);
+            String.format("Invalid tag: %s.\n%s", "hubby*", Tag.MESSAGE_CONSTRAINTS));
 
         // invalid phone followed by valid email
         assertParseFailure(parser, TARGET_IDENTIFIER_AMY + DELIMITER + INVALID_PHONE_DESC.trim() + EMAIL_DESC_AMY,
@@ -167,13 +167,13 @@ public class EditCommandParserTest {
         // parsing it together with a valid tag results in error
         assertParseFailure(parser, TARGET_IDENTIFIER_AMY + DELIMITER + TAG_DESC_FRIEND.trim()
             + TAG_DESC_HUSBAND + TAG_EMPTY,
-            Tag.MESSAGE_CONSTRAINTS);
+            String.format("Invalid tag: .\n%s", Tag.MESSAGE_CONSTRAINTS));
         assertParseFailure(parser, TARGET_IDENTIFIER_AMY + DELIMITER + TAG_DESC_FRIEND.trim()
             + TAG_EMPTY + TAG_DESC_HUSBAND,
-            Tag.MESSAGE_CONSTRAINTS);
+            String.format("Invalid tag: .\n%s", Tag.MESSAGE_CONSTRAINTS));
         assertParseFailure(parser, TARGET_IDENTIFIER_AMY + DELIMITER + TAG_EMPTY.trim()
             + TAG_DESC_FRIEND + TAG_DESC_HUSBAND,
-            Tag.MESSAGE_CONSTRAINTS);
+            String.format("Invalid tag: .\n%s", Tag.MESSAGE_CONSTRAINTS));
 
         // multiple invalid values, but only the first invalid value is captured
         assertParseFailure(parser, TARGET_IDENTIFIER_AMY + DELIMITER + INVALID_NAME_DESC.trim() + INVALID_EMAIL_DESC
@@ -333,15 +333,18 @@ public class EditCommandParserTest {
     public void parse_duplicateTags_failure() {
         // duplicate update tags are rejected directly
         String userInput = TARGET_IDENTIFIER_AMY + DELIMITER + TAG_DESC_FRIEND.trim() + TAG_DESC_FRIEND;
-        assertParseFailure(parser, userInput, ParserUtil.MESSAGE_DUPLICATE_TAGS);
+        assertParseFailure(parser, userInput,
+                String.format("%s: %s", ParserUtil.MESSAGE_DUPLICATE_TAGS, VALID_TAG_FRIEND));
 
         // duplicate update tags are case-insensitive
         userInput = TARGET_IDENTIFIER_AMY + DELIMITER + TAG_DESC_FRIEND.trim() + " t/FRIEND";
-        assertParseFailure(parser, userInput, ParserUtil.MESSAGE_DUPLICATE_TAGS);
+        assertParseFailure(parser, userInput,
+                String.format("%s: %s", ParserUtil.MESSAGE_DUPLICATE_TAGS, "FRIEND"));
 
         // duplicate target tags are rejected directly
         userInput = TARGET_IDENTIFIER_BENSON + TAG_DESC_HUSBAND + " t/HUSBAND" + DELIMITER + PHONE_DESC_AMY.trim();
-        assertParseFailure(parser, userInput, ParserUtil.MESSAGE_DUPLICATE_TAGS);
+        assertParseFailure(parser, userInput,
+                String.format("%s: %s", ParserUtil.MESSAGE_DUPLICATE_TAGS, "HUSBAND"));
     }
 
     @Test
