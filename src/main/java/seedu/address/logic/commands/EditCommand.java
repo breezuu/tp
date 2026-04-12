@@ -21,6 +21,7 @@ import seedu.address.commons.util.PhotoStorageUtil;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.logic.parser.EditCommandParser;
 import seedu.address.model.Model;
 import seedu.address.model.event.Event;
 import seedu.address.model.person.Address;
@@ -47,7 +48,7 @@ public class EditCommand extends Command {
             + "[" + PREFIX_EMAIL + "EMAIL] "
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
             + "[" + PREFIX_TAG + "TAG]... "
-            + "-- "
+            + EditCommandParser.EDIT_SEGMENT_DELIMITER + " "
             + "[" + PREFIX_NAME + "NAME] "
             + "[" + PREFIX_PHONE + "PHONE_NUMBER] "
             + "[" + PREFIX_EMAIL + "EMAIL] "
@@ -55,7 +56,7 @@ public class EditCommand extends Command {
             + "[" + PREFIX_TAG + "TAG]... "
             + "[" + PREFIX_PHOTO + "PHOTO_PATH]\n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_NAME + "John Doe "
-            + PREFIX_PHONE + "91234567 -- "
+            + PREFIX_PHONE + "91234567 " + EditCommandParser.EDIT_SEGMENT_DELIMITER + " "
             + PREFIX_EMAIL + "john.new@example.com "
             + PREFIX_TAG + "friends";
 
