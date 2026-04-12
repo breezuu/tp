@@ -201,10 +201,10 @@ Before examining the individual commands for managing contacts, please refer to 
     * e.g. `[t/TAG]...` can be used as ` ` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.<br><br>
 * Parameters can be in any order. (except [Assigning tag(s) to person(s)](#assigning-tag-s-to-person-s-tag))
     * e.g. if the command format specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.<br><br>
-* `NAME` and `TAG` are case-insensitive. 
-    * `t/Friends` and `t/friends` are treated as 1 unique tag. 
+* `NAME` and `TAG` are case-insensitive.
+    * `t/Friends` and `t/friends` are treated as 1 unique tag.
     * `n/aLeX YeOH` will match `Alex Yeoh`.<br><br>
-* Only full words will be matched 
+* Only full words will be matched
     * e.g. `Han` will not match `Hans`.
 </box>
 
@@ -214,8 +214,8 @@ Commands in NAB identify a contact by name. If two or more contacts share the sa
 NAB cannot determine which one you meant, and will display the following error:
 <box type="important" icon=":fa-solid-exclamation-triangle:">
 
-**ERROR MESSAGE**  
-`Multiple matches identified! Please provide more arguments.`  
+**ERROR MESSAGE**<br>
+`Multiple matches identified! Please provide more arguments.`<br>
 This error means your command matched more than one contact. No changes have been made —
 retry the command with additional details to uniquely identify the contact you want.
 
