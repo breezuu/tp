@@ -206,6 +206,7 @@ Before examining the individual commands for managing contacts, please refer to 
     * `n/aLeX YeOH` will match `Alex Yeoh`.<br><br>
 * Only full words will be matched 
     * e.g. `Han` will not match `Hans`.
+* The token `<edit new>` is reserved and cannot appear in contact field values.
 </box>
 
 ### User Disambiguation
@@ -310,10 +311,10 @@ Format: `list`
 
 Edits an existing person in the address book.
 
-Format: `edit n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... -- [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_PATH]`
+Format: `edit n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... <edit new> [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_PATH]`
 
-* The segment before `--` identifies which contact to edit.
-* The segment after `--` specifies fields to be updated.
+* The segment before `<edit new>` identifies which contact to edit.
+* The segment after `<edit new>` specifies fields to be updated.
   * Updatable fields: `n/NAME`, `p/PHONE_NUMBER`, `e/EMAIL`, `a/ADDRESS`, `t/TAG`, `pfp/PHOTO_PATH`.
 * `n/NAME` in the target segment is required.
 * Existing values will be updated to the input values.
@@ -326,16 +327,16 @@ Format: `edit n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... -- [n/NAM
 **Examples**
 
 
-- `edit n/John Doe -- p/91234567 e/johndoe@example.com`<br>
+- `edit n/John Doe <edit new> p/91234567 e/johndoe@example.com`<br>
   Edits John Doe's phone and email.
 
-- `edit n/John Doe p/98765432 -- n/Johnathan Doe t/teammate`<br>
+- `edit n/John Doe p/98765432 <edit new> n/Johnathan Doe t/teammate`<br>
   Uniquely identifies John Doe by phone number, then updates name and tags.
 
-- `edit n/Betsy Crower -- t/`<br>
+- `edit n/Betsy Crower <edit new> t/`<br>
   Clears all tags for Betsy Crower.
 
-- `edit n/Alex Yeoh -- pfp/C:/Users/Alex/Pictures/profile.jpg`<br>
+- `edit n/Alex Yeoh <edit new> pfp/C:/Users/Alex/Pictures/profile.jpg`<br>
   Updates Alex Yeoh's profile picture.
 
 </box>
@@ -854,7 +855,7 @@ Action     | Format, Examples
 **Add**    | `add n/NAME p/PHONE_NUMBER [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_PATH]` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague pfp/images/james.jpg`
 **Clear**  | `clear`
 **Delete** | `delete n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `delete n/Alex Yeoh t/cs2103 t/cs2105`
-**Edit**   | `edit n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... -- [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_PATH]`<br> e.g.,`edit n/James Lee e/jameslee@example.com -- t/CS2100 pfp/images/james.jpg`
+**Edit**   | `edit n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... <edit new> [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_PATH]`<br> e.g.,`edit n/James Lee e/jameslee@example.com <edit new> t/CS2100 pfp/images/james.jpg`
 **Event Add** | `event add title/TITLE [desc/DESCRIPTION] start/START_DATE end/END_DATE n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `event add title/CS2109S Meeting desc/Final discussion on problem set 1 start/2026-03-25 0900 end/2026-03-25 1000 n/David Li`
 **Event Delete** | `event delete start/START_DATE n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `event delete start/2026-03-12 1100 n/David Li`
 **Event View** | `event view n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`<br> e.g., `event view n/Bernice Yu`
