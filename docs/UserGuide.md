@@ -385,6 +385,8 @@ Finds persons by name, with optional additional fields used to narrow the match.
 **Current scope of `find`**
 
 - `n/NAME` is required for every `find` command.
+- If multiple words are provided in `n/NAME`, NAB matches contacts whose names contain **any** of those words (OR matching, case-insensitive).
+- Name matching uses full words, not partial word fragments.
 - `p/`, `e/`, `a/`, and `t/` cannot be used on their own to search for a contact. They are only used to disambiguate between contacts that already match the given name.
 - If you want to retrieve contacts by context, use [`filter`](#filtering-persons-by-context-filter) with tag(s).
 
