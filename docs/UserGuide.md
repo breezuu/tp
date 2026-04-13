@@ -588,8 +588,8 @@ the same constraints in [Contact Management: Parameters constraints & format](#p
 
 | Parameter | Format                                                                                                                                                                      | Example |
 |-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
-| `title/TITLE` | • Must be 1 to 50 characters.<br>• Must contain only alphanumeric characters and single spaces between words.<br>• No leading/trailing spaces and no consecutive spaces.    | `title/CS2109S Meeting` |
-| `desc/DESCRIPTION` | • Must be 1 to 1000 characters.<br> • Must contain only alphanumeric characters and single spaces between words.<br> • No leading/trailing spaces and no consecutive spaces. | `desc/Final discussion on problem set 1` |
+| `title/TITLE` | • Must be 1 to 50 characters.<br>• May contain letters, digits, spaces, periods (`.`), hyphens (`-`), colons (`:`), and parentheses (`(`, `)`).<br>• Must not contain `/`.<br>• No leading/trailing spaces and no consecutive spaces. | `title/CS2103 Milestone 2 - Draft Submission` |
+| `desc/DESCRIPTION` | • Must be 1 to 1000 characters.<br> • May contain letters, digits, spaces, periods (`.`), hyphens (`-`), colons (`:`), and parentheses (`(`, `)`).<br> • Must not contain `/`.<br> • No leading/trailing spaces and no consecutive spaces. | `desc/Project Meeting (Online): bring printout.` |
 | `start/START_DATE` | • Must follow `YYYY-MM-DD HHmm` in 24-hour format.                                                                                                                          | `start/2026-03-25 0900` |
 | `end/END_DATE` | • Must follow `YYYY-MM-DD HHmm` in 24-hour format.<br> • Must be strictly after `START_DATE` provided.                                                                      | `end/2026-03-25 1000` |
 </box>
