@@ -458,6 +458,12 @@ The following activity diagram summarizes the command's match-resolution flow:
     * Cons: Creates method signatures with "Long Parameter List" code smell.
     * Cons: Tight coupling. Any changes to the search criteria (e.g., adding new search criteria,removing search criteria) will require modification to all the method signatures.
 
+### Tag handling
+
+NAB treats tags as case-insensitive labels. To keep the UI and stored data consistent, tags are normalized to lowercase when they are created or imported. This avoids confusing situations where logically identical tags such as `Friends` and `friends` appear with different casing.
+
+NAB also enforces a hard limit of 30 characters for each tag. This is an intentional tradeoff: tags are meant to remain short, scannable labels rather than long free-form descriptions, but 30 characters still provides enough room for realistic module, project, and CCA-related labels.
+
 ### Event Add feature
 
 The event add feature allows users to create and link a new event to a contact. It spans the `Logic` and `Model` components, and reuses the contact disambiguation mechanism from `CommandUtil`.
