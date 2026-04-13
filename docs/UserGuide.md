@@ -154,11 +154,11 @@ Each field is placed on a separate line.
 
 NAB provides quick access to both the online and offline versions of the User Guide, allowing you to refer to it whenever you need guidance on NAB’s features and commands.
 
-This feature displays a message explaining how to access the online and offline help pages.
+This feature opens the help window, which shows how to access the online and offline help pages.
 
 ![help message](images/helpMessage.png)
 
-Format: `help`
+**Format**: `help`
 
 ### Exiting the program: `exit`
 
@@ -166,7 +166,7 @@ When it is time to say goodbye, NAB will not make it awkward.
 
 This feature closes the program and ends the current session.
 
-Format: `exit`
+**Format**: `exit`
 
 ## Contact Management
 
@@ -217,8 +217,9 @@ NAB cannot determine which one you meant, and will display the following error:
 
 **ERROR MESSAGE**<br>
 `Multiple matches identified! Please provide more arguments.`<br>
-This error means your command matched more than one contact. No changes have been made —
-retry the command with additional details to uniquely identify the contact you want.
+This error means your command matched more than one contact. No changes have been made.
+
+Add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag to uniquely identify the contact you want.
 
 </box>
 
@@ -228,6 +229,8 @@ retry the command with additional details to uniquely identify the contact you w
 
 
 Add one or more optional parameters **immediately after `n/NAME`** to narrow the match down to a single contact.
+
+Phone number, email, address, and tag can be used as disambiguation fields. However, only phone number is guaranteed to be unique in NAB. The other fields are used only to help narrow the match.
 
 | Parameter | Prefix | Example               |
 |-----------|--------|-----------------------|
@@ -261,7 +264,7 @@ Build your NUS network instantly with NAB by contacts of the people you meet acr
 
 This `add` feature allows you to add a person to the address book.
 
-Format: `add n/NAME p/PHONE_NUMBER [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_PATH]`
+**Format**: `add n/NAME p/PHONE_NUMBER [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_PATH]`
 
 
 <box type="info">
@@ -287,6 +290,7 @@ Format: `add n/NAME p/PHONE_NUMBER [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_P
 
 - `add` command with `pfp/` succeeds only if the image file exists, is readable, and is a supported image format.
 - Contact cannot be added if the added phone number is already registered in the address book.
+- Phone number is the only contact field for which NAB enforces uniqueness. Other fields such as email, address, and tags may be shared across multiple contacts.
 - Refer to the [user disambiguation](#user-disambiguation) section if you encounter the error: `Multiple matches identified!`
 
 </box>
@@ -305,18 +309,19 @@ Can associate 0 or more tags during the add process.
 
 Shows a list of all persons in the address book.
 
-Format: `list`
+**Format**: `list`
 
 ### Editing a person: `edit`
 
 Edits an existing person in the address book.
 
-Format: `edit n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... -- [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_PATH]`
+**Format**: `edit n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... -- [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... [pfp/PHOTO_PATH]`
 
 * The segment before `--` identifies which contact to edit.
 * The segment after `--` specifies fields to be updated.
   * Updatable fields: `n/NAME`, `p/PHONE_NUMBER`, `e/EMAIL`, `a/ADDRESS`, `t/TAG`, `pfp/PHOTO_PATH`.
-* `n/NAME` in the target segment is required.
+* `n/NAME` in the target segment is required and must match the contact's full name exactly.
+* Partial name matching is not supported for `edit`. If multiple contacts share the same name, add optional fields such as `p/`, `e/`, `a/`, or `t/` immediately after `n/NAME` to disambiguate the target.
 * Existing values will be updated to the input values.
 * To add tags, you can specify new tags by typing `t/TAG` in the updated field.
 * To delete a specific tag, type an existing tag in the updated field.
@@ -346,16 +351,15 @@ Format: `edit n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... -- [n/NAM
 **Disambiguating contacts with the same name**
 
 
-- If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
-- See [User Disambiguation](#user-disambiguation) for details.
+See <md>:fa-solid-circle-info:</md> [User Disambiguation](#user-disambiguation).
 
 </box>
 
-### Finding a person: `find`
+### Finding a person (by name): `find`
 
-Finds persons who match the given contact information.
+Finds persons by name, with optional additional fields used to narrow the match.
 
-Format: `find n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
+**Format**: `find n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 <div style="text-align: center;">
   <img src="images/find_command.png" style="width: 80%;">
@@ -379,11 +383,22 @@ Format: `find n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 <box type="important">
 
+**Current scope of `find`**
+
+- `n/NAME` is required for every `find` command.
+- If multiple words are provided in `n/NAME`, NAB matches contacts whose names contain **any** of those words (OR matching, case-insensitive).
+- Name matching uses full words, not partial word fragments.
+- `p/`, `e/`, `a/`, and `t/` cannot be used on their own to search for a contact. They are only used to disambiguate between contacts that already match the given name.
+- If you want to retrieve contacts by context, use [`filter`](#filtering-persons-by-context-filter) with tag(s).
+
+</box>
+
+<box type="important">
+
 **Disambiguating contacts with the same name**
 
 
-- If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
-- See [User Disambiguation](#user-disambiguation) for details.
+See <md>:fa-solid-circle-info:</md> [User Disambiguation](#user-disambiguation).
 
 </box>
 
@@ -391,7 +406,7 @@ Format: `find n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 Filters persons with the given tag(s).
 
-Format: `filter t/TAG[, TAG]...`
+**Format**: `filter t/TAG[, TAG]...`
 
 <div style="text-align: center;">
   <img src="images/filter_command.png" style="width: 80%;">
@@ -423,7 +438,7 @@ Can associate 1 or more tags during the filter process.
 
 Pins the person identified by their name.
 
-Format: `pin n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
+**Format**: `pin n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 <div style="text-align: center;">
   <img src="images/pin_command.png" style="width: 80%;">
@@ -449,8 +464,7 @@ Pins the matching John Doe contact by name and phone number.
 **Disambiguating contacts with the same name**
 
 
-- If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
-- See [User Disambiguation](#user-disambiguation) for details.
+See <md>:fa-solid-circle-info:</md> [User Disambiguation](#user-disambiguation).
 
 </box>
 
@@ -458,7 +472,7 @@ Pins the matching John Doe contact by name and phone number.
 
 Unpins the person identified by their name.
 
-Format: `unpin n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
+**Format**: `unpin n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 <box type="info">
 
@@ -478,8 +492,7 @@ Unpins the matching John Doe contact by name and phone number.
 **Disambiguating contacts with the same name**
 
 
-- If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
-- See [User Disambiguation](#user-disambiguation) for details.
+See <md>:fa-solid-circle-info:</md> [User Disambiguation](#user-disambiguation).
 
 </box>
 
@@ -489,7 +502,7 @@ Assigns one or more tags to one or more contacts in one command.
 
 `tag` is intended as a bulk assignment command that ensures the specified tag(s) are present on each matched contact.
 
-Format: `tag label/TAG_TO_ASSIGN [label/TAG_TO_ASSIGN]... n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... [n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...]...`
+**Format**: `tag label/TAG_TO_ASSIGN [label/TAG_TO_ASSIGN]... n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]... [n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...]...`
 
 <div style="text-align: center;">
   <img src="images/tag_command.png" style="width: 80%;">
@@ -537,8 +550,7 @@ Assigns 2 tags (`CS2103`, `CS2030S`) to 2 users (`John Doe` and `Betsy Crower`) 
 **Disambiguating contacts with the same name**
 
 
-- If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
-- See [User Disambiguation](#user-disambiguation) for details.
+See <md>:fa-solid-circle-info:</md> [User Disambiguation](#user-disambiguation).
 
 </box>
 
@@ -556,7 +568,7 @@ Assigns 2 tags (`CS2103`, `CS2030S`) to 2 users (`John Doe` and `Betsy Crower`) 
 
 Deletes the specified person from the address book.
 
-Format: `delete n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
+**Format**: `delete n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 <box type="info">
 
@@ -576,8 +588,7 @@ Deletes the matching John Doe contact by name and phone number.
 **Disambiguating contacts with the same name**
 
 
-- If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
-- See [User Disambiguation](#user-disambiguation) for details.
+See <md>:fa-solid-circle-info:</md> [User Disambiguation](#user-disambiguation).
 
 </box>
 
@@ -585,7 +596,7 @@ Deletes the matching John Doe contact by name and phone number.
 
 Clears all entries from the address book.
 
-Format: `clear`
+**Format**: `clear`
 
 ## Event Management
 
@@ -602,8 +613,8 @@ the same constraints in [Contact Management: Parameters constraints & format](#p
 
 | Parameter | Format                                                                                                                                                                      | Example |
 |-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
-| `title/TITLE` | • Must be 1 to 50 characters.<br>• Must contain only alphanumeric characters and single spaces between words.<br>• No leading/trailing spaces and no consecutive spaces.    | `title/CS2109S Meeting` |
-| `desc/DESCRIPTION` | • Must be 1 to 1000 characters.<br> • Must contain only alphanumeric characters and single spaces between words.<br> • No leading/trailing spaces and no consecutive spaces. | `desc/Final discussion on problem set 1` |
+| `title/TITLE` | • Must be 1 to 50 characters.<br>• May contain letters, digits, spaces, periods (`.`), hyphens (`-`), colons (`:`), and parentheses (`(`, `)`).<br>• Must not contain `/`.<br>• No leading/trailing spaces and no consecutive spaces. | `title/CS2103 Milestone 2 - Draft Submission` |
+| `desc/DESCRIPTION` | • Must be 0 to 1000 characters.<br> • May contain letters, digits, spaces, periods (`.`), hyphens (`-`), colons (`:`), and parentheses (`(`, `)`).<br> • Must not contain `/`.<br> • No leading/trailing spaces and no consecutive spaces. | `desc/Project Meeting (Online): bring printout.` |
 | `start/START_DATE` | • Must follow `YYYY-MM-DD HHmm` in 24-hour format.                                                                                                                          | `start/2026-03-25 0900` |
 | `end/END_DATE` | • Must follow `YYYY-MM-DD HHmm` in 24-hour format.<br> • Must be strictly after `START_DATE` provided.                                                                      | `end/2026-03-25 1000` |
 </box>
@@ -612,7 +623,7 @@ the same constraints in [Contact Management: Parameters constraints & format](#p
 
 Creates a new event for a specified person.
 
-Format: `event add title/TITLE [desc/DESCRIPTION] start/START_DATE end/END_DATE n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
+**Format**: `event add title/TITLE [desc/DESCRIPTION] start/START_DATE end/END_DATE n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 <div style="text-align: center;">
   <img src="images/event_add.png" style="width: 80%;">
@@ -646,11 +657,21 @@ Format: `event add title/TITLE [desc/DESCRIPTION] start/START_DATE end/END_DATE 
 
 <box type="important">
 
+**How NAB treats shared events**
+
+- Events are linked to contacts, but NAB stores them in one shared event list.
+- If you add an event with the same title and the same start/end time as an existing event, NAB treats it as the same event and links that event to the new contact instead of creating a duplicate event.
+- If you add an event with a different title or a different time range, NAB treats it as a different event.
+- Time clashes are checked globally only for different events in the shared event list.
+
+</box>
+
+<box type="important">
+
 **Disambiguating contacts with the same name**
 
 
-- If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
-- See [User Disambiguation](#user-disambiguation) for details.
+See <md>:fa-solid-circle-info:</md> [User Disambiguation](#user-disambiguation).
 
 </box>
 
@@ -662,7 +683,7 @@ Views all events for a specified person.
 </div>
 <br>
 
-Format: `event view n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
+**Format**: `event view n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 
 <box type="info">
@@ -683,8 +704,7 @@ Format: `event view n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 **Disambiguating contacts with the same name**
 
 
-- If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
-- See [User Disambiguation](#user-disambiguation) for details.
+See <md>:fa-solid-circle-info:</md> [User Disambiguation](#user-disambiguation).
 
 </box>
 
@@ -692,7 +712,7 @@ Format: `event view n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 Deletes an event for a specified person.
 
-Format: `event delete start/START_DATE n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
+**Format**: `event delete start/START_DATE n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
 
 <div style="text-align: center;">
   <img src="images/event_delete.png" style="width: 80%;">
@@ -717,8 +737,7 @@ Format: `event delete start/START_DATE n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDR
 **Disambiguating contacts with the same name**
 
 
-- If you encounter the error `Multiple matches identified! Please provide more arguments.`, add optional parameters immediately after n/NAME to narrow down the match — Phone number, Email, Address, or Tag.
-- See [User Disambiguation](#user-disambiguation) for details.
+See <md>:fa-solid-circle-info:</md> [User Disambiguation](#user-disambiguation).
 
 </box>
 
@@ -729,7 +748,7 @@ Back up your NAB contacts in seconds so you can share, archive, or migrate your 
 
 This `export` feature allows you to write contacts from NAB into 2 CSV files (`<FILENAME>_persons.csv` and `<FILENAME>_events.csv`).
 
-Format: `export t/EXPORT_TYPE f/FILENAME`
+**Format**: `export t/EXPORT_TYPE f/FILENAME`
 
 <box type="info">
 
@@ -775,7 +794,7 @@ Bring your contact data into NAB quickly when switching devices or restoring fro
 
 This `import` feature allows you to load contacts from 2 CSV files (`<FILENAME>_persons.csv` and `<FILENAME>_events.csv`) into NAB.
 
-Format: `import t/IMPORT_TYPE f/FILENAME`
+**Format**: `import t/IMPORT_TYPE f/FILENAME`
 
 
 <box type="info">

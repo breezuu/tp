@@ -417,9 +417,13 @@ The following activity diagram summarizes the command's match-resolution flow:
 
 The contact disambiguation feature allows NAB to accurately resolve a target contact when multiple contacts share the same name. This feature is utilized by commands that require precise targeting (e.g., delete, edit) and spans the Logic and Model components.
 
+Most person-targeting commands in NAB are intentionally stricter than `find`. For commands that act on an existing contact, such as `edit`, `delete`, `pin`, `unpin`, `tag`, and event-related commands, the target `n/NAME` is expected to match the contact's full name exactly before any optional disambiguation fields are applied. This reduces the risk of accidentally modifying or acting on the wrong contact. `find` is the main exception, as it is designed for retrieval rather than precise target selection.
+
 #### Implementation
 
 The core of this feature relies on the `PersonInformation` class. It encapsulates mandatory fields like `Name` and any optional fields (e.g., phone, email, address, or tags) that can be compared against existing contacts.
+
+In NAB, these fields do not all play the same role. Phone number is the only contact field for which uniqueness is enforced. By contrast, email, address, and tags are treated as optional descriptive fields that may be shared across multiple contacts, and are therefore used only for filtering or disambiguation rather than identity enforcement.
 
 The disambiguation logic is driven by `CommandUtil` and `ModelManager`: <br>
 * `CommandUtil#targetPerson(Model, PersonInformation)` acts as the orchestrator for the resolution process. This delegates the search and evaluation of `Person` to the methods below.<br><br>
@@ -458,17 +462,24 @@ The following activity diagram summarizes the command's match-resolution flow:
     * Cons: Creates method signatures with "Long Parameter List" code smell.
     * Cons: Tight coupling. Any changes to the search criteria (e.g., adding new search criteria,removing search criteria) will require modification to all the method signatures.
 
-### Tag handling
+**Aspect: Which contact fields should be uniqueness-enforced**
 
-NAB treats tags as case-insensitive labels. To keep the UI and stored data consistent, tags are normalized to lowercase when they are created or imported. This avoids confusing situations where logically identical tags such as `Friends` and `friends` appear with different casing.
+* **Alternative 1 (current choice):** Enforce uniqueness only on phone numbers.
+    * Pros: Keeps the identity rule simple and consistent, because phone number is a mandatory field while email and address are optional.
+    * Pros: Avoids treating optional fields as identity fields, which would otherwise block contact creation based on information that may be absent or intentionally shared.
+    * Pros: Still allows users to narrow down duplicate-name matches using email, address, and tags when needed.
+    * Cons: Some real-world cases that look naturally unique, such as student email addresses, are not prevented from appearing more than once.
 
-NAB also enforces a hard limit of 30 characters for each tag. This is an intentional tradeoff: tags are meant to remain short, scannable labels rather than long free-form descriptions, but 30 characters still provides enough room for realistic module, project, and CCA-related labels.
-
-The `tag` command is intentionally designed as a bulk-assignment operation that ensures the specified tags are present on the matched contacts. Its purpose is not to guarantee that every target contact is modified. If a contact already has a tag, NAB does not create a duplicate tag, and the command still succeeds because the desired postcondition has already been met.
+* **Alternative 2:** Enforce uniqueness on both phone numbers and email addresses.
+    * Pros: Would catch more potential duplicate contacts in cases where email is present and expected to be unique.
+    * Cons: Makes an optional field behave like an identity field, complicating the contact model and duplicate-handling rules.
+    * Cons: Reduces flexibility for contacts that do not have an email recorded yet, or for workflows where email is used mainly as an auxiliary lookup/disambiguation field.
 
 ### Event Add feature
 
 The event add feature allows users to create and link a new event to a contact. It spans the `Logic` and `Model` components, and reuses the contact disambiguation mechanism from `CommandUtil`.
+
+NAB uses a shared-event model: events are stored globally and linked to one or more contacts. Two event additions are treated as the same event only when both the title and time range match exactly.
 
 #### Implementation
 
@@ -532,6 +543,14 @@ The following activity diagram summarizes the command's match-resolution flow:
 * **Alternative 2:** Detect clashes only at the per-person level.
   * Pros: Allows different persons to have independently overlapping schedules.
   * Cons: It does not make sense for a user to schedule two different events in the same time slot, as that would imply being in two places at once. A global clash check better reflects real-world scheduling constraints.
+
+### Tag handling
+
+NAB treats tags as case-insensitive labels. To keep the UI and stored data consistent, tags are normalized to lowercase when they are created or imported. This avoids confusing situations where logically identical tags such as `Friends` and `friends` appear with different casing.
+
+NAB also enforces a hard limit of 30 characters for each tag. This is an intentional tradeoff: tags are meant to remain short, scannable labels rather than long free-form descriptions, but 30 characters still provides enough room for realistic module, project, and CCA-related labels.
+
+The `tag` command is intentionally designed as a bulk-assignment operation that ensures the specified tags are present on the matched contacts. Its purpose is not to guarantee that every target contact is modified. If a contact already has a tag, NAB does not create a duplicate tag, and the command still succeeds because the desired postcondition has already been met.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -751,7 +770,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Use case:** `UC6` - Filter Contact by Tag<br>
 **MSS**
 1. User requests to filter contacts by providing one or more tags.
-2. NAB filter contact(s) with the tags provided.
+2. NAB filters contact(s) with the tags provided.
 3. NAB displays the list of contacts matching the tags and clears the event panel.
    <br> *Use case ends.*
 
@@ -760,7 +779,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * 1a. NAB detects invalid characters or formats in the provided fields.
   * 1a1. NAB displays an error message specifying the correct command format.
     <br> *Use case ends.*<br><br>
-* 2a. No contacts in the system contains any of the provided tags.
+* 2a. No contacts in the system contain any of the provided tags.
   * 2a1. NAB displays an empty list and a message indicating no contacts were found with those tags.
     <br> *Use case ends.*
 </box>
@@ -772,15 +791,23 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Use case:** `UC7` - Export Contacts<br>
 **MSS**
-1. User requests to export all contacts out of NAB.
-2. NAB saves a formatted file containing the list of contacts to a file directory.
+1. User requests to export contacts and provides an export type and a filename prefix.
+2. NAB determines the set of contacts to export according to the chosen export type.
+3. NAB writes the export files.
+4. NAB informs the user of a successful export.
    <br> *Use case ends.*
 
 **Extensions**
 
-* 2a. NAB is unable to save the file to the user’s file directory.
-    * 2a1. NAB informs the user of the error.
-    <br> *Use case ends.*
+* 1a. The provided export arguments are invalid.
+    * 1a1. NAB informs the user of a command format error and aborts the export.
+      <br> *Use case ends.*
+* 2a. The selected contact set is empty.
+    * 2a1. NAB informs the user that there are no contacts to export and aborts the export.
+      <br> *Use case ends.*
+* 3a. NAB cannot write the files to the destination.
+    * 3a1. NAB informs the user about the write error and aborts the export.
+      <br> *Use case ends.*
 </box>
 
 <box type="info" seamless>
@@ -789,30 +816,35 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 
 **Use case:** `UC8` - Import Contacts<br>
-**Preconditions:** Only contact information from a specified file format can be imported<br>
+**Preconditions:** The user supplies a filename prefix identifying the expected import files which exist.<br>
 **MSS**
-1. User requests to import new contacts from an external contact list.
-2. NAB adds the list of new contacts to the existing contact list/database.
+1. User requests to import contacts specifying an import mode and a filename prefix.
+2. NAB reads the required import files and parses their contents.
+3. NAB adds or replaces contacts according to the selected import mode.
+4. NAB informs the user as to how many contacts were added and how many were skipped.
    <br> *Use case ends.*
 
 **Extensions**
 
-* 1a. NAB is unable to read the file.
-    * 1a1. NAB informs the user of the error.
-    <br> *Use case ends.*<br><br>
-* 1b. NAB finds a contact number that already exists in the database while reading the file.
-    * 1b1. NAB informs the user of the error.
-    * 1b2. User acknowledges the error.
-    * 1b3. NAB skips the contact information with the existing contact number and
-      continues reading the rest of the file.
-    <br> *Use case ends.*
+* 1a. The provided import arguments are invalid.
+    * 1a1. NAB informs the user of a command format error and aborts the import.
+      <br> *Use case ends.*
+* 2a. NAB cannot read the required files.
+    * 2a1. NAB informs the user about the read error and aborts the import.
+      <br> *Use case ends.*
+* 3a. A data row is malformed or invalid.
+    * 3a1. NAB skips the row, records the reason, and continues importing the remaining rows.
+      <br> *Use case continues from step 4.*
+* 3b. An existing contact is found when importing.
+    * 3b1. NAB skips the duplicate row and continues importing the remaining rows.
+      <br> *Use case continues from step 4.*
 </box>
 
 ### Non-Functional Requirements
 
 ###### Portability:
 1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
-2.  Should be packaged as a single JAR file not exceeding size of 100MB.
+2.  Should be packaged as a single JAR file not exceeding a size of 100MB.
 3.  Should be fully functional offline and must not depend on any remote server.
 
 ###### Scalability:
