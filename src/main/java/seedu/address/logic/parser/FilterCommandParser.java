@@ -45,14 +45,18 @@ public class FilterCommandParser implements Parser<FilterCommand> {
 
         if (allTags.isBlank()) {
             throw new ParseException("Error: Tag value cannot be empty.\n"
-                    + "Fix: Provide a valid tag name after 't/' (e.g. filter t/CS2103 Group)");
+                    + "Provide a valid tag name after 't/' (e.g. filter t/CS2103 Group)");
+        }
+        List<String> splitTags = Arrays.stream(allTags.split(",", -1))
+                .map(String::trim)
+                .collect(Collectors.toList());
+        boolean hasEmptyEntry = splitTags.stream().anyMatch(String::isEmpty);
+        if (hasEmptyEntry) {
+            throw new ParseException("Error: Tag value cannot be empty.\n"
+                    + "Provide a valid tag name after 't/' (e.g. filter t/CS2103 Group)");
         }
 
-        List<String> tagKeywords = Arrays.stream(allTags.split(","))
-                .map(String::trim)
-                .filter(tag -> !tag.isEmpty())
-                .collect(Collectors.toList());
-
+        List<String> tagKeywords = splitTags;
         for (String tag : tagKeywords) {
             if (!tag.matches(Tag.VALIDATION_REGEX)) {
                 throw new ParseException(Tag.MESSAGE_CONSTRAINTS);
