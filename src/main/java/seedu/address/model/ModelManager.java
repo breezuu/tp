@@ -286,6 +286,7 @@ public class ModelManager implements Model {
         sortedPersons.setComparator(null);
         updateFilteredEventList(person::hasEvent);
     }
+
     @Override
     public boolean isShowingEventsFor(Person person) {
         requireNonNull(person);

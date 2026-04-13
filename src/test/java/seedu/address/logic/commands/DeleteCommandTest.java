@@ -12,6 +12,7 @@ import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -22,10 +23,12 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.event.Event;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonInformation;
 import seedu.address.model.person.Phone;
+import seedu.address.model.util.SampleDataUtil;
 import seedu.address.testutil.PersonBuilder;
 
 /**
@@ -162,6 +165,24 @@ public class DeleteCommandTest {
         deleteCommand.execute(model);
 
         assertTrue(model.getFilteredEventList().isEmpty());
+    }
+
+    @Test
+    public void execute_otherPersonDeleted_preservesDisplayedSharedEvents() throws Exception {
+        Model sharedEventModel = new ModelManager(SampleDataUtil.getSampleAddressBook(), new UserPrefs());
+        Person displayedPerson = sharedEventModel.findPersons(createNameOnlyInfo(new Name("Bernice Yu"))).get(0);
+        Person personToDelete = sharedEventModel.findPersons(createNameOnlyInfo(new Name("Alex Yeoh"))).get(0);
+
+        sharedEventModel.showEventsForPerson(displayedPerson);
+        List<Event> eventsBeforeDelete = List.copyOf(sharedEventModel.getFilteredEventList());
+        assertFalse(eventsBeforeDelete.isEmpty());
+
+        DeleteCommand deleteCommand = new DeleteCommand(createNameOnlyInfo(personToDelete.getName()));
+        deleteCommand.execute(sharedEventModel);
+
+        assertEquals(1, sharedEventModel.getFilteredPersonList().size());
+        assertTrue(sharedEventModel.getFilteredPersonList().get(0).isSamePerson(displayedPerson));
+        assertEquals(eventsBeforeDelete, List.copyOf(sharedEventModel.getFilteredEventList()));
     }
 
     @Test

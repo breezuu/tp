@@ -409,6 +409,33 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void isShowingEventsFor_whenShowingPersonEvents_returnsTrue() {
+        Person personWithEvent = new PersonBuilder().withName("Eve Tan").withPhone("91110000").build();
+        modelManager.addPerson(personWithEvent);
+        Event event = newEvent("Consult", null, "2026-03-27 0900", "2026-03-27 1000");
+        modelManager.addEvent(event);
+        personWithEvent.addEvent(event);
+
+        modelManager.showEventsForPerson(personWithEvent);
+
+        assertTrue(modelManager.isShowingEventsFor(personWithEvent));
+    }
+
+    @Test
+    public void isShowingEventsFor_whenEventsNotShown_returnsFalse() {
+        Person personWithEvent = new PersonBuilder().withName("Eve Tan").withPhone("91110000").build();
+        modelManager.addPerson(personWithEvent);
+        Event event = newEvent("Consult", null, "2026-03-27 0900", "2026-03-27 1000");
+        modelManager.addEvent(event);
+        personWithEvent.addEvent(event);
+
+        modelManager.showEventsForPerson(personWithEvent);
+        modelManager.showNoEvents();
+
+        assertFalse(modelManager.isShowingEventsFor(personWithEvent));
+    }
+
+    @Test
     public void findPersons_matchesByNameOnly_returnsMatchingPersons() {
         modelManager.addPerson(ALICE);
         modelManager.addPerson(BENSON);

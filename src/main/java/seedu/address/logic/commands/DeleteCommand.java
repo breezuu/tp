@@ -66,13 +66,16 @@ public class DeleteCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
         Person personToDelete = CommandUtil.targetPerson(model, this.targetInfo);
+        boolean isShowingDeletedPerson = model.isShowingEventsFor(personToDelete);
         if (personToDelete.getPhoto().isPresent()) {
             CommandUtil.safelyDeletePhoto(model, personToDelete, personToDelete.getPhoto().get(),
                     this.targetDirectory);
         }
 
         model.deletePerson(personToDelete);
-        model.showNoEvents();
+        if (isShowingDeletedPerson) {
+            model.showNoEvents();
+        }
         return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
     }
 
