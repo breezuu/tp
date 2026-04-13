@@ -353,6 +353,11 @@ public class AddTagCommandTest {
         public List<Event> getOverlappingEvent(Event e) {
             throw new AssertionError("This method should not be called.");
         }
+
+        @Override
+        public String getNamesLinkedToEvent(Event event) {
+            throw new AssertionError("This method should not be called.");
+        }
     }
 
     private static class ModelStubThrowingCommandException extends ModelStub {

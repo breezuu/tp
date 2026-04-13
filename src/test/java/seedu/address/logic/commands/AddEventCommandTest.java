@@ -135,7 +135,8 @@ public class AddEventCommandTest {
         ModelStubWithOverlappingEvent modelStub = new ModelStubWithOverlappingEvent(person, existingClash);
 
         String expectedMessage = AddEventCommand.MESSAGE_CLASHING_EVENT + "\n"
-                + "• " + existingClash.getClashDisplayString();
+                + "• " + existingClash.getClashDisplayString() + " (Linked to "
+                + modelStub.getNamesLinkedToEvent(eventToAdd) + ")";
 
         assertThrows(CommandException.class, expectedMessage, () ->
                 addEventCommand.execute(modelStub));
@@ -353,6 +354,11 @@ public class AddEventCommandTest {
         }
 
         @Override
+        public String getNamesLinkedToEvent(Event event) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void pinPerson(Person person) {
             throw new AssertionError("This method should not be called.");
         }
@@ -532,6 +538,11 @@ public class AddEventCommandTest {
         @Override
         public List<Event> getOverlappingEvent(Event event) {
             return List.of(clashingEvent);
+        }
+
+        @Override
+        public String getNamesLinkedToEvent(Event event) {
+            return person.getNameString();
         }
 
         @Override

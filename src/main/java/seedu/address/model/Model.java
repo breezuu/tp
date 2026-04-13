@@ -161,6 +161,11 @@ public interface Model {
     List<Event> getOverlappingEvent(Event event);
 
     /**
+     * Returns a comma-separated string of names of all persons linked to a specific {@code event}.
+     */
+    String getNamesLinkedToEvent(Event event);
+
+    /**
      * Adds the given event.
      * The event must not already exist in the address book.
      */

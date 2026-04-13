@@ -97,6 +97,7 @@ public class AddCommand extends Command {
 
         model.addPerson(finalPersonToAdd);
         model.showAllPersonsPinnedFirst();
+        model.showNoEvents();
         return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(finalPersonToAdd)));
     }
 

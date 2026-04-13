@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -143,6 +144,13 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public String getNamesLinkedToEvent(Event event) {
+        requireNonNull(event);
+        List<Person> linkedPersons = addressBook.getPersonsLinkedToEvent(event);
+        return linkedPersons.stream().map(Person::getNameString).collect(Collectors.joining(", "));
+    }
+
+    @Override
     public void addEvent(Event event) {
         addressBook.addEvent(event);
     }
@@ -203,6 +211,7 @@ public class ModelManager implements Model {
     public void showPersons(Predicate<Person> predicate) {
         requireNonNull(predicate);
         updateFilteredPersonList(predicate);
+        showNoEvents();
         sortedPersons.setComparator(createPinnedComparator());
     }
 

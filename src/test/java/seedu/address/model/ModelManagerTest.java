@@ -224,6 +224,20 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void getNamesLinkedToEvent_personsLinked_returnsNames() {
+        Event event = newEvent("Meeting", "Discuss", "2026-03-25 0900", "2026-03-25 1000");
+        modelManager.addEvent(event);
+
+        Person aliceWithEvent = new PersonBuilder(ALICE).build();
+        aliceWithEvent.addEvent(event);
+        modelManager.addPerson(aliceWithEvent);
+
+        String linkedNames = modelManager.getNamesLinkedToEvent(event);
+
+        assertTrue(linkedNames.contains(ALICE.getNameString()));
+    }
+
+    @Test
     public void equals() {
         AddressBook addressBook = new AddressBookBuilder().withPerson(ALICE).withPerson(BENSON)
                 .build();
