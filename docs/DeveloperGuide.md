@@ -368,7 +368,7 @@ Pinned state is persisted in the JSON save file and reconstructed on load. The U
 
 #### Usage scenario
 
-The following sequence diagram shows how a `pin` command flows through the `Logic` component. The `unpin` command follows the same flow, except it checks whether the resolved contact is unpinned before calling `model.unpinPerson(...)`.
+The following sequence diagram shows how a `pin` command flows through the `Logic` component. The `unpin` command follows the same flow, except it checks whether the resolved contact is already unpinned and throws an error if so before calling `model.unpinPerson(...)`.
 
 <puml src="diagrams/PinSequenceDiagram-Logic.puml" alt="PinSequenceDiagram-Logic" />
 
