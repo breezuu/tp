@@ -749,12 +749,15 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     * 2a1. NAB informs the user about the read error and aborts the import.
       <br> *Use case ends.*
 * 3a. A data row is malformed or invalid.
-    * 3a1. NAB skips the row, records the reason, and continues importing the remaining rows.
+    * 3a1. NAB skips the row and continues importing the remaining rows.
       <br> *Use case continues from step 4.*
 * 3b. An existing contact is found when importing.
     * 3b1. NAB skips the duplicate row and continues importing the remaining rows.
       <br> *Use case continues from step 4.*
-</box>
+* 3c. The import file containing events has duplicate event IDs or clashing events.
+    * 3c1. NAB informs the user about the error and aborts the import.
+      <br> *Use case ends.*
+  </box>
 
 ### Non-Functional Requirements
 
@@ -793,8 +796,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ###### Data Integrity:
 14.  When a contact is deleted, all events linked to that contact should also be removed to prevent orphaned data.
-
-*{More to be added}*
 
 ### Glossary
 
@@ -1022,3 +1023,17 @@ Expected:
 | Reject duplicate import filename prefix | `import t/add f/manual_test_full f/manual_test_subset` | - | Error indicating that the filename prefix is specified more than once. |
 | Overwrite with exported subset | `import t/overwrite f/manual_test_subset` | - | NAB replaces the current data with only the subset exported earlier. |
 | Invalid import path | `import t/add f/file_that_does_not_exist` | - | Error indicating that NAB cannot read the required CSV files. |
+
+--------------------------------------------------------------------------------------------------------------------
+
+## **Appendix: Planned enhancements**
+
+Team Size: 5
+
+1. **Enhance `import` by handling exceptions gracefully**: When importing data in `overwrite` mode, preserve the existing data despite nothing valid being imported.
+
+2. **Enhance `export` with the ability to back up profile photos**: When exporting data, allow for the copying of profile photos for all contacts.
+
+3. **Enhance `event view` with the ability to sort events**: When viewing events, allow the user to sort them by start time or end time. 
+
+4. **Enhance `event view` with the ability to filter events**: When viewing events, allow the user to filter them by a time range.
