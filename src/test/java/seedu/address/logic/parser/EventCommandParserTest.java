@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import seedu.address.logic.commands.AddEventCommand;
 import seedu.address.logic.commands.DeleteEventCommand;
 import seedu.address.logic.commands.FindEventCommand;
-import seedu.address.logic.commands.HelpCommand;
 import seedu.address.model.event.Description;
 import seedu.address.model.event.Event;
 import seedu.address.model.event.TimeRange;
