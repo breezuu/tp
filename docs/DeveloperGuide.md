@@ -417,9 +417,13 @@ The following activity diagram summarizes the command's match-resolution flow:
 
 The contact disambiguation feature allows NAB to accurately resolve a target contact when multiple contacts share the same name. This feature is utilized by commands that require precise targeting (e.g., delete, edit) and spans the Logic and Model components.
 
+Most person-targeting commands in NAB are intentionally stricter than `find`. For commands that act on an existing contact, such as `edit`, `delete`, `pin`, `unpin`, `tag`, and event-related commands, the target `n/NAME` is expected to match the contact's full name exactly before any optional disambiguation fields are applied. This reduces the risk of accidentally modifying or acting on the wrong contact. `find` is the main exception, as it is designed for retrieval rather than precise target selection.
+
 #### Implementation
 
 The core of this feature relies on the `PersonInformation` class. It encapsulates mandatory fields like `Name` and any optional fields (e.g., phone, email, address, or tags) that can be compared against existing contacts.
+
+In NAB, these fields do not all play the same role. Phone number is the only contact field for which uniqueness is enforced. By contrast, email, address, and tags are treated as optional descriptive fields that may be shared across multiple contacts, and are therefore used only for filtering or disambiguation rather than identity enforcement.
 
 The disambiguation logic is driven by `CommandUtil` and `ModelManager`: <br>
 * `CommandUtil#targetPerson(Model, PersonInformation)` acts as the orchestrator for the resolution process. This delegates the search and evaluation of `Person` to the methods below.<br><br>
@@ -458,9 +462,24 @@ The following activity diagram summarizes the command's match-resolution flow:
     * Cons: Creates method signatures with "Long Parameter List" code smell.
     * Cons: Tight coupling. Any changes to the search criteria (e.g., adding new search criteria,removing search criteria) will require modification to all the method signatures.
 
+**Aspect: Which contact fields should be uniqueness-enforced**
+
+* **Alternative 1 (current choice):** Enforce uniqueness only on phone numbers.
+    * Pros: Keeps the identity rule simple and consistent, because phone number is a mandatory field while email and address are optional.
+    * Pros: Avoids treating optional fields as identity fields, which would otherwise block contact creation based on information that may be absent or intentionally shared.
+    * Pros: Still allows users to narrow down duplicate-name matches using email, address, and tags when needed.
+    * Cons: Some real-world cases that look naturally unique, such as student email addresses, are not prevented from appearing more than once.
+
+* **Alternative 2:** Enforce uniqueness on both phone numbers and email addresses.
+    * Pros: Would catch more potential duplicate contacts in cases where email is present and expected to be unique.
+    * Cons: Makes an optional field behave like an identity field, complicating the contact model and duplicate-handling rules.
+    * Cons: Reduces flexibility for contacts that do not have an email recorded yet, or for workflows where email is used mainly as an auxiliary lookup/disambiguation field.
+
 ### Event Add feature
 
 The event add feature allows users to create and link a new event to a contact. It spans the `Logic` and `Model` components, and reuses the contact disambiguation mechanism from `CommandUtil`.
+
+NAB uses a shared-event model: events are stored globally and linked to one or more contacts. Two event additions are treated as the same event only when both the title and time range match exactly.
 
 #### Implementation
 
