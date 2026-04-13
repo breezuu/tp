@@ -13,7 +13,7 @@
     <li><a href="{{baseUrl}}/Documentation.html" class="nav-link">Docs</a></li>
     <li><a href="{{baseUrl}}/DevOps.html" class="nav-link">DevOps</a></li>
     <li><a href="{{baseUrl}}/AboutUs.html" class="nav-link">About Us</a></li>
-    <li><a href="https://github.com/se-edu/addressbook-level3" target="_blank" class="nav-link"><md>:fab-github:</md></a>
+    <li><a href="https://github.com/AY2526S2-CS2103-F08-4/tp" target="_blank" class="nav-link"><md>:fab-github:</md></a>
     </li>
     <li slot="right">
       <form class="navbar-form">

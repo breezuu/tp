@@ -40,7 +40,7 @@ Given below is a quick overview of main components and how they interact with ea
 
 **Main components of the architecture**
 
-**`Main`** (consisting of classes [`Main`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/Main.java) and [`MainApp`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/MainApp.java)) is in charge of the app launch and shut down.
+**`Main`** (consisting of classes [`Main`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/Main.java) and [`MainApp`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/MainApp.java)) is in charge of the app launch and shut down.
 * At app launch, it initializes the other components in the correct sequence, and connects them up with each other.
 * At shut down, it shuts down the other components and invokes cleanup methods where necessary.
 
@@ -64,7 +64,7 @@ Each of the four main components (also shown in the diagram above),
 * defines its *API* in an `interface` with the same name as the Component.
 * implements its functionality using a concrete `{Component Name}Manager` class (which follows the corresponding API `interface` mentioned in the previous point.)
 
-For example, the `Logic` component defines its API in the `Logic.java` interface and implements its functionality using the `LogicManager.java` class which follows the `Logic` interface. Other components interact with a given component through its interface rather than the concrete class (reason: to prevent outside components being coupled to the implementation of a component), as illustrated in the (partial) class diagram below.
+For example, the `Logic` component defines its API in the `Logic.java` interface and implements its functionality using the [`LogicManager.java`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/logic/LogicManager.java) class which follows the `Logic` interface. Other components interact with a given component through its interface rather than the concrete class (reason: to prevent outside components being coupled to the implementation of a component), as illustrated in the (partial) class diagram below.
 
 <puml src="diagrams/ComponentManagers.puml" width="300" />
 
@@ -72,7 +72,7 @@ The sections below give more details of each component.
 
 ### UI component
 
-The **API** of this component is specified in [`Ui.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/ui/Ui.java)
+The **API** of this component is specified in [`Ui.java`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/ui/Ui.java)
 
 <puml src="diagrams/UiClassDiagram.puml" alt="Structure of the UI Component"/>
 
@@ -80,7 +80,7 @@ The UI consists of a `MainWindow` that is made up of parts e.g. `CommandBox`, `R
 
 Additionally, the `CommandBox` component will contain a `CommandHistory` component that is used to support the command history feature.
 
-The `UI` component uses the JavaFX UI framework. The layout of these UI parts are defined in matching `.fxml` files that are in the `src/main/resources/view` folder. For example, the layout of the [`MainWindow`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/ui/MainWindow.java) is specified in [`MainWindow.fxml`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/resources/view/MainWindow.fxml)
+The `UI` component uses the JavaFX UI framework. The layout of these UI parts are defined in matching `.fxml` files that are in the `src/main/resources/view` folder. For example, the layout of the [`MainWindow`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/ui/MainWindow.java) is specified in [`MainWindow.fxml`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/resources/view/MainWindow.fxml)
 
 The `UI` component,
 
@@ -91,7 +91,7 @@ The `UI` component,
 
 ### Logic component
 
-**API** : [`Logic.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/logic/Logic.java)
+**API** : [`Logic.java`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/logic/Logic.java)
 
 Here's a (partial) class diagram of the `Logic` component:
 
@@ -130,7 +130,7 @@ How the parsing works:
 </div>
 
 
-The class diagram below illustrates the `Person` and `Event` classes and their related attribute classes:
+The class diagram below illustrates the [`Person`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/model/person/Person.java) and [`Event`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/model/event/Event.java) classes and their related attribute classes:
 
 <div align="center">
 <puml src="diagrams/PersonEventClassDiagram.puml" width="700" />
@@ -167,9 +167,9 @@ The `Storage` component,
 * can save both address book data and user preference data in JSON format, and read them back into corresponding objects.
 * inherits from both `AddressBookStorage` and `UserPrefsStorage`, which means it can be treated as either one (if only the functionality of only one is needed).
 * depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`).
-* persists `Event` objects as a top-level list in the address book JSON, identified by a unique integer ID. Each `JsonAdaptedPerson` stores a list of event IDs as foreign keys, which are resolved back into `Event` objects during loading.
+* persists `Event` objects as a top-level list in the address book JSON, identified by a unique integer ID. Each [`JsonAdaptedPerson`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/storage/JsonAdaptedPerson.java) stores a list of event IDs as foreign keys, which are resolved back into `Event` objects during loading.
 * persists the pinned persons list separately within the address book JSON. During loading, pinned entries are resolved against the main persons list to ensure a single source of truth.
-* **Note:** CSV import/export (`import`/`export` commands) is handled at the `Logic` layer via `CsvUtil` in `Commons`, and is not part of the `Storage` component.
+* **Note:** CSV import/export (`import`/`export` commands) is handled at the `Logic` layer via [`CsvUtil`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/commons/util/CsvUtil.java) in `Commons`, and is not part of the `Storage` component.
 
 ### Common classes
 
@@ -280,7 +280,7 @@ _{Explain here how the data archiving feature will be implemented}_
 
 ### Retrieval of past entered commands
 #### Implementation
-The command retrieval mechanism is implemented as a UI-level feature split between `CommandBox` and `CommandHistory`.
+The command retrieval mechanism is implemented as a UI-level feature split between [`CommandBox`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/ui/CommandBox.java) and [`CommandHistory`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/ui/CommandHistory.java).
 
 `CommandBox` owns a single `CommandHistory` instance for the application's UI session. This instance is responsible for
 storing previously entered command strings and handling navigation state (e.g., current history pointer and the user's
@@ -354,21 +354,21 @@ command-output reporting.
 
 #### Implementation
 
-The pin/unpin feature is implemented as `PinCommand` and `UnpinCommand`, both implementing `Command`. The feature spans the `Logic`, `Model`, `Storage`, and `UI` components.
+The pin/unpin feature is implemented as [`PinCommand`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/logic/commands/PinCommand.java) and [`UnpinCommand`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/logic/commands/UnpinCommand.java), both implementing [`Command`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/logic/commands/Command.java). The feature spans the `Logic`, `Model`, `Storage`, and `UI` components.
 
 The following class diagram shows the main classes involved in the feature:
 
 <puml src="diagrams/PinClassDiagram.puml" alt="PinClassDiagram" width=75% />
 
-`PinCommandParser` and `UnpinCommandParser` each parse the user's input and construct their respective commands with a `PersonInformation` object as the matching criteria. `PinCommand#execute(Model)` resolves the target by finding all matching contacts, filtering out those already pinned, and applying shared disambiguation logic. `UnpinCommand#execute(Model)` mirrors this — it filters to only pinned matches and resolves from those. Both commands throw an error if no match or multiple matches remain.
+[`PinCommandParser`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/logic/parser/PinCommandParser.java) and [`UnpinCommandParser`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/logic/parser/UnpinCommandParser.java) each parse the user's input and construct their respective commands with a `PersonInformation` object as the matching criteria. `PinCommand#execute(Model)` resolves the target by finding all matching contacts and applying shared disambiguation logic. After resolving to a single contact, it checks whether the contact is already pinned — throwing an error if so — before calling `model.pinPerson(...)`. `UnpinCommand#execute(Model)` follows the same flow, but checks whether the resolved contact is not pinned (throwing an error if already unpinned) before calling `model.unpinPerson(...)`. Both commands throw an error if no match or multiple matches remain after disambiguation.
 
-`AddressBook` maintains two lists: `persons` as the source of truth for all contacts, and `pinnedPersons` as an ordered list of pinned contacts. The insertion order of `pinnedPersons` defines the display order among pinned contacts. The UI reorders the displayed list by sorting against this pinned list, keeping pinned contacts at the top while preserving the relative order of unpinned contacts.
+[`AddressBook`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/model/AddressBook.java) maintains two lists: `persons` as the source of truth for all contacts, and `pinnedPersons` as an ordered list of pinned contacts. The insertion order of `pinnedPersons` defines the display order among pinned contacts. The UI reorders the displayed list by sorting against this pinned list, keeping pinned contacts at the top while preserving the relative order of unpinned contacts.
 
 Pinned state is persisted in the JSON save file and reconstructed on load. The UI reflects pin state via a pin indicator shown on each pinned contact's card.
 
 #### Usage scenario
 
-The following sequence diagram shows how a `pin` command flows through the `Logic` component. The `unpin` command follows the same flow, except it filters to only pinned matches and calls `model.unpinPerson(...)` instead.
+The following sequence diagram shows how a `pin` command flows through the `Logic` component. The `unpin` command follows the same flow, except it checks whether the resolved contact is unpinned before calling `model.unpinPerson(...)`.
 
 <puml src="diagrams/PinSequenceDiagram-Logic.puml" alt="PinSequenceDiagram-Logic" />
 
@@ -382,9 +382,9 @@ How the `pinPerson` call is handled inside the `Model` component is shown below:
 
 <puml src="diagrams/PinSequenceDiagram-Model.puml" alt="PinSequenceDiagram-Model" />
 
-The following activity diagram summarizes the command's match-resolution flow:
+The following activity diagram summarizes the pin/unpin command flow:
 
-<puml src="diagrams/PinActivityDiagram.puml" width="600" alt="PinActivityDiagram" />
+<puml src="diagrams/PinActivityDiagram.puml" width="1000" alt="PinActivityDiagram" />
 
 #### Design considerations
 
@@ -421,11 +421,11 @@ Most person-targeting commands in NAB are intentionally stricter than `find`. Fo
 
 #### Implementation
 
-The core of this feature relies on the `PersonInformation` class. It encapsulates mandatory fields like `Name` and any optional fields (e.g., phone, email, address, or tags) that can be compared against existing contacts.
+The core of this feature relies on the [`PersonInformation`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/model/person/PersonInformation.java) class. It encapsulates mandatory fields like `Name` and any optional fields (e.g., phone, email, address, or tags) that can be compared against existing contacts.
 
 In NAB, these fields do not all play the same role. Phone number is the only contact field for which uniqueness is enforced. By contrast, email, address, and tags are treated as optional descriptive fields that may be shared across multiple contacts, and are therefore used only for filtering or disambiguation rather than identity enforcement.
 
-The disambiguation logic is driven by `CommandUtil` and `ModelManager`: <br>
+The disambiguation logic is driven by [`CommandUtil`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/commons/util/CommandUtil.java) and [`ModelManager`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/model/ModelManager.java): <br>
 * `CommandUtil#targetPerson(Model, PersonInformation)` acts as the orchestrator for the resolution process. This delegates the search and evaluation of `Person` to the methods below.<br><br>
 * `ModelManager#findPersons(PersonInformation)` performs the filtering of the address book. It first applies a broad case-insensitive match on the name, followed by an "enriched search" that narrows down the contact candidates by strictly matching any optional fields present in the `PersonInformation` object.<br><br>
 * `CommandUtil#targetPersonFromMatches(Model, List<Person>)` evaluates the resulting filtered list. It enforces that exactly one target person is isolated. <br>
@@ -483,11 +483,11 @@ NAB uses a shared-event model: events are stored globally and linked to one or m
 
 #### Implementation
 
-`AddEventParser` parses the user's input and constructs an `AddEventCommand` with an `Event` object and a `PersonInformation` target. An `Event` object is composed of the following attributes:
+[`AddEventParser`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/logic/parser/AddEventParser.java) parses the user's input and constructs an [`AddEventCommand`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/logic/commands/AddEventCommand.java) with an `Event` object and a `PersonInformation` target. An `Event` object is composed of the following attributes:
 
-* `Title` — the name of the event (required).
-* `TimeRange` — the start and end date-time of the event in `yyyy-MM-dd HHmm` format (required). The end time must be after the start time.
-* `Description` — a short description of the event (optional).
+* [`Title`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/model/event/Title.java) — the name of the event (required).
+* [`TimeRange`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/model/event/TimeRange.java) — the start and end date-time of the event in `yyyy-MM-dd HHmm` format (required). The end time must be after the start time.
+* [`Description`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/model/event/Description.java) — a short description of the event (optional).
 
 The required prefixes are `title/`, `start/`, and `end/` for the event, and `n/` for the target contact. The `desc/` prefix is optional, and additional person fields (`p/`, `e/`, `a/`, `t/`) may be supplied for disambiguation.
 
@@ -497,7 +497,7 @@ The `java.util.Optional<T>` class is utilised to encapsulate any optional attrib
 
 1. **Target resolution** — `CommandUtil#targetPerson(Model, PersonInformation)` is called first to resolve the target contact (see [Contact Disambiguating feature](#contact-disambiguating-feature)).
 2. **Duplicate check** — If the resolved person is already linked to the same event, a `CommandException` is thrown.
-3. **Shared event** — If the event already exists in the global `UniqueEventList` (matched by `Title` and `TimeRange` via `Event#isSameEvent()`), `Model#linkPersonToEvent(Event)` is called instead of adding a new event. This increments the event's `numberOfPersonLinked` counter and returns the existing shared `Event` object to be linked to the person.
+3. **Shared event** — If the event already exists in the global [`UniqueEventList`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/model/event/UniqueEventList.java) (matched by `Title` and `TimeRange` via `Event#isSameEvent()`), `Model#linkPersonToEvent(Event)` is called instead of adding a new event. This increments the event's `numberOfPersonLinked` counter and returns the existing shared `Event` object to be linked to the person.
 4. **Clash check** — If the event is new but its `TimeRange` overlaps with any existing event in `UniqueEventList`, a `CommandException` is thrown.
 5. **New event** — If none of the above cases apply, `Model#addEvent(Event)` adds the event to `UniqueEventList`, and it is linked to the resolved person.
 
@@ -546,7 +546,7 @@ The following activity diagram summarizes the command's match-resolution flow:
 
 ### Tag handling
 
-NAB treats tags as case-insensitive labels. To keep the UI and stored data consistent, tags are normalized to lowercase when they are created or imported. This avoids confusing situations where logically identical tags such as `Friends` and `friends` appear with different casing.
+NAB treats [`Tag`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/model/tag/Tag.java) objects as case-insensitive labels. To keep the UI and stored data consistent, tags are normalized to lowercase when they are created or imported. This avoids confusing situations where logically identical tags such as `Friends` and `friends` appear with different casing.
 
 NAB also enforces a hard limit of 30 characters for each tag. This is an intentional tradeoff: tags are meant to remain short, scannable labels rather than long free-form descriptions, but 30 characters still provides enough room for realistic module, project, and CCA-related labels.
 
@@ -867,7 +867,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 10.  All exceptions and errors should be handled gracefully by the application (i.e. there should not be any application crashes).
 
 ###### Fault Tolerance:
-11.  Should be able to recover at least uncorrupted portions of the local storage file or from a backup file should the data file be corrupted.
+11.  Should handle corrupted storage files gracefully by loading data when recoverable storage issues can be resolved, or otherwise notifying the user of the loading error and starting with an empty address book.
 
 ###### Efficiency:
 12.  A user with above-average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
