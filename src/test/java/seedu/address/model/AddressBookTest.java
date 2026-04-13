@@ -169,6 +169,21 @@ public class AddressBookTest {
     }
 
     @Test
+    public void getPersonsLinkedToEvent_personsLinked_returnsLinkedPersons() {
+        Event event = newEvent("Meeting", "Discuss", "2026-03-25 0900", "2026-03-25 1000");
+        addressBook.addEvent(event);
+
+        Person aliceWithEvent = new PersonBuilder(ALICE).build();
+        aliceWithEvent.addEvent(event);
+        addressBook.addPerson(aliceWithEvent);
+
+        List<Person> linkedPersons = addressBook.getPersonsLinkedToEvent(event);
+
+        assertEquals(1, linkedPersons.size());
+        assertTrue(linkedPersons.contains(aliceWithEvent));
+    }
+
+    @Test
     public void addEvent_overlappingEvent_throwsClashingEventException() {
         Event existing = newEvent("Meeting", "Discuss", "2026-03-25 0900", "2026-03-25 1100");
         addressBook.addEvent(existing);

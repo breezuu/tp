@@ -68,7 +68,9 @@ public class AddEventCommand extends Command {
                 logger.info("AddEvent: event clashes with existing event " + toAdd);
                 StringBuilder errorMessage = new StringBuilder(MESSAGE_CLASHING_EVENT + "\n");
                 for (Event conflict : clashingEvents) {
-                    errorMessage.append(String.format("• %s\n", conflict.getClashDisplayString()));
+                    String linkedNames = model.getNamesLinkedToEvent(conflict);
+                    errorMessage.append(String.format("• %s (Linked to %s)\n",
+                            conflict.getClashDisplayString(), linkedNames));
                 }
                 throw new CommandException(errorMessage.toString().trim());
             }

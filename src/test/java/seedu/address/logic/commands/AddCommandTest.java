@@ -293,6 +293,11 @@ public class AddCommandTest {
         }
 
         @Override
+        public String getNamesLinkedToEvent(Event event) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public ObservableList<Event> getFilteredEventList() {
             throw new AssertionError("This method should not be called.");
         }
@@ -360,6 +365,9 @@ public class AddCommandTest {
 
         @Override
         public void showAllPersonsPinnedFirst() {}
+
+        @Override
+        public void showNoEvents() {}
 
         @Override
         public ReadOnlyAddressBook getAddressBook() {

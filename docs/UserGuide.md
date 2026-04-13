@@ -384,7 +384,6 @@ Finds persons by name, with optional additional fields used to narrow the match.
 
 **Current scope of `find`**
 
-
 - `n/NAME` is required for every `find` command.
 - `p/`, `e/`, `a/`, and `t/` cannot be used on their own to search for a contact. They are only used to disambiguate between contacts that already match the given name.
 - If you want to retrieve contacts by context, use [`filter`](#filtering-persons-by-context-filter) with tag(s).
@@ -643,7 +642,6 @@ Creates a new event for a specified person.
 <box type="important">
 
 **How NAB treats shared events**
-
 
 - Events are linked to contacts, but NAB stores them in one shared event list.
 - If you add an event with the same title and the same start/end time as an existing event, NAB treats it as the same event and links that event to the new contact instead of creating a duplicate event.

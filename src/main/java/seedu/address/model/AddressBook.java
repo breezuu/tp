@@ -181,11 +181,19 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
-     * Returns a list of events that overlaps with {@code toCheck}.
+     * Returns a list of events that overlaps with {@code event}.
      */
     public List<Event> getOverlappingEvent(Event event) {
         requireNonNull(event);
         return events.getOverlappingEvent(event);
+    }
+
+    /**
+     * Returns a list of persons linked to a specified (@code event)
+     */
+    public List<Person> getPersonsLinkedToEvent(Event event) {
+        requireNonNull(event);
+        return persons.asUnmodifiableObservableList().stream().filter(p -> p.hasEvent(event)).toList();
     }
 
     /**

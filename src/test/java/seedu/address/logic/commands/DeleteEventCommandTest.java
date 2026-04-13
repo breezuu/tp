@@ -309,6 +309,11 @@ public class DeleteEventCommandTest {
         }
 
         @Override
+        public String getNamesLinkedToEvent(Event event) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void pinPerson(Person person) {
             throw new AssertionError("This method should not be called.");
         }
