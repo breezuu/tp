@@ -65,6 +65,7 @@ public class UnpinCommand extends Command {
 
         model.unpinPerson(personToUnpin);
         model.showAllPersonsPinnedFirst();
+        model.showNoEvents();
         return new CommandResult(String.format(MESSAGE_UNPIN_PERSON_SUCCESS, Messages.format(personToUnpin)));
     }
 

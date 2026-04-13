@@ -92,6 +92,7 @@ public class AddTagCommand extends Command {
         applyTags(model, uniquePersons);
         // refresh the listing
         model.showAllPersonsPinnedFirst();
+        model.showNoEvents();
 
         String tagNames = tagsToAssign.stream()
                 .map(t -> t.tagName)

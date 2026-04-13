@@ -66,6 +66,7 @@ public class PinCommand extends Command {
 
         model.pinPerson(personToPin);
         model.showAllPersonsPinnedFirst();
+        model.showNoEvents();
         return new CommandResult(String.format(MESSAGE_PIN_PERSON_SUCCESS, Messages.format(personToPin)));
     }
 

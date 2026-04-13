@@ -73,6 +73,7 @@ public class EditCommandTest {
                 new UserPrefs());
         expectedModel.setPerson(model.getFilteredPersonList().get(0), editedPerson);
         expectedModel.showPerson(editedPerson);
+        expectedModel.showEventsForPerson(editedPerson);
 
         assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
     }
@@ -148,6 +149,7 @@ public class EditCommandTest {
                 new UserPrefs());
         expectedModel.setPerson(personToEdit, editedPerson);
         expectedModel.showPerson(editedPerson);
+        expectedModel.showEventsForPerson(editedPerson);
 
         assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
     }
@@ -167,6 +169,7 @@ public class EditCommandTest {
                 new UserPrefs());
         expectedModel.setPerson(personToEdit, editedPerson);
         expectedModel.showPerson(editedPerson);
+        expectedModel.showEventsForPerson(editedPerson);
 
         assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
     }
@@ -186,6 +189,7 @@ public class EditCommandTest {
                 new UserPrefs());
         expectedModel.setPerson(personToEdit, editedPerson);
         expectedModel.showPerson(editedPerson);
+        expectedModel.showEventsForPerson(editedPerson);
 
         assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
     }
@@ -261,6 +265,7 @@ public class EditCommandTest {
                 new UserPrefs());
         expectedModel.setPerson(personToEdit, editedPerson);
         expectedModel.showPerson(editedPerson);
+        expectedModel.showEventsForPerson(editedPerson);
 
         assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
     }
@@ -285,6 +290,7 @@ public class EditCommandTest {
                 new UserPrefs());
         expectedModel.setPerson(personToEdit, editedPerson);
         expectedModel.showPerson(editedPerson);
+        expectedModel.showEventsForPerson(editedPerson);
 
         assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
     }
@@ -369,6 +375,7 @@ public class EditCommandTest {
                 new UserPrefs());
         expectedModel.setPerson(targetPerson, editedPerson);
         expectedModel.showPerson(editedPerson);
+        expectedModel.showEventsForPerson(editedPerson);
 
         assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
     }
