@@ -18,9 +18,16 @@ public class FilterCommandParserTest {
     private final FilterCommandParser parser = new FilterCommandParser();
 
     @Test
-    public void parse_validInputWithEmptyEntries_success() {
-        assertParseSuccess(parser, " " + PREFIX_TAG + "friends, , family ,",
+    public void parse_validInput_success() {
+        assertParseSuccess(parser, " " + PREFIX_TAG + "friends, family",
                 new FilterCommand(new TagContainsKeywordsPredicate(List.of("friends", "family"))));
+    }
+
+    @Test
+    public void parse_validInputWithEmptyEntries_failure() {
+        assertParseFailure(parser, " " + PREFIX_TAG + "friends, , family ,",
+                "Error: Tag value cannot be empty.\n"
+                        + "Provide a valid tag name after 't/' (e.g. filter t/CS2103 Group)");
     }
 
     @Test
@@ -46,7 +53,7 @@ public class FilterCommandParserTest {
     public void parse_blankTagValue_failure() {
         assertParseFailure(parser, " " + PREFIX_TAG + "   ",
                 "Error: Tag value cannot be empty.\n"
-                        + "Fix: Provide a valid tag name after 't/' (e.g. filter t/CS2103 Group)");
+                        + "Provide a valid tag name after 't/' (e.g. filter t/CS2103 Group)");
     }
 
     @Test
