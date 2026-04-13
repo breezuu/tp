@@ -345,6 +345,11 @@ public class AddTagCommandTest {
         }
 
         @Override
+        public boolean isShowingEventsFor(Person person) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public boolean isPhotoShared(Photo photo, Person personToExclude) {
             throw new AssertionError("This method should not be called.");
         }

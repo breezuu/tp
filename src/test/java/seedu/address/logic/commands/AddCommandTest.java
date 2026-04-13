@@ -243,6 +243,11 @@ public class AddCommandTest {
         }
 
         @Override
+        public boolean isShowingEventsFor(Person person) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void showNoEvents() {
             throw new AssertionError("This method should not be called.");
         }
