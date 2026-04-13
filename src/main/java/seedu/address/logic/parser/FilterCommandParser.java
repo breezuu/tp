@@ -56,7 +56,6 @@ public class FilterCommandParser implements Parser<FilterCommand> {
                     + "Provide a valid tag name after 't/' (e.g. filter t/CS2103 Group)");
         }
 
-        // Validate tags and collect final keywords
         List<String> tagKeywords = splitTags;
         for (String tag : tagKeywords) {
             if (!tag.matches(Tag.VALIDATION_REGEX)) {
