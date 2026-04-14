@@ -65,7 +65,7 @@ public class ExportCommand extends Command {
     private static final String START_TIME_COLUMN_HEADER = "Start";
     private static final String END_TIME_COLUMN_HEADER = "End";
 
-    private static final Logger logger = LogsCenter.getLogger(ExportCommand.class);
+    private static final Logger LOGGER = LogsCenter.getLogger(ExportCommand.class);
 
     private final String exportType;
     private final String filename;
@@ -133,7 +133,7 @@ public class ExportCommand extends Command {
             FileUtil.writeToFile(personsPath, personsCsvData);
             FileUtil.writeToFile(eventsPath, eventsCsvData);
         } catch (IOException e) {
-            logger.warning(String.format("Export failed for %s: %s", filename, e));
+            LOGGER.warning(String.format("Export failed for %s: %s", filename, e));
             throw new CommandException(String.format(MESSAGE_FAILURE, filename));
         }
     }

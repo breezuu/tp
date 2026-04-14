@@ -11,7 +11,7 @@ import seedu.address.commons.core.LogsCenter;
  */
 public class CommandHistory {
 
-    private static final Logger logger = LogsCenter.getLogger(CommandHistory.class);
+    private static final Logger LOGGER = LogsCenter.getLogger(CommandHistory.class);
 
     private final List<String> commandHistory;
     private int currentPointer; // Pointer to where the command would be stored in commandHistory
@@ -36,7 +36,7 @@ public class CommandHistory {
         currentPointer = getCommandHistorySize() + 1; // Move pointer to the end of the history list
         // Clear the current command since a new command has been entered.
         currentCommand = "";
-        logger.info("Recorded command in history. historySize=" + commandHistory.size()
+        LOGGER.info("Recorded command in history. historySize=" + commandHistory.size()
                 + ", pointer=" + currentPointer);
     }
 
@@ -73,7 +73,7 @@ public class CommandHistory {
             currentPointer--;
         }
 
-        logger.info("Navigate up to pointer=" + currentPointer);
+        LOGGER.info("Navigate up to pointer=" + currentPointer);
         return commandHistory.get(currentPointer);
     }
 
@@ -94,17 +94,17 @@ public class CommandHistory {
 
         if (currentPointer < getCommandHistorySize()) {
             currentPointer++;
-            logger.info("Navigate down to pointer=" + currentPointer);
+            LOGGER.info("Navigate down to pointer=" + currentPointer);
             return commandHistory.get(currentPointer);
         }
 
         if (currentPointer == getCommandHistorySize()) {
             currentPointer = getCommandHistorySize() + 1;
-            logger.info("Navigate down returned current command. pointer=" + currentPointer);
+            LOGGER.info("Navigate down returned current command. pointer=" + currentPointer);
             return currentCommand;
         }
 
-        logger.info("Navigate down at latest input. pointer=" + currentPointer);
+        LOGGER.info("Navigate down at latest input. pointer=" + currentPointer);
         return currentText;
     }
 

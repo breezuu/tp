@@ -18,7 +18,7 @@ public class ClearCommand extends Command {
 
     public static final String COMMAND_WORD = "clear";
     public static final String MESSAGE_SUCCESS = "Address book has been cleared!";
-    private static final Logger logger = LogsCenter.getLogger(ClearCommand.class);
+    private static final Logger LOGGER = LogsCenter.getLogger(ClearCommand.class);
     private final String targetDirectory;
 
     /**
@@ -42,7 +42,7 @@ public class ClearCommand extends Command {
         try {
             PhotoStorageUtil.clearDirectory(this.targetDirectory);
         } catch (IOException e) {
-            logger.warning(Messages.MESSAGE_CLEAR_USER_IMAGE_FAIL + e.getMessage());
+            LOGGER.warning(Messages.MESSAGE_CLEAR_USER_IMAGE_FAIL + e.getMessage());
         }
         return new CommandResult(MESSAGE_SUCCESS);
     }

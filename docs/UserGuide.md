@@ -183,7 +183,7 @@ Before examining the individual commands for managing contacts, please refer to 
 
 | Parameter | Format                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Example |
 |-----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
-| `n/NAME` | • May contain alphabetic characters, spaces, hyphens (`-`), and apostrophes (`'`).<br>• Cannot be blank or start with a space (the first character must be a letter).<br>• Must not contain `/`.                                                                                                                                                                                                                                                                                                                                       | `n/Dylan O'Brien` |
+| `n/NAME` | • May contain alphabetic characters, spaces, hyphens (`-`), and apostrophes (`'`).<br>• Cannot be blank or start with a space (the first character must be a letter).<br>• Must not contain consecutive spaces.<br>• Must not contain `/`.                                                                                                                                                                                                                                                                                             | `n/Dylan O'Brien` |
 | `p/PHONE_NUMBER` | • Must contain strictly numbers.<br>• Must be between 7 and 15 digits long.                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `p/98765432` |
 | `e/EMAIL` | • Must be of the standard format: `local-part@domain`.<br>• **Local-part:** Can only contain alphanumeric characters and the special characters `+`, `_`, `.`, and `-`. It cannot start or end with a special character.<br>• **Domain:** Made up of domain labels separated by periods (`.`).<br>&nbsp;&nbsp;◦ Must end with a domain label at least 2 characters long.<br>&nbsp;&nbsp;◦ Each label must start and end with alphanumeric characters.<br>&nbsp;&nbsp;◦ Labels can contain hyphens (`-`), but no other special characters. | `e/johnd@example.com` |
 | `a/ADDRESS` | • Can contain alphanumeric characters, spaces, and the following special characters: `#`, `_`, `,` (comma), `-` (hyphen), `'` (apostrophe), and `.` (period).<br>• Cannot be blank or consist only of spaces (must start with an alphanumeric or allowed special character).                                                                                                                                                                                                                                                                               | `a/John street, block 123, #01-01` |
@@ -382,10 +382,10 @@ Finds persons by name, with optional additional fields used to narrow the match.
   Returns contacts named John
 
 - `find n/John t/cs2106`<br>
-  Uniquely identifies a John Doe with a cs2106 tag
+  Narrows the results to contacts named John with a cs2106 tag
 
 - `find n/John t/cs2106 t/cs2109s t/cs2103`<br>
-  Uniquely identifies a John Doe with a cs2106, cs2109s and cs2103 tag
+  Narrows the results to contacts named John with cs2106, cs2109s and cs2103 tags
 
 </box>
 
@@ -622,7 +622,7 @@ the same constraints in [Contact Management: Parameters constraints & format](#p
 | Parameter | Format                                                                                                                                                                      | Example |
 |-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
 | `title/TITLE` | • Must be 1 to 50 characters.<br>• May contain letters, digits, spaces, periods (`.`), hyphens (`-`), colons (`:`), and parentheses (`(`, `)`).<br>• Must not contain `/`.<br>• No leading/trailing spaces and no consecutive spaces. | `title/CS2103 Milestone 2 - Draft Submission` |
-| `desc/DESCRIPTION` | • Must be 0 to 1000 characters.<br> • May contain letters, digits, spaces, periods (`.`), hyphens (`-`), colons (`:`), and parentheses (`(`, `)`).<br> • Must not contain `/`.<br> • No leading/trailing spaces and no consecutive spaces. | `desc/Project Meeting (Online): bring printout.` |
+| `desc/DESCRIPTION` | • Must be 1 to 1000 characters if provided.<br> • May contain letters, digits, spaces, periods (`.`), hyphens (`-`), colons (`:`), and parentheses (`(`, `)`).<br> • Must not contain `/`.<br> • No leading/trailing spaces and no consecutive spaces. | `desc/Project Meeting (Online): bring printout.` |
 | `start/START_DATE` | • Must follow `YYYY-MM-DD HHmm` in 24-hour format.                                                                                                                          | `start/2026-03-25 0900` |
 | `end/END_DATE` | • Must follow `YYYY-MM-DD HHmm` in 24-hour format.<br> • Must be strictly after `START_DATE` provided.                                                                      | `end/2026-03-25 1000` |
 </box>
@@ -659,7 +659,11 @@ Creates a new event for a specified person.
 - Time clashes are checked **globally** across the event list, not per contact.
   - Reason: from your point of view, one user cannot be in two places at the same time, so overlapping events are blocked.
 - Overlap means the 2 ranges share actual time in common. Back-to-back events are allowed (for example, one ends at `1000` and another starts at `1000`).
-- If a clash is found, NAB shows: `This event clashes with an existing event in the calendar.`
+- If a clash is found, NAB shows the clashing event's title, time range, and the contact(s) it is linked to. For example:
+  ```
+  This event clashes with an existing event in the calendar:
+  • CS2103 Meeting -> (2026-03-25 0900 to 2026-03-25 1000) (Linked to David Li)
+  ```
 
 </box>
 
@@ -783,7 +787,7 @@ This `export` feature allows you to write contacts from NAB into 2 CSV files (`<
 - Enter `FILENAME` without specifying the `_persons.csv` or `_events.csv` extension. NAB will automatically append it for you.
 - The exported files are saved in the same directory as the current NAB data file.
   - If a file with the same name already exists, it will be overwritten.
-- Custom profile photos are not exported. During export, the profile photo header is included in the CSV to maintain schema consistency, but the field values are intentionally left blank. When imported, these blank values resolve to the default placeholder image.
+- Profile photo paths (not image files) are exported in the `Photo` column, and during import NAB uses that path if available or falls back to the default placeholder image.
 - Order of parameters does not matter.
 
 </box>

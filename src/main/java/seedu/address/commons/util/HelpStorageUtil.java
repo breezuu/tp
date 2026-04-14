@@ -16,7 +16,7 @@ import seedu.address.logic.Messages;
  * Utility class to handle the extraction and cleanup of offline help files.
  */
 public class HelpStorageUtil {
-    private static final Logger logger = LogsCenter.getLogger(HelpStorageUtil.class);
+    private static final Logger LOGGER = LogsCenter.getLogger(HelpStorageUtil.class);
     private static final String HELP_DIR_STRING = "data/help";
 
     /**
@@ -35,21 +35,21 @@ public class HelpStorageUtil {
 
         if (!Files.isDirectory(userHelpDir)) {
             Files.createDirectories(userHelpDir);
-            logger.info("Created default help directory at: " + userHelpDir.toAbsolutePath());
+            LOGGER.info("Created default help directory at: " + userHelpDir.toAbsolutePath());
         }
 
         for (String file : fileNames) {
             try (InputStream inputStream = HelpStorageUtil.class.getResourceAsStream("/help/" + file)) {
                 if (inputStream == null) {
-                    logger.severe("Could not find internal help file: /help/" + file);
+                    LOGGER.severe("Could not find internal help file: /help/" + file);
                     throw new IOException(Messages.MESSAGE_MISSING_INTERNAL_RESOURCE + file);
                 }
 
                 Path copyTo = userHelpDir.resolve(file);
                 Files.copy(inputStream, copyTo, StandardCopyOption.REPLACE_EXISTING);
-                logger.info("Copied " + file + " to " + copyTo.toAbsolutePath());
+                LOGGER.info("Copied " + file + " to " + copyTo.toAbsolutePath());
             } catch (IOException e) {
-                logger.warning("Failed to copy " + file + ": " + e.getMessage());
+                LOGGER.warning("Failed to copy " + file + ": " + e.getMessage());
                 throw new IOException(Messages.MESSAGE_FAILED_OFFLINE_GUIDE + e.getMessage());
             }
         }
@@ -63,9 +63,9 @@ public class HelpStorageUtil {
 
         try {
             FileUtil.clearDirectory(userHelpDir);
-            logger.info("Successfully cleared offline help directory.");
+            LOGGER.info("Successfully cleared offline help directory.");
         } catch (IOException e) {
-            logger.severe("Clearing temporary directory failed: " + userHelpDir.toAbsolutePath());
+            LOGGER.severe("Clearing temporary directory failed: " + userHelpDir.toAbsolutePath());
             throw new IOException(Messages.MESSAGE_FAILED_OFFLINE_GUIDE + e.getMessage());
         }
     }

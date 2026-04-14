@@ -32,7 +32,7 @@ public class PersonCard extends UiPart<Region> {
     private static final String TAG_BORDER_WIDTH = "0.5";
     private static final String DEFAULT_IMAGE = "/images/pepe-default.png";
 
-    private static final Logger logger = LogsCenter.getLogger(PersonCard.class);
+    private static final Logger LOGGER = LogsCenter.getLogger(PersonCard.class);
 
     /**
      * Note: Certain keywords such as "location" and "resources" are reserved keywords in JavaFX.
@@ -160,7 +160,7 @@ public class PersonCard extends UiPart<Region> {
                 profilePicture = new Image(fileUri);
             }
         } catch (Exception e) {
-            logger.info("Unable to load photo for : " + person.getNameString());
+            LOGGER.info("Unable to load photo for : " + person.getNameString());
         }
 
         if (profilePicture != null && !profilePicture.isError()) {

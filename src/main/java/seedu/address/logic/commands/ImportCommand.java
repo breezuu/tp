@@ -65,7 +65,7 @@ public class ImportCommand extends Command {
     public static final String MESSAGE_SUCCESS_ROWS_ADDED_SKIPPED = "Successfully imported %1$s_persons.csv "
             + "and %1$s_events.csv with %2$d contact(s) added, %3$d contact(s) skipped.";
 
-    private static final Logger logger = LogsCenter.getLogger(ImportCommand.class);
+    private static final Logger LOGGER = LogsCenter.getLogger(ImportCommand.class);
 
     private final String importType;
     private final String filename;
@@ -203,7 +203,7 @@ public class ImportCommand extends Command {
         try {
             return parseLineToEvent(line).orElse(null);
         } catch (IllegalArgumentException e) {
-            logger.info(String.format("ImportCommand: Skipping malformed event entry: %s", line));
+            LOGGER.info(String.format("ImportCommand: Skipping malformed event entry: %s", line));
             return null;
         }
     }
@@ -281,7 +281,7 @@ public class ImportCommand extends Command {
             return Optional.of(createPersonFromCsvRow(line, eventMap));
         } catch (IllegalArgumentException e) {
             String error = e.getMessage();
-            logger.info(String.format(
+            LOGGER.info(String.format(
                     "ImportCommand: Skipping invalid person entry: %s. Reason: %s", line, error));
             return Optional.empty();
         }
@@ -436,7 +436,7 @@ public class ImportCommand extends Command {
             return Optional.of(new Photo(localManagedPath.toString()));
         }
 
-        logger.info(String.format("ImportCommand: Photo file not found, using default image instead: %s", photoStr));
+        LOGGER.info(String.format("ImportCommand: Photo file not found, using default image instead: %s", photoStr));
         return Optional.empty();
     }
 
@@ -485,7 +485,7 @@ public class ImportCommand extends Command {
         try {
             return Optional.of(Integer.parseInt(eventIdText.trim()));
         } catch (NumberFormatException e) {
-            logger.info(String.format(
+            LOGGER.info(String.format(
                     "ImportCommand: Invalid event ID format in persons CSV: %s", eventIdText));
             return Optional.empty();
         }
@@ -495,7 +495,7 @@ public class ImportCommand extends Command {
             List<Event> events, int eventId) {
         Event event = eventMap.get(eventId);
         if (event == null) {
-            logger.info(String.format("ImportCommand: Event with CSV ID %d not found in events map", eventId));
+            LOGGER.info(String.format("ImportCommand: Event with CSV ID %d not found in events map", eventId));
             return;
         }
 
@@ -620,7 +620,7 @@ public class ImportCommand extends Command {
         if (!model.hasOverlappingEvent(importedEvent)) {
             return;
         }
-        logger.info(String.format("ImportCommand: Skipping overlapping event entry: %s", importedEvent));
+        LOGGER.info(String.format("ImportCommand: Skipping overlapping event entry: %s", importedEvent));
         throw new CommandException(MESSAGE_EVENT_CLASH_IN_IMPORT);
     }
 
@@ -630,7 +630,7 @@ public class ImportCommand extends Command {
         if (!isClashWithinImport) {
             return;
         }
-        logger.info(String.format("ImportCommand: Event clashes within import file: %s", importedEvent));
+        LOGGER.info(String.format("ImportCommand: Event clashes within import file: %s", importedEvent));
         throw new CommandException(MESSAGE_EVENT_CLASH_IN_IMPORT);
     }
 

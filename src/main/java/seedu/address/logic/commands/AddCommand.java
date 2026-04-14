@@ -44,7 +44,7 @@ public class AddCommand extends Command {
             + PREFIX_PHOTO + "C:/images/john_doe.png";
 
     public static final String MESSAGE_SUCCESS = "New contact added: %1$s";
-    public static final String MESSAGE_DUPLICATE_PERSON = "A contact with this phone number already exists.";
+    public static final String MESSAGE_DUPLICATE_PERSON = "A contact with the same phone number already exists.";
 
     private final Person toAdd;
     private final String targetDirectory;

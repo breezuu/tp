@@ -147,8 +147,8 @@ public class EditCommandParser implements Parser<EditCommand> {
             return Optional.empty();
         }
 
-        boolean allBlank = tags.stream().allMatch(String::isBlank);
-        if (allBlank) {
+        boolean areAllTagsBlank = tags.stream().allMatch(String::isBlank);
+        if (areAllTagsBlank) {
             return Optional.of(Collections.emptySet());
         }
 

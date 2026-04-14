@@ -18,6 +18,7 @@ public class Messages {
     public static final String MESSAGE_PERSONS_LISTED_OVERVIEW = "%1$d matching contacts listed!";
     public static final String MESSAGE_NO_PERSONS = "No matching contacts found!";
     public static final String MESSAGE_EVENTS_LISTED_OVERVIEW = "%1$d events listed!";
+    public static final String MESSAGE_NO_EVENTS_FOR_PERSON = "No events found for %1$s.";
     public static final String MESSAGE_DUPLICATE_FIELDS =
             "Multiple values specified for the following single-valued field(s): ";
     public static final String MESSAGE_MULTIPLE_MATCH =

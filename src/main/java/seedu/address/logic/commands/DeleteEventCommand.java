@@ -28,8 +28,8 @@ public class DeleteEventCommand extends Command {
             + "Example: event delete start/2026-03-25 0900 n/Alex Yeoh";
 
     public static final String MESSAGE_SUCCESS = "Deleted event for %1$s: %2$s";
-    public static final String MESSAGE_EVENT_NOT_FOUND = "This contact does not have this event: %1$s";
-    private static final Logger logger = LogsCenter.getLogger(DeleteEventCommand.class);
+    public static final String MESSAGE_EVENT_NOT_FOUND = "No event starting at %1$s found for %2$s.";
+    private static final Logger LOGGER = LogsCenter.getLogger(DeleteEventCommand.class);
 
     private final LocalDateTime startTime;
     private final PersonInformation targetInfo;
@@ -55,19 +55,19 @@ public class DeleteEventCommand extends Command {
 
         if (eventToDelete == null) {
             String formattedStart = startTime.format(TimeRange.DATE_TIME_FORMATTER);
-            logger.info("DeleteEvent: event not found for " + personToEdit.getName()
+            LOGGER.info("DeleteEvent: event not found for " + personToEdit.getName()
                     + " with a start time " + formattedStart);
-            throw new CommandException(String.format(MESSAGE_EVENT_NOT_FOUND, formattedStart));
+            throw new CommandException(String.format(MESSAGE_EVENT_NOT_FOUND, formattedStart, personToEdit.getName()));
         }
 
         Event eventToUnlink = model.unlinkPersonFromEvent(eventToDelete);
 
-        logger.info("DeleteEvent: unlinking event " + eventToDelete + " from " + personToEdit.getName()
+        LOGGER.info("DeleteEvent: unlinking event " + eventToDelete + " from " + personToEdit.getName()
                 + ", remaining links=" + eventToUnlink.getNumberOfPersonLinked());
 
         Person editedPerson = personToEdit.copyWithRemovedEvent(eventToUnlink);
         model.setPerson(personToEdit, editedPerson);
-        logger.info("DeleteEvent: person updated " + personToEdit.getName()
+        LOGGER.info("DeleteEvent: person updated " + personToEdit.getName()
                 + ", total events=" + editedPerson.getEvents().size());
 
         model.showEventsForPerson(editedPerson);

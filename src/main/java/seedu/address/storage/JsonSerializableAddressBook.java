@@ -36,7 +36,7 @@ class JsonSerializableAddressBook {
             "Duplicate eventId %d found during load — skipping second entry.";
     public static final String MESSAGE_MISSING_EVENT_ID =
             "Event '%s' is missing eventId field — skipping.";
-    private static final Logger logger = LogsCenter.getLogger(JsonSerializableAddressBook.class);
+    private static final Logger LOGGER = LogsCenter.getLogger(JsonSerializableAddressBook.class);
 
     private final List<JsonAdaptedPerson> persons = new ArrayList<>();
     private final List<JsonAdaptedEvent> events = new ArrayList<>();
@@ -83,12 +83,12 @@ class JsonSerializableAddressBook {
         for (JsonAdaptedEvent jsonAdaptedEvent : events) {
             if (jsonAdaptedEvent.getEventId() == null) {
                 Event event = jsonAdaptedEvent.toModelType();
-                logger.warning(String.format(MESSAGE_MISSING_EVENT_ID, event.getTitle()));
+                LOGGER.warning(String.format(MESSAGE_MISSING_EVENT_ID, event.getTitle()));
                 continue;
             }
             Event event = jsonAdaptedEvent.toModelType();
             if (eventMap.containsKey(event.getEventId())) {
-                logger.warning(String.format(MESSAGE_DUPLICATE_EVENT_ID, event.getEventId()));
+                LOGGER.warning(String.format(MESSAGE_DUPLICATE_EVENT_ID, event.getEventId()));
                 continue;
             }
             boolean isOverlapping = eventMap.values().stream().anyMatch(event::isClashingWith);
@@ -119,7 +119,7 @@ class JsonSerializableAddressBook {
         // Discard orphaned events (not referenced by any person) before adding persons.
         eventMap.values().removeIf(event -> {
             if (event.getNumberOfPersonLinked() == 0) {
-                logger.warning(String.format(MESSAGE_ORPHANED_EVENT, event.getTitle()));
+                LOGGER.warning(String.format(MESSAGE_ORPHANED_EVENT, event.getTitle()));
                 return true;
             }
             return false;

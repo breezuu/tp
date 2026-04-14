@@ -39,7 +39,7 @@ public class MainApp extends Application {
 
     public static final Version VERSION = new Version(0, 2, 2, true);
 
-    private static final Logger logger = LogsCenter.getLogger(MainApp.class);
+    private static final Logger LOGGER = LogsCenter.getLogger(MainApp.class);
 
     protected Ui ui;
     protected Logic logic;
@@ -50,7 +50,7 @@ public class MainApp extends Application {
 
     @Override
     public void init() throws Exception {
-        logger.info("=============================[ Initializing AddressBook ]===========================");
+        LOGGER.info("=============================[ Initializing AddressBook ]===========================");
         super.init();
 
         AppParameters appParameters = AppParameters.parse(getParameters());
@@ -75,19 +75,19 @@ public class MainApp extends Application {
      * or an empty address book will be used instead if errors occur when reading {@code storage}'s address book.
      */
     private Model initModelManager(Storage storage, ReadOnlyUserPrefs userPrefs) {
-        logger.info("Using data file : " + storage.getAddressBookFilePath());
+        LOGGER.info("Using data file : " + storage.getAddressBookFilePath());
 
         Optional<ReadOnlyAddressBook> addressBookOptional;
         ReadOnlyAddressBook initialData;
         try {
             addressBookOptional = storage.readAddressBook();
             if (!addressBookOptional.isPresent()) {
-                logger.info("Creating a new data file " + storage.getAddressBookFilePath()
+                LOGGER.info("Creating a new data file " + storage.getAddressBookFilePath()
                         + " populated with a sample AddressBook.");
             }
             initialData = addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
         } catch (DataLoadingException e) {
-            logger.warning("Data file at " + storage.getAddressBookFilePath() + " could not be loaded."
+            LOGGER.warning("Data file at " + storage.getAddressBookFilePath() + " could not be loaded."
                     + " Will be starting with an empty AddressBook.");
             dataLoadingError = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
             initialData = new AddressBook();
@@ -112,20 +112,20 @@ public class MainApp extends Application {
         configFilePathUsed = Config.DEFAULT_CONFIG_FILE;
 
         if (configFilePath != null) {
-            logger.info("Custom Config file specified " + configFilePath);
+            LOGGER.info("Custom Config file specified " + configFilePath);
             configFilePathUsed = configFilePath;
         }
 
-        logger.info("Using config file : " + configFilePathUsed);
+        LOGGER.info("Using config file : " + configFilePathUsed);
 
         try {
             Optional<Config> configOptional = ConfigUtil.readConfig(configFilePathUsed);
             if (!configOptional.isPresent()) {
-                logger.info("Creating new config file " + configFilePathUsed);
+                LOGGER.info("Creating new config file " + configFilePathUsed);
             }
             initializedConfig = configOptional.orElse(new Config());
         } catch (DataLoadingException e) {
-            logger.warning("Config file at " + configFilePathUsed + " could not be loaded."
+            LOGGER.warning("Config file at " + configFilePathUsed + " could not be loaded."
                     + " Using default config properties.");
             initializedConfig = new Config();
         }
@@ -134,7 +134,7 @@ public class MainApp extends Application {
         try {
             ConfigUtil.saveConfig(initializedConfig, configFilePathUsed);
         } catch (IOException e) {
-            logger.warning("Failed to save config file : " + StringUtil.getDetails(e));
+            LOGGER.warning("Failed to save config file : " + StringUtil.getDetails(e));
         }
         return initializedConfig;
     }
@@ -146,17 +146,17 @@ public class MainApp extends Application {
      */
     protected UserPrefs initPrefs(UserPrefsStorage storage) {
         Path prefsFilePath = storage.getUserPrefsFilePath();
-        logger.info("Using preference file : " + prefsFilePath);
+        LOGGER.info("Using preference file : " + prefsFilePath);
 
         UserPrefs initializedPrefs;
         try {
             Optional<UserPrefs> prefsOptional = storage.readUserPrefs();
             if (!prefsOptional.isPresent()) {
-                logger.info("Creating new preference file " + prefsFilePath);
+                LOGGER.info("Creating new preference file " + prefsFilePath);
             }
             initializedPrefs = prefsOptional.orElse(new UserPrefs());
         } catch (DataLoadingException e) {
-            logger.warning("Preference file at " + prefsFilePath + " could not be loaded."
+            LOGGER.warning("Preference file at " + prefsFilePath + " could not be loaded."
                     + " Using default preferences.");
             initializedPrefs = new UserPrefs();
         }
@@ -165,7 +165,7 @@ public class MainApp extends Application {
         try {
             storage.saveUserPrefs(initializedPrefs);
         } catch (IOException e) {
-            logger.warning("Failed to save config file : " + StringUtil.getDetails(e));
+            LOGGER.warning("Failed to save config file : " + StringUtil.getDetails(e));
         }
 
         return initializedPrefs;
@@ -173,7 +173,7 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        logger.info("Starting AddressBook " + MainApp.VERSION);
+        LOGGER.info("Starting AddressBook " + MainApp.VERSION);
         ui.start(primaryStage);
         if (dataLoadingError != null) {
             ui.showDataLoadingError(dataLoadingError);
@@ -182,12 +182,12 @@ public class MainApp extends Application {
 
     @Override
     public void stop() {
-        logger.info("============================ [ Stopping AddressBook ] =============================");
+        LOGGER.info("============================ [ Stopping AddressBook ] =============================");
         try {
             storage.saveUserPrefs(model.getUserPrefs());
             HelpStorageUtil.clearDirectory();
         } catch (IOException e) {
-            logger.severe("Failed to save preferences " + StringUtil.getDetails(e));
+            LOGGER.severe("Failed to save preferences " + StringUtil.getDetails(e));
         }
     }
 

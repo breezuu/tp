@@ -26,7 +26,7 @@ import seedu.address.model.person.Photo;
  * Represents the in-memory model of the address book data.
  */
 public class ModelManager implements Model {
-    private static final Logger logger = LogsCenter.getLogger(ModelManager.class);
+    private static final Logger LOGGER = LogsCenter.getLogger(ModelManager.class);
 
     private final AddressBook addressBook;
     private final UserPrefs userPrefs;
@@ -40,7 +40,7 @@ public class ModelManager implements Model {
     public ModelManager(ReadOnlyAddressBook addressBook, ReadOnlyUserPrefs userPrefs) {
         requireAllNonNull(addressBook, userPrefs);
 
-        logger.fine("Initializing with address book: " + addressBook + " and user prefs " + userPrefs);
+        LOGGER.fine("Initializing with address book: " + addressBook + " and user prefs " + userPrefs);
 
         this.addressBook = new AddressBook(addressBook);
         this.userPrefs = new UserPrefs(userPrefs);
@@ -356,16 +356,16 @@ public class ModelManager implements Model {
      */
     private Comparator<Person> createPinnedComparator() {
         return (p1, p2) -> {
-            boolean p1Pinned = findPinnedPersonByIdentity(p1) != null;
-            boolean p2Pinned = findPinnedPersonByIdentity(p2) != null;
+            boolean isFirstPersonPinned = findPinnedPersonByIdentity(p1) != null;
+            boolean isSecondPersonPinned = findPinnedPersonByIdentity(p2) != null;
 
-            if (p1Pinned && !p2Pinned) {
+            if (isFirstPersonPinned && !isSecondPersonPinned) {
                 return -1;
             }
-            if (!p1Pinned && p2Pinned) {
+            if (!isFirstPersonPinned && isSecondPersonPinned) {
                 return 1;
             }
-            if (p1Pinned) {
+            if (isFirstPersonPinned) {
                 return Integer.compare(getPinIndexByIdentity(p1), getPinIndexByIdentity(p2));
             }
 

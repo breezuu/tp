@@ -34,7 +34,7 @@ public class AddressBookParser {
      * Used for initial separation of command word and args.
      */
     private static final Pattern BASIC_COMMAND_FORMAT = Pattern.compile("(?<commandWord>\\S+)(?<arguments>.*)");
-    private static final Logger logger = LogsCenter.getLogger(AddressBookParser.class);
+    private static final Logger LOGGER = LogsCenter.getLogger(AddressBookParser.class);
 
     /**
      * Parses user input into command for execution.
@@ -55,7 +55,7 @@ public class AddressBookParser {
         // Note to developers: Change the log level in config.json to enable lower level (i.e., FINE, FINER and lower)
         // log messages such as the one below.
         // Lower level log messages are used sparingly to minimize noise in the code.
-        logger.fine("Command word: " + commandWord + "; Arguments: " + arguments);
+        LOGGER.fine("Command word: " + commandWord + "; Arguments: " + arguments);
 
         switch (commandWord) {
 
@@ -105,7 +105,7 @@ public class AddressBookParser {
             return new ImportCommandParser().parse(arguments);
 
         default:
-            logger.finer("This user input caused a ParseException: " + userInput);
+            LOGGER.finer("This user input caused a ParseException: " + userInput);
             throw new ParseException(MESSAGE_UNKNOWN_COMMAND);
         }
     }

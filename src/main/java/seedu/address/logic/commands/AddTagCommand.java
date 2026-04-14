@@ -59,7 +59,7 @@ public class AddTagCommand extends Command {
     public static final String MESSAGE_DUPLICATE_TARGET_PERSON =
             "The same contact cannot be specified more than once in a single tag command: %1$s.";
 
-    private static final Logger logger = LogsCenter.getLogger(AddTagCommand.class);
+    private static final Logger LOGGER = LogsCenter.getLogger(AddTagCommand.class);
 
     private final List<PersonInformation> targets;
     private final Set<Tag> tagsToAssign;
@@ -87,7 +87,7 @@ public class AddTagCommand extends Command {
 
         // Resolve all persons first
         List<Person> uniquePersons = resolvePersons(model);
-        logger.info("AddTag: tagging " + uniquePersons.size() + " person(s) with " + tagsToAssign);
+        LOGGER.info("AddTag: tagging " + uniquePersons.size() + " person(s) with " + tagsToAssign);
         // Apply tags for each person
         applyTags(model, uniquePersons);
         // refresh the listing

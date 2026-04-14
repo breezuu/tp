@@ -10,8 +10,8 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class Tag {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Tags may only include letters, digits, spaces, hyphens (-) or underscores (_), "
-                    + "and must be 30 characters or fewer";
+            "Tags must start with an alphanumeric character, may only include letters, digits, "
+                    + "spaces, hyphens (-) or underscores (_), and must be 30 characters or fewer";
     public static final String VALIDATION_REGEX = "[a-zA-Z0-9][a-zA-Z0-9 _\\-]{0,29}";
 
     public final String tagName;

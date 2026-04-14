@@ -26,7 +26,7 @@ public class HelpWindow extends UiPart<Stage> {
     public static final String HELP_MESSAGE = "Refer to the user guide: " + USERGUIDE_URL;
     public static final String LOCAL_HELP_MESSAGE = "If you are unable to view the help page, click this button ->";
 
-    private static final Logger logger = LogsCenter.getLogger(HelpWindow.class);
+    private static final Logger LOGGER = LogsCenter.getLogger(HelpWindow.class);
     private static final String FXML = "HelpWindow.fxml";
     private static final String USER_FILE_PATH = "data/help/index.html";
 
@@ -81,7 +81,7 @@ public class HelpWindow extends UiPart<Stage> {
      *     </ul>
      */
     public void show() {
-        logger.fine("Showing help page about the application.");
+        LOGGER.fine("Showing help page about the application.");
         getRoot().show();
         getRoot().centerOnScreen();
     }
@@ -135,14 +135,14 @@ public class HelpWindow extends UiPart<Stage> {
                     try {
                         Desktop.getDesktop().browse(fileUri);
                     } catch (IOException e) {
-                        logger.severe("Failed to open the offline help guide: " + e.getMessage());
+                        LOGGER.severe("Failed to open the offline help guide: " + e.getMessage());
                     }
                 }).start();
             } else {
-                logger.warning("Desktop browsing not supported on this system");
+                LOGGER.warning("Desktop browsing not supported on this system");
             }
         } catch (IOException e) {
-            logger.severe("Offline help guide process failed: " + e.getMessage());
+            LOGGER.severe("Offline help guide process failed: " + e.getMessage());
         }
     }
 }

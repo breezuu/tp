@@ -62,8 +62,9 @@ public class PinCommand extends Command {
                 .filter(person -> !model.isPersonPinned(person))
                 .toList();
         if (unpinnedMatches.isEmpty()) {
-            // Validate the target exists and is unambiguous, then surface the pinned-state error.
-            CommandUtil.targetPersonFromMatches(model, matches);
+            if (matches.isEmpty()) {
+                throw new CommandException(Messages.MESSAGE_NO_MATCH);
+            }
             throw new CommandException(MESSAGE_ALREADY_PINNED);
         }
         // Resolve the target person from the unpinned matches

@@ -104,7 +104,7 @@ Here's a (partial) class diagram of the `Logic` component:
 
 The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete n/David")` API call as an example.
 
-<puml src="diagrams/DeleteSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `delete 1` Command" />
+<puml src="diagrams/DeleteSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the Delete Command" />
 
 <box type="info" seamless>
 
@@ -269,7 +269,7 @@ The following class diagram shows the main classes involved in the feature:
 
 <puml src="diagrams/PinClassDiagram.puml" alt="PinClassDiagram" width=75% />
 
-[`PinCommandParser`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/logic/parser/PinCommandParser.java) and [`UnpinCommandParser`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/logic/parser/UnpinCommandParser.java) each parse the user's input and construct their respective commands with a `PersonInformation` object as the matching criteria. `PinCommand#execute(Model)` resolves the target by finding all matching contacts and applying shared disambiguation logic. After resolving to a single contact, it checks whether the contact is already pinned — throwing an error if so — before calling `model.pinPerson(...)`. `UnpinCommand#execute(Model)` follows the same flow, but checks whether the resolved contact is not pinned (throwing an error if already unpinned) before calling `model.unpinPerson(...)`. Both commands throw an error if no match or multiple matches remain after disambiguation.
+[`PinCommandParser`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/logic/parser/PinCommandParser.java) and [`UnpinCommandParser`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/logic/parser/UnpinCommandParser.java) each parse the user's input and construct their respective commands with a `PersonInformation` object as the matching criteria. `PinCommand#execute(Model)` first finds all contacts matching the target criteria, then filters those matches to contacts that are not yet pinned. If no unpinned match remains, it checks whether the original match list is empty. If it is empty, it throws a no-match error; otherwise, it reports that the matching contact(s) are already pinned. It then applies the shared disambiguation logic to the remaining unpinned matches before calling `model.pinPerson(...)`. `UnpinCommand#execute(Model)` follows the same structure, except it filters to currently pinned matches, reports an already-unpinned error when applicable, and calls `model.unpinPerson(...)` after a single pinned target is resolved. Both commands throw an error if no contact matches, if multiple eligible matches remain after disambiguation, or if matching contact(s) are already in the requested pin state.
 
 [`AddressBook`](https://github.com/AY2526S2-CS2103-F08-4/tp/tree/master/src/main/java/seedu/address/model/AddressBook.java) maintains two lists: `persons` as the source of truth for all contacts, and `pinnedPersons` as an ordered list of pinned contacts. The insertion order of `pinnedPersons` defines the display order among pinned contacts. The UI reorders the displayed list by sorting against this pinned list, keeping pinned contacts at the top while preserving the relative order of unpinned contacts.
 
@@ -277,19 +277,28 @@ Pinned state is persisted in the JSON save file and reconstructed on load. The U
 
 #### Usage scenario
 
-The following sequence diagram shows how a `pin` command flows through the `Logic` component. The `unpin` command follows the same flow, except it checks whether the resolved contact is already unpinned and throws an error if so before calling `model.unpinPerson(...)`.
+The following sequence diagram shows how a `pin` command flows through the `Logic` component. The `unpin` command follows the same flow, except it filters for pinned contacts and throws an already-unpinned error when no eligible pinned match remains before calling `model.unpinPerson(...)`.
 
 <puml src="diagrams/PinSequenceDiagram-Logic.puml" alt="PinSequenceDiagram-Logic" />
 
 <box type="info" seamless>
 
-**Note:** The lifeline for `PinCommand` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline reaches the end of the diagram.
+**Note:** 
+* The lifeline for `PinCommand` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline reaches the end of the diagram.  
+* The internal interactions between `CommandUtil` and `Model` during target-person disambiguation are omitted from this diagram. For the detailed disambiguation flow, see [Contact Disambiguating feature](#contact-disambiguating-feature).
+* Unlike other targeting commands (e.g., `delete`, `edit`) that pass all matches directly to `CommandUtil#targetPersonFromMatches`, `PinCommand` first filters the matches to unpinned contacts only before invoking disambiguation. `UnpinCommand` follows the same pattern, filtering to pinned contacts first.
 
 </box>
 
 How the `pinPerson` call is handled inside the `Model` component is shown below:
 
 <puml src="diagrams/PinSequenceDiagram-Model.puml" alt="PinSequenceDiagram-Model" />
+
+<box type="info" seamless>
+
+**Note:** The `unpinPerson(...)` call follows the same delegation pattern: `UnpinCommand` calls `ModelManager#unpinPerson(Person)`, which delegates to `AddressBook#unpinPerson(Person)`.
+
+</box>
 
 The following activity diagram summarizes the pin/unpin command flow:
 
@@ -421,7 +430,7 @@ In all success cases, a new `Person` object is constructed with the event append
 
 #### Usage scenario
 
-The following sequence diagram shows how an `event add` command flows through the `Logic` and `Model` components, illustrating all four resolution cases within `AddEventCommand#execute(Model)`.
+The following sequence diagram shows how an `event add` command flows through the `Logic` and `Model` components, illustrating all five resolution cases within `AddEventCommand#execute(Model)`. Target resolution (case 1) is shown as a delegation to `CommandUtil`, while cases 2–5 are shown as the four `alt` branches.
 
 <puml src="diagrams/AddEventSequenceDiagram.puml" alt="AddEventSequenceDiagram" />
 
@@ -430,6 +439,7 @@ The following sequence diagram shows how an `event add` command flows through th
 **Note:**
 * The lifeline for `AddEventCommand` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline reaches the end of the diagram.
 * For clarity, the first-case duplicate-link validation `personToEdit.hasEvent(toAdd)` is omitted from this sequence diagram. If this check returns `true`, it means the target person is already linked to the event, and `AddEventCommand` immediately throws a `CommandException` without proceeding to the model-level event checks.
+* The internal interactions between `CommandUtil` and `Model` during target-person disambiguation are omitted from this diagram. For the detailed disambiguation flow, see [Contact Disambiguating feature](#contact-disambiguating-feature).
 
 </box>
 
@@ -552,8 +562,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 
-* 1a. NAB detects that a contact with the provided phone number exists.
-  * 1a1. NAB returns an error message stating that a contact with this phone number already exists.
+* 1a. NAB detects that a contact with the same phone number already exists.
+  * 1a1. NAB returns an error message stating that a contact with the same phone number already exists.
 <br> *Use case ends.*<br><br>
 * 1b. NAB detects invalid or missing contact information.
   * 1b1. NAB displays an error message specifying the correct command format.
@@ -674,7 +684,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   * 2b1. NAB displays the conflicting contacts and returns an error prompting the user to provide more specific arguments.
     <br> *Use case ends.*<br><br>
 * 3a. NAB finds no events associated with the contact.
-    * 3a1. NAB informs the user that there are 0 events associated with the contact.
+    * 3a1. NAB informs the user that no events were found for the specified contact.
     <br> *Use case ends.*
 </box>
 
@@ -777,13 +787,13 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * 1a. NAB detects invalid characters or formats in the provided fields.
     * 1a1. NAB displays an error message specifying the correct command format.
       <br> *Use case ends.*<br><br>
-* 2a. NAB finds multiple contacts that match the provided fields.
+* 2a. NAB finds multiple unpinned contacts that match the provided fields.
     * 2a1. NAB displays the conflicting contacts and returns an error prompting the user to provide more arguments.
       <br> *Use case ends.*<br><br>
 * 2b. NAB finds no available contacts that match the fields provided.
     * 2b1. NAB informs the user that no matching contact was found.
       <br> *Use case ends.*<br><br>
-* 3a. NAB detects that the contact is already pinned.
+* 3a. NAB detects that all matching contacts are already pinned.
     * 3a1. NAB informs the user that the contact is already pinned.
       <br> *Use case ends.*
 </box>
@@ -1153,3 +1163,11 @@ Team Size: 5
 3. **Enhance `event view` with the ability to sort events**: When viewing events, allow the user to sort them by start time or end time.
 
 4. **Enhance `event view` with the ability to filter events**: When viewing events, allow the user to filter them by a time range.
+
+5. **Enhance `edit` tag handling to gracefully handle duplicate tag inputs**: Currently, specifying a tag that a contact already owns in the update segment of `edit` silently removes it due to toggle semantics. The fix is to make tag inputs in the update segment strictly additive, so that providing an already-existing tag is handled gracefully by keeping it unchanged rather than removing it unexpectedly.
+
+6. **Enhance `event add` to gracefully handle description conflicts on shared events**: Currently, when `event add` matches an existing event by title and time range, any description provided in the new command is silently ignored. The fix is to handle this case gracefully by informing the user that the existing event will be reused as-is, so that the ignored description does not go unnoticed.
+
+7. **Enhance command parsing to gracefully handle unexpected trailing tokens**: Currently, any text typed after the last valid prefix in a command (e.g. `edit n/Alice >> p/98765432 unknownSuffix` or `edit n/Alice >> unknownSuffix p/`) is absorbed into that prefix's value by the argument tokenizer, causing a field-level validation error (e.g. an invalid phone number message) instead of an invalid command format error. The fix is to enhance the tokenizer or individual parsers to detect and reject unexpected trailing tokens with a clearer error message.
+
+8. **Enhance `import` to provide a more detailed result summary**: Currently, the import success message reports a single "skipped" count that combines both invalid rows (e.g. missing required fields) and duplicate rows (e.g. phone number already exists in NAB). The fix is to break down the skipped count into separate categories so users can clearly understand how many rows were skipped due to invalid data versus duplicates. For example: `Successfully imported save_file_persons.csv and save_file_events.csv with 3 contact(s) added, 2 contact(s) skipped (duplicate), 1 contact(s) skipped (invalid).`

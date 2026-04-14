@@ -15,7 +15,7 @@ import seedu.address.commons.util.ToStringBuilder;
  * Represents the parsed command-line parameters given to the application.
  */
 public class AppParameters {
-    private static final Logger logger = LogsCenter.getLogger(AppParameters.class);
+    private static final Logger LOGGER = LogsCenter.getLogger(AppParameters.class);
 
     private Path configPath;
 
@@ -36,7 +36,7 @@ public class AppParameters {
 
         String configPathParameter = namedParameters.get("config");
         if (configPathParameter != null && !FileUtil.isValidPath(configPathParameter)) {
-            logger.warning("Invalid config path " + configPathParameter + ". Using default config path.");
+            LOGGER.warning("Invalid config path " + configPathParameter + ". Using default config path.");
             configPathParameter = null;
         }
         appParameters.setConfigPath(configPathParameter != null ? Paths.get(configPathParameter) : null);

@@ -85,7 +85,7 @@ public class DeleteEventCommandTest {
         assertFalse(modelStub.editedPerson.getEvents().contains(eventToDelete));
         assertTrue(modelStub.editedPerson.getEvents().contains(otherEvent));
         assertEquals(1, modelStub.editedPerson.getEvents().size());
-        assertTrue(modelStub.unlinkCalled);
+        assertTrue(modelStub.isUnlinkPersonFromEventCalled);
         assertEquals(modelStub.editedPerson, modelStub.shownPerson);
     }
 
@@ -107,8 +107,8 @@ public class DeleteEventCommandTest {
         DeleteEventCommand command = new DeleteEventCommand(infoOf(VALID_NAME), startOf(VALID_START));
 
         assertThrows(CommandException.class, Messages.MESSAGE_MULTIPLE_MATCH, () -> command.execute(modelStub));
-        assertTrue(modelStub.filteredPersonsUpdated);
-        assertTrue(modelStub.filteredEventsUpdated);
+        assertTrue(modelStub.isFilteredPersonListUpdated);
+        assertTrue(modelStub.isFilteredEventListUpdated);
     }
 
     @Test
@@ -117,7 +117,7 @@ public class DeleteEventCommandTest {
         ModelStubWithPerson modelStub = new ModelStubWithPerson(person, null);
         DeleteEventCommand command = new DeleteEventCommand(infoOf(VALID_NAME), startOf(VALID_START));
 
-        String expectedMessage = String.format(DeleteEventCommand.MESSAGE_EVENT_NOT_FOUND, VALID_START);
+        String expectedMessage = String.format(DeleteEventCommand.MESSAGE_EVENT_NOT_FOUND, VALID_START, VALID_NAME);
         assertThrows(CommandException.class, expectedMessage, () -> command.execute(modelStub));
     }
 
@@ -344,7 +344,7 @@ public class DeleteEventCommandTest {
         private final Event eventToUnlink;
         private Person editedPerson;
         private Person shownPerson;
-        private boolean unlinkCalled;
+        private boolean isUnlinkPersonFromEventCalled;
 
         ModelStubWithPerson(Person person, Event eventToUnlink) {
             requireNonNull(person);
@@ -381,7 +381,7 @@ public class DeleteEventCommandTest {
 
         @Override
         public Event unlinkPersonFromEvent(Event eventToUnlink) {
-            unlinkCalled = true;
+            isUnlinkPersonFromEventCalled = true;
             return this.eventToUnlink;
         }
     }
@@ -400,8 +400,8 @@ public class DeleteEventCommandTest {
 
     private class ModelStubWithMultiplePersons extends ModelStub {
         private final List<Person> persons;
-        private boolean filteredPersonsUpdated;
-        private boolean filteredEventsUpdated;
+        private boolean isFilteredPersonListUpdated;
+        private boolean isFilteredEventListUpdated;
 
         ModelStubWithMultiplePersons(List<Person> persons) {
             this.persons = persons;
@@ -414,13 +414,13 @@ public class DeleteEventCommandTest {
 
         @Override
         public void showMatchingPersons(java.util.Set<Person> persons) {
-            filteredPersonsUpdated = true;
-            filteredEventsUpdated = true;
+            isFilteredPersonListUpdated = true;
+            isFilteredEventListUpdated = true;
         }
 
         @Override
         public void updateFilteredPersonList(Predicate<Person> predicate) {
-            filteredPersonsUpdated = true;
+            isFilteredPersonListUpdated = true;
         }
     }
 }

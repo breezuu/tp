@@ -61,7 +61,9 @@ public class UnpinCommand extends Command {
                 .filter(model::isPersonPinned)
                 .toList();
         if (pinnedMatches.isEmpty()) {
-            CommandUtil.targetPersonFromMatches(model, matches);
+            if (matches.isEmpty()) {
+                throw new CommandException(Messages.MESSAGE_NO_MATCH);
+            }
             throw new CommandException(MESSAGE_ALREADY_UNPINNED);
         }
         // Resolve the target person from the pinned matches

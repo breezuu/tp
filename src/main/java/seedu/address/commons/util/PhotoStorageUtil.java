@@ -19,7 +19,7 @@ import seedu.address.model.person.Photo;
 public class PhotoStorageUtil {
     public static final String DEFAULT_IMAGE_DIR = "data/images/";
 
-    private static final Logger logger = LogsCenter.getLogger(PhotoStorageUtil.class);
+    private static final Logger LOGGER = LogsCenter.getLogger(PhotoStorageUtil.class);
     private static final String MESSAGE_MANAGED_DIRECTORY_SOURCE_NOT_ALLOWED =
             "Direct linking from managed image directory is not allowed."
             + " Please provide a source image outside " + DEFAULT_IMAGE_DIR + " .";
@@ -53,7 +53,7 @@ public class PhotoStorageUtil {
 
         String uniqueFileName = generateUniqueUuid(srcPath);
         Path fullDestDir = destDir.resolve(uniqueFileName);
-        logger.info("Copying photo from " + srcPath + " to " + fullDestDir);
+        LOGGER.info("Copying photo from " + srcPath + " to " + fullDestDir);
         Files.copy(srcPath, fullDestDir, StandardCopyOption.REPLACE_EXISTING);
 
         return createRelativePhoto(uniqueFileName, targetDirectory);
@@ -94,7 +94,7 @@ public class PhotoStorageUtil {
     private static void ensureDirectoryExists(Path destDir) throws IOException {
         if (!Files.exists(destDir)) {
             Files.createDirectories(destDir);
-            logger.info("Created default image directory at: " + destDir.toAbsolutePath());
+            LOGGER.info("Created default image directory at: " + destDir.toAbsolutePath());
         }
     }
 

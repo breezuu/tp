@@ -40,11 +40,11 @@ public class CommandResult {
         return feedbackToUser;
     }
 
-    public boolean isShowHelp() {
+    public boolean isHelpRequested() {
         return isHelpRequested;
     }
 
-    public boolean isExit() {
+    public boolean shouldExit() {
         return shouldExit;
     }
 
