@@ -1,15 +1,19 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DESC;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TITLE;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 import static seedu.address.model.event.TimeRange.MESSAGE_END_NOT_AFTER_START;
 import static seedu.address.model.event.TimeRange.MESSAGE_INVALID_DATETIME_FORMAT;
+import static seedu.address.testutil.Assert.assertThrows;
 
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.AddEventCommand;
 import seedu.address.model.event.Description;
 import seedu.address.model.event.Event;
@@ -28,6 +32,11 @@ public class AddEventParserTest {
     private static final String VALID_END = "2026-02-21 1500";
 
     private final AddEventParser parser = new AddEventParser();
+
+    @Test
+    public void parse_nullArgs_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> parser.parse(null));
+    }
 
     @Test
     public void parse_allFieldsPresent_success() {
@@ -177,6 +186,22 @@ public class AddEventParserTest {
     }
 
     @Test
+    public void parse_duplicateTitlePrefix_failure() {
+        assertParseFailure(parser,
+                " title/Meeting title/Tutorial desc/All tasks start/" + VALID_START + " end/" + VALID_END
+                        + " n/" + VALID_NAME,
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_TITLE));
+    }
+
+    @Test
+    public void parse_duplicateDescriptionPrefix_failure() {
+        assertParseFailure(parser,
+                " title/Meeting desc/All tasks desc/More tasks start/" + VALID_START + " end/" + VALID_END
+                        + " n/" + VALID_NAME,
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_DESC));
+    }
+
+    @Test
     public void parse_nonExistentDate_failure() {
         assertParseFailure(parser,
                 " title/Meeting start/2026-02-30 0900 end/2026-02-30 1000 n/" + VALID_NAME,
@@ -185,7 +210,7 @@ public class AddEventParserTest {
 
     @Test
     public void parse_invalidEndDateTimeFormat_failure() {
-        // Start is valid; only end is invalid — exercises second operand of the || condition
+        // Start is valid; only end is invalid, exercising the second operand of the || condition.
         assertParseFailure(parser,
                 " title/Meeting start/" + VALID_START + " end/25-03-2026 1000 n/" + VALID_NAME,
                 MESSAGE_INVALID_DATETIME_FORMAT);

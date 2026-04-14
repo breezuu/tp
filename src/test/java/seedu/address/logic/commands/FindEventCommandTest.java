@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_EVENTS_LISTED_OVERVIEW;
 import static seedu.address.logic.Messages.MESSAGE_MULTIPLE_MATCH;
+import static seedu.address.logic.Messages.MESSAGE_NO_EVENTS_FOR_PERSON;
 import static seedu.address.logic.Messages.MESSAGE_NO_MATCH;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
@@ -26,6 +27,14 @@ public class FindEventCommandTest {
     @Test
     public void constructor_nullTargetInfo_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new FindEventCommand(null));
+    }
+
+    @Test
+    public void execute_nullModel_throwsNullPointerException() {
+        FindEventCommand command = new FindEventCommand(
+                new PersonInformation(new Name("Alice Pauline"), null, null, null, null));
+
+        assertThrows(NullPointerException.class, () -> command.execute(null));
     }
 
     @Test
@@ -80,6 +89,22 @@ public class FindEventCommandTest {
         assertEquals(new Name("Alice Pauline"), matchedPerson.getName());
         assertEquals(1, model.getFilteredEventList().size());
         assertTrue(model.getFilteredEventList().stream().allMatch(matchedPerson.getEvents()::contains));
+    }
+
+    @Test
+    public void execute_singleMatchingPersonWithNoEvents_returnsNoEventsMessage() throws CommandException {
+        Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        Person noEventPerson = new PersonBuilder().withName("No Event Person").withPhone("83334444").build();
+        model.addPerson(noEventPerson);
+        FindEventCommand command = new FindEventCommand(
+                new PersonInformation(new Name("No Event Person"), null, null, null, null));
+
+        CommandResult result = command.execute(model);
+
+        assertEquals(String.format(MESSAGE_NO_EVENTS_FOR_PERSON, noEventPerson.getName()), result.getFeedbackToUser());
+        assertEquals(1, model.getFilteredPersonList().size());
+        assertEquals(noEventPerson, model.getFilteredPersonList().get(0));
+        assertTrue(model.getFilteredEventList().isEmpty());
     }
 
     @Test

@@ -64,7 +64,7 @@ public class AddEventParser implements Parser<AddEventCommand> {
         if (descStr != null && (descStr.isEmpty() || !Description.isValidDescription(descStr))) {
             throw new ParseException(Description.MESSAGE_CONSTRAINTS);
         }
-        Optional<Description> description = (descStr != null && !descStr.isEmpty())
+        Optional<Description> description = descStr != null
                 ? Optional.of(new Description(descStr))
                 : Optional.empty();
         String startDateTime = argMultimap.getValue(PREFIX_START).get().trim();
